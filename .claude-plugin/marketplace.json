@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claudebrew",
+  "description": "ClaudeBrew — a full software-development lifecycle as a suite of Claude Code skills (brainstorm → worktree → requirement → design → code → test → ship).",
+  "owner": {
+    "name": "TheJoseki"
+  },
+  "plugins": [
+    {
+      "name": "cbr",
+      "source": "./plugins/cbr",
+      "description": "Brainstorm → worktree → requirement → design → code → test → ship — one skill per SDLC stage, each handing a structured artifact to the next.",
+      "category": "productivity",
+      "tags": ["sdlc", "workflow", "brainstorming", "worktree", "harness"]
+    }
+  ]
+}

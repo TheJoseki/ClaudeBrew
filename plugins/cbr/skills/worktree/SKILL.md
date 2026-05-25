@@ -30,11 +30,14 @@ Isolation is guaranteed by **two cooperating layers**. Understanding the split i
 the key to using this skill well:
 
 1. **The gate (100%, harness-enforced).** A `PreToolUse` hook
-   (`.claude/hooks/enforce-worktree.py`, registered in `.claude/settings.json`) runs
-   before every `Edit`/`Write`/`NotebookEdit`. On the base branch it **denies**
-   edits to feature code. This is deterministic — the harness runs it, so it
-   does not depend on you remembering anything. A markdown rule is a probability;
-   a hook is a certainty. See `references/enforcement.md`.
+   (`${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py`, auto-registered by the
+   `cbr` plugin's `hooks/hooks.json`) runs before every
+   `Edit`/`Write`/`NotebookEdit`. On the base branch it **denies** edits to
+   feature code. This is deterministic — the harness runs it, so it does not
+   depend on you remembering anything. A markdown rule is a probability; a hook
+   is a certainty. The gate is active **whenever the `cbr` plugin is enabled** —
+   disabling the plugin removes the skill and its gate together. See
+   `references/enforcement.md`.
 
 2. **The move (this skill).** The gate makes the base branch a dead end for
    feature code; this skill is the smooth path forward — it derives the branch
@@ -65,8 +68,15 @@ script would create the directory but leave the session stranded on the base
 branch — the subprocess cannot change its parent session's CWD. `EnterWorktree`
 also validates the name, honors the `worktree.baseRef` setting, and manages
 exit/cleanup. Its contract requires explicit authorization "by the user or by
-CLAUDE.md/memory" — this project's CLAUDE.md grants exactly that, and invoking
-this skill is itself the instruction.
+project instructions (CLAUDE.md/memory)". **Invoking this skill — whose sole,
+documented purpose is the worktree move — _is_ that explicit instruction:** the
+user reached this stage by choosing to build an approved approach, and this
+skill's entire job is to make that happen in a worktree. Do not rely on a
+project CLAUDE.md granting it (an installed plugin runs in repos that have none).
+For an always-on policy that authorizes the move proactively and survives across
+sessions, run `/cbr:setup` — it can persist the worktree-isolation instruction
+into the project's CLAUDE.md/memory and is also what configures
+`worktree.baseRef`.
 
 ## Workflow
 
@@ -89,14 +99,15 @@ checks in `references/enforcement.md` (§Doctor):
 - **Is this a git repo with worktree support?** `git rev-parse --show-toplevel`.
 - **Already inside a worktree?** If the session is already on a feature branch in
   `.claude/worktrees/`, the move is done — skip to confirming and handing off.
-- **Is the gate actually installed?** Check `.claude/settings.json` has a
-  `PreToolUse` hook pointing at `.claude/hooks/enforce-worktree.py`. If missing,
-  the guarantee is not real: present the exact JSON snippet and offer to install
-  it (delegate to the
-  `update-config` skill, or `Edit` with explicit confirmation). **Never silently
-  mutate `settings.json`.** Do not claim enforcement is active when it is not.
-- **Base ref reachable?** If the repo has no remote, set `worktree.baseRef: head`
-  so the worktree branches from local HEAD (the default `fresh` needs `origin`).
+- **Is the gate actually active?** The `cbr` plugin provides the `PreToolUse`
+  hook via its `hooks/hooks.json`, so the gate is live whenever the plugin is
+  enabled. Confirm `cbr` is enabled (`/plugin`). If it is disabled, the guarantee
+  is not real — do not claim enforcement is active when it is not.
+- **Base ref set?** The worktree must branch from local HEAD so it captures the
+  just-committed approved spec. `worktree.baseRef: head` is applied by
+  `/cbr:setup`; if it is unset (the default `fresh` branches from
+  `origin/<default>` and would miss local-only commits), run `/cbr:setup` or set
+  it before entering.
 
 If a precondition fails and cannot be fixed, say so plainly rather than
 proceeding to a half-isolated state.
@@ -146,8 +157,8 @@ ref, the source brainstorm spec, and the enforcement status — so the
 
 State plainly that the gate is now active: feature-code edits on the base branch
 are denied, and the session is in the worktree where edits are allowed. If the
-doctor in Phase 0 found the hook missing and it was not installed, say so
-explicitly — the user must know the guarantee is soft until the hook is in place.
+doctor in Phase 0 found the `cbr` plugin disabled, say so explicitly — the user
+must know the guarantee is soft until the plugin is re-enabled.
 
 ### Phase 7 — Handoff
 
@@ -162,8 +173,9 @@ gate the pipeline depends on.
 - **Already in a worktree.** Don't nest. Confirm the current branch/path, write
   (or update) the handoff artifact, and hand off.
 - **No approved brainstorm.** You're early. Point back to `brainstorming`.
-- **Hook not installed.** The guarantee is not real. Offer to install it; do not
-  pretend isolation is enforced.
+- **Gate not active (cbr plugin disabled).** The guarantee is not real. Ask the
+  user to re-enable the `cbr` plugin (`/plugin`); do not pretend isolation is
+  enforced.
 - **No remote.** Set `worktree.baseRef: head` so branching works offline.
 - **`EnterWorktree` unavailable (you are inside a subagent/teammate).**
   `EnterWorktree` refuses when the session has a cwd override, because it would

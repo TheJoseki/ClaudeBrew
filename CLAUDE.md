@@ -12,25 +12,58 @@ brainstorming → (worktree) → requirement → design → coding → testing �
 
 `brainstorming` (Stage 1) is built and is the **reference implementation** every sibling skill imitates. `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) is also built; see "Worktree isolation" below. The remaining stages are not yet created.
 
-This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `.claude/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
+This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `plugins/cbr/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
+
+### How ClaudeBrew ships: one plugin, one marketplace
+
+ClaudeBrew is distributed as a **single Claude Code plugin** named `cbr`, served from a **plugin marketplace** rooted in this repo. Layout:
+
+```
+ClaudeBrew/                          # repo root = marketplace catalog + dev workspace
+├── .claude-plugin/marketplace.json  # the catalog: lists the cbr plugin (source ./plugins/cbr)
+├── .claude/settings.json            # DEV-ONLY harness settings (dogfooding; not shipped)
+├── plugins/cbr/                      # ── THE SHIPPED UNIT (copied to users' plugin cache) ──
+│   ├── .claude-plugin/plugin.json    # name "cbr", displayName "ClaudeBrew", version (source of truth)
+│   ├── skills/<stage>/SKILL.md       # the SDLC skills, plus the `setup` skill
+│   └── hooks/{hooks.json, enforce-worktree.py}  # the worktree gate, auto-registered
+├── evals/                            # DEV-ONLY trigger/behavioral evals + the hook unit test
+└── examples/                         # sample artifacts (e.g. a brainstorm output)
+```
+
+Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced: `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:setup`.
+
+**Users install** (the marketplace's relative `source` requires a git add, not a raw `marketplace.json` URL):
+```
+/plugin marketplace add TheJoseki/ClaudeBrew
+/plugin install cbr@claudebrew
+/cbr:setup           # applies the harness-level settings a plugin can't ship (see below)
+```
+
+**Develop** with the plugin loaded in place, then `/reload-plugins` after edits:
+```
+claude --plugin-dir ./plugins/cbr
+```
+Validate before committing: `claude plugin validate ./plugins/cbr` (the plugin) and `claude plugin validate .` (the marketplace). **Ship** by bumping `version` in `plugins/cbr/.claude-plugin/plugin.json` (leave `version` out of the marketplace entry so there's one source of truth), updating `CHANGELOG.md`, and pushing to GitHub; users pull it via `/plugin marketplace update` → `/plugin update`.
+
+**A plugin cannot ship harness settings.** A plugin's own `settings.json` only honors `agent`/`subagentStatusLine`, so the agent-teams env var, `teammateMode`, and `worktree.baseRef` cannot live in the package — the `/cbr:setup` skill merges them into the *user's* `.claude/settings.json` post-install. This repo's own `.claude/settings.json` already carries them, for dogfooding.
 
 ### Skill anatomy (the pattern every stage follows)
 
 ```
-.claude/skills/<stage>/
+plugins/cbr/skills/<stage>/
 ├── SKILL.md          # workflow spine + frontmatter (name + the triggering description)
 ├── references/*.md   # progressive-disclosure detail, loaded only when needed
 └── evals/evals.json  # representative test prompts
 ```
 
-SKILL.md stays lean (<500 lines); deep procedure lives in `references/` and is pulled in on demand (for `brainstorming`: `clarify-loop.md`, `dar-analysis.md`, `artifact-template.md`, `teammate-mode.md`). **Read `brainstorming/SKILL.md` and its references first** — that is the house style to match before authoring a sibling skill.
+SKILL.md stays lean (<500 lines); deep procedure lives in `references/` and is pulled in on demand (for `brainstorming`: `clarify-loop.md`, `dar-analysis.md`, `artifact-template.md`, `teammate-mode.md`). **Read `plugins/cbr/skills/brainstorming/SKILL.md` and its references first** — that is the house style to match before authoring a sibling skill.
 
 ### Conventions inherited across the suite
 
 When building `requirement`, `design`, etc., follow what `brainstorming` established:
 
-- **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`).
-- **Handoff artifacts** at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`. Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
+- **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`); once installed they namespace to `/cbr:<stage>`.
+- **Handoff artifacts** at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md` (in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
 - **Hard gate + no auto-cascade**: a stage does no downstream work and does not invoke the next skill until its artifact is written and the user explicitly approves; then it **stops** so the user decides when the next stage begins. Cascading silently is a bug, not a feature.
 - **Never-guess at the strictest setting**: any uncertainty is surfaced, never silently assumed. Kept ergonomic by *batching* related uncertainties into pre-analyzed multiple-choice questions, not by relaxing the bar.
 - **Evidence-backed**: use Context7 for library/framework docs and WebSearch for patterns/prior art; cite every URL in the artifact.
@@ -40,21 +73,21 @@ When building `requirement`, `design`, etc., follow what `brainstorming` establi
 
 Once a brainstorm is approved, **development of that approach is hard-mandatory in an isolated git worktree on a feature branch** — never on the base branch (`main`/`master`). The `worktree` skill performs the move; a `PreToolUse` hook makes it non-negotiable.
 
-- **The 100% gate.** `.claude/hooks/enforce-worktree.py` is registered as a `PreToolUse` hook (matcher `Edit|Write|NotebookEdit`) in `.claude/settings.json`. On a base branch it **denies** edits to feature code. The point: a markdown rule is probabilistic (the model may forget); a harness-run hook is deterministic. The script lives in the canonical `.claude/hooks/` (not inside the skill) so the gate survives even if the skill is disabled — see `worktree/references/enforcement.md`. Exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude` — these stay editable on the base branch so each stage can write its own artifact.
-- **`EnterWorktree` is authorized here.** The native `EnterWorktree` tool may only be used when the user or **CLAUDE.md/memory** instructs worktree use — *this section is that instruction*. It is the only mechanism that switches the live session's CWD into the worktree (a script cannot), so the `worktree` skill uses it for the move.
-- **`worktree.baseRef: head`** so worktrees branch from local HEAD (capturing the just-committed approved spec, which may be unpushed); the default `fresh` would branch from `origin/<default>` and miss it.
+- **The 100% gate.** `plugins/cbr/hooks/enforce-worktree.py` is registered as a `PreToolUse` hook (matcher `Edit|Write|NotebookEdit`) by the plugin's `hooks/hooks.json`, referenced via `${CLAUDE_PLUGIN_ROOT}`. On a base branch it **denies** edits to feature code. The point: a markdown rule is probabilistic (the model may forget); a harness-run hook is deterministic. Because the registration ships in the plugin, **the gate is active whenever the `cbr` plugin is enabled** (disabling the plugin removes the skills and the gate together) — see `worktree/references/enforcement.md`. Exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`. For dogfooding, *this* repo's `.claude/settings.json` also registers the same script via `${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py`, so the gate is on for contributors even without `--plugin-dir`.
+- **`EnterWorktree` authorization travels in the skill, not in CLAUDE.md.** The native `EnterWorktree` tool may only be used when the user or project instructions (CLAUDE.md/memory) call for worktree use. An installed plugin runs in repos with no ClaudeBrew CLAUDE.md, so the `worktree` skill body carries its own authorization — invoking that skill *is* the instruction. `/cbr:setup` can also persist the policy into the user's CLAUDE.md/memory for the always-on case. `EnterWorktree` is the only mechanism that switches the live session's CWD into the worktree (a script cannot).
+- **`worktree.baseRef: head`** so worktrees branch from local HEAD (capturing the just-committed approved spec, which may be unpushed); the default `fresh` would branch from `origin/<default>` and miss it. Applied to users by `/cbr:setup` (it cannot ship inside the plugin).
 - **No opt-out.** There is no "stay on main" path for feature code; the only runtime choice the skill offers is the branch name.
 
 ### Agent-team ("teammate") mode
 
-Team brainstorming is enabled in `.claude/settings.json` (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, `teammateMode: in-process`). Verified lifecycle the lead drives: `TeamCreate` → spawn teammates with the `Agent` tool (`team_name` + role `name`, all in one message so they run concurrently) → coordinate/challenge via `SendMessage` → shut each down with a `shutdown_request` → `TeamDelete` once all members have terminated. Full detail in `brainstorming/references/teammate-mode.md`.
+Team brainstorming requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` and `teammateMode: in-process` — applied to users by `/cbr:setup`, and already present in this repo's dev `.claude/settings.json`. Verified lifecycle the lead drives: `TeamCreate` → spawn teammates with the `Agent` tool (`team_name` + role `name`, all in one message so they run concurrently) → coordinate/challenge via `SendMessage` → shut each down with a `shutdown_request` → `TeamDelete` once all members have terminated. Full detail in `brainstorming/references/teammate-mode.md`.
 
 ### Evaluating a skill's triggering (Windows caveats)
 
-`.claude/skills/brainstorming-workspace/run_triggers.py` measures how reliably a description fires: it runs the queries in `trigger-eval.json` through `claude -p` and detects whether the skill is invoked.
+`evals/triggers/run_triggers.py` measures how reliably a description fires: it runs the queries in `trigger-eval.json` through `claude -p` and detects whether the skill is invoked (by the `brainstorming` substring, which also matches the namespaced `cbr:brainstorming`).
 
 ```
-python .claude/skills/brainstorming-workspace/run_triggers.py <eval.json> <out.json> <runs_per_query> <workers>
+python evals/triggers/run_triggers.py <eval.json> <out.json> <runs_per_query> <workers>
 ```
 
 Keep `workers` low (2–3) — high concurrency throttles the headless `claude -p` sessions into timeouts. Two Windows gotchas that will otherwise cost you time:

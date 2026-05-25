@@ -52,7 +52,7 @@ worktree …`, the skill's own setup) must run on the base branch.
 The hook denies an edit only when **all** are true: current branch is a base
 branch (`main`/`master`), and the target path is **not** in the exemption set.
 
-Exemptions (defined in `.claude/hooks/enforce-worktree.py` as `EXEMPT_GLOBS`):
+Exemptions (defined in `${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py` as `EXEMPT_GLOBS`):
 
 | Glob | Why it's exempt |
 |---|---|
@@ -77,18 +77,20 @@ Run these in Phase 0 before claiming isolation is enforced:
 1. **Git repo?** `git rev-parse --show-toplevel` succeeds.
 2. **Already in a worktree?** `git rev-parse --abbrev-ref HEAD` is not a base
    branch and the path is under `.claude/worktrees/` → the move is already done.
-3. **Hook registered?** `.claude/settings.json` contains a `PreToolUse` entry
-   pointing at `enforce-worktree.py`. If absent, the guarantee is not real.
+3. **Gate active?** The `cbr` plugin auto-registers the `PreToolUse` hook via its
+   `hooks/hooks.json`, so the gate is live whenever the plugin is enabled. If the
+   plugin is disabled (`/plugin`), the guarantee is not real.
 4. **Base ref correct?** Set `worktree.baseRef: head` so the worktree branches
    from local HEAD — which includes the just-committed approved spec. The default
    `fresh` branches from `origin/<default-branch>`, so it requires a remote *and*
    would miss local-only commits (the approved spec, if not yet pushed).
 
-## 4. Installing the hook
+## 4. How the hook is registered (the plugin mechanism)
 
-The hook only enforces if it is registered in `settings.json`. A skill should not
-silently rewrite a user's settings — present this and confirm (or delegate to the
-`update-config` skill):
+The gate only enforces if the harness is told to run it. As a plugin component,
+that registration is **automatic**: the `cbr` plugin ships `hooks/hooks.json`,
+and Claude Code loads it whenever the plugin is enabled — no edit to the user's
+`settings.json` is required.
 
 ```json
 {
@@ -100,36 +102,44 @@ silently rewrite a user's settings — present this and confirm (or delegate to 
           {
             "type": "command",
             "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-worktree.py"],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py"],
             "timeout": 10
           }
         ]
       }
     ]
-  },
-  "worktree": { "baseRef": "head" }
+  }
 }
 ```
 
-`${CLAUDE_PROJECT_DIR}` resolves to the project root. Project-scoped
-`.claude/settings.json` is committed, so the rule travels with the repo and every
-SDLC stage inherits it.
+`${CLAUDE_PLUGIN_ROOT}` resolves to the plugin's installed location in the cache
+(`~/.claude/plugins/cache/...`). It is required because an installed plugin runs
+from that copy, not from the repo — a `${CLAUDE_PROJECT_DIR}` path would not
+resolve in a user's project. Everything the hook touches must therefore live
+**inside the plugin directory**; `enforce-worktree.py` is self-contained (it only
+reads stdin and shells out to `git`), so it ships cleanly.
 
-### Why the script lives in `.claude/hooks/`, not in the skill
+`worktree.baseRef: head` is *not* in this file — a plugin's own `settings.json`
+only honors `agent`/`subagentStatusLine`, so harness-level keys cannot ride along
+in the package. `/cbr:setup` applies `baseRef` (plus the agent-teams env var and
+`teammateMode`) to the user's `settings.json` instead.
 
-The *registration* must be in a settings file regardless — that is the only
-mechanism that makes a hook always-on (a hook declared in skill frontmatter is
-active only *while that skill is loaded*, which would reopen the probabilistic
-gap this gate exists to close). Given the registration lives in `settings.json`,
-the *script* is deliberately placed in the canonical `.claude/hooks/` rather than
-inside `skills/worktree/`, for one concrete reason: the gate's lifecycle is
-**independent of the skill**. If the script lived in the skill and the skill were
-later disabled or removed, the `settings.json` registration would point at a
-missing file → the hook fails to run → it fails open → the hard-mandatory gate
-silently disappears. Decoupling the script keeps the gate alive regardless of the
-skill's state. (If ClaudeBrew is ever distributed as a *plugin*, bundle the hook
-via the plugin's `hooks/hooks.json` instead — that is the only mechanism that both
-travels with the package and auto-registers when enabled.)
+### Lifecycle: the gate is bound to the plugin
+
+Because the registration lives in the plugin's `hooks/hooks.json`, the gate's
+lifecycle *is* the plugin's lifecycle: enabled plugin → gate live; disabled
+plugin → gate gone (along with the skills). This is a deliberate, coherent
+coupling — there is no separate `settings.json` registration to drift out of
+sync, and no orphaned script path to fail open. The one thing to be honest about:
+"disable the `cbr` plugin" now also means "disable the worktree gate", which is
+why the skill's doctor confirms the plugin is enabled before claiming enforcement.
+
+> Historical note: when ClaudeBrew was standalone `.claude/` config, the script
+> lived in canonical `.claude/hooks/` and was registered in `.claude/settings.json`
+> so the gate survived even if the skill folder was removed. Packaging as a plugin
+> supersedes that reasoning — the plugin is the unit of both distribution and
+> enablement, so bundling the hook in `hooks/hooks.json` is simpler *and* the only
+> mechanism that travels with the package and auto-registers on enable.
 
 ## 5. Windows execution notes
 

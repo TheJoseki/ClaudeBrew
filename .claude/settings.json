@@ -31,7 +31,7 @@
           {
             "type": "command",
             "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-worktree.py"],
+            "args": ["${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py"],
             "timeout": 10
           }
         ]

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Windows-compatible trigger-eval runner for the brainstorming skill.
+"""Windows-compatible trigger-eval runner for the cbr:brainstorming skill.
 
 For each query, launches `claude -p` (via a powershell child so the claude.ps1
 shim resolves) and detects whether the brainstorming skill was triggered
-(a Skill tool_use referencing it, or a Read of its SKILL.md). Pass/fail per the
-skill-creator convention: should_trigger passes if trigger_rate >= threshold;
-should_not_trigger passes if trigger_rate < threshold.
+(a Skill tool_use referencing it, or a Read of its SKILL.md). Detection is by the
+substring "brainstorming", which matches both the standalone name and the plugin-
+namespaced form `cbr:brainstorming` — so the same detector works whether the skill
+is loaded via `--plugin-dir`/install or from a standalone `.claude/` checkout.
+Pass/fail per the skill-creator convention: should_trigger passes if
+trigger_rate >= threshold; should_not_trigger passes if trigger_rate < threshold.
 
 Usage:
   python run_triggers.py <eval.json> <out.json> [runs_per_query] [workers]

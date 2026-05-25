@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Durable tests for enforce-worktree.py — run: python .claude/hooks/test_hook.py
+"""Durable tests for enforce-worktree.py — run: python evals/test_hook.py
 
 The hook's decision depends on the current branch, so these tests build a
 throwaway git repo (on `main`, then on a feature branch) and feed the hook
@@ -13,7 +13,12 @@ import subprocess
 import sys
 import tempfile
 
-HOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "enforce-worktree.py")
+# test_hook.py lives in evals/; the hook ships inside the plugin. Resolve from
+# the repo root (parent of evals/) into the plugin's hooks/ directory.
+HOOK = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "plugins", "cbr", "hooks", "enforce-worktree.py",
+)
 
 
 def run_hook(file_path, cwd):

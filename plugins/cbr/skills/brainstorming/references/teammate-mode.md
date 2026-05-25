@@ -6,8 +6,10 @@ from distinct angles and **challenge each other** before the lead synthesizes.
 The value is structured disagreement — it defeats the anchoring bias a single
 reasoner falls into ("find one plausible answer and stop").
 
-Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (already set in this project's
-`.claude/settings.json`). Reference: https://code.claude.com/docs/en/agent-teams
+Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (applied by `/cbr:setup`, and
+already set in this repo's dev `.claude/settings.json`). If team spawning fails,
+the user likely hasn't run `/cbr:setup`. Reference:
+https://code.claude.com/docs/en/agent-teams
 
 ## When to use team mode
 
@@ -80,7 +82,7 @@ The lead is the session running this skill. The concrete tool lifecycle below is
 
 ## Caveats (from the agent-teams docs)
 
-- **In-process mode** (this project's `teammateMode`) has known limits: no
+- **In-process mode** (the `teammateMode` `/cbr:setup` configures) has known limits: no
   session resumption for teammates (`/resume` won't restore them), task status
   can lag, and shutdown can be slow. If a teammate is lost after a resume, spawn
   a replacement.
