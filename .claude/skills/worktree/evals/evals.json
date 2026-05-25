@@ -1,0 +1,30 @@
+{
+  "skill_name": "worktree",
+  "notes": "Stage 1.5 isolation gate. Triggers after a brainstorm is approved / at the transition from thinking to building. Behavior to verify: derives a branch name (only asks the name, never 'whether'), carries the approved spec across, uses EnterWorktree to switch the session into .claude/worktrees/<slug> on a feature branch, writes the worktree handoff artifact, confirms the PreToolUse gate is active, and STOPS without auto-starting requirement. The deterministic gate (enforce-worktree.py) is verified separately by unit tests.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I approved the brainstorm for the houseplant watering tracker. Let's start building it.",
+      "expected_output": "Recognizes the transition to implementation. Does NOT begin coding on main. Locates the approved docs/specs/<date>-houseplant-watering-tracker-brainstorm.md, derives the branch name (e.g. houseplant-watering-tracker), confirms only the NAME with the user (never whether to branch), carries the approved spec across (commit-first by default), calls EnterWorktree to switch into .claude/worktrees/<slug> on the feature branch, writes docs/specs/<date>-houseplant-watering-tracker-worktree.md, confirms the gate is active, and STOPS — does not auto-invoke the requirement stage.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Add a CSV export function to the reports module.",
+      "expected_output": "This is feature code. While on the base branch the PreToolUse gate denies the Edit/Write with an actionable reason. The correct response is to invoke the worktree skill: set up an isolated worktree on a feature branch first, then make the change inside it — not to try to write reports code on main.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Spin up a worktree for the auth-jwt approach and get me set up to code.",
+      "expected_output": "Runs the doctor preconditions (git repo, worktree support, hook registered, baseRef reachable; if no remote, sets worktree.baseRef=head). Confirms the branch name auth-jwt, carries the approved spec across, calls EnterWorktree(name='auth-jwt') so the session CWD moves under .claude/worktrees/auth-jwt on the new branch, writes the worktree handoff artifact, confirms enforcement, and hands off — without cascading into requirement/design.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Just fix this typo in src/utils/date.ts and tweak the README, we don't need a whole branch for this.",
+      "expected_output": "Honors the hard-mandatory stance: there is no 'stay on main' opt-out for feature code. The README edit (*.md) is exempt and allowed on the base branch. The src/utils/date.ts edit is feature code and is denied on the base branch by the gate; the skill explains the gate rather than offering a bypass, and sets up a worktree for the code change.",
+      "files": []
+    }
+  ]
+}

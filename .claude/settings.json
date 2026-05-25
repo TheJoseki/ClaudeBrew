@@ -23,6 +23,22 @@
       "Read(**/*.key)"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-worktree.py"],
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": { "baseRef": "head" },
   "model": "opus",
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": true,

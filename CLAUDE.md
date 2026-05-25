@@ -7,10 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **ClaudeBrew** is a harness-engineering toolkit that implements a **full software-development lifecycle (SDLC) as a suite of Claude Code skills** — one skill per stage, each handing a structured artifact to the next:
 
 ```
-brainstorming → requirement → design → coding → testing → ship
+brainstorming → (worktree) → requirement → design → coding → testing → ship
 ```
 
-`brainstorming` (Stage 1) is built and is the **reference implementation** every sibling skill imitates; the other stages are not yet created.
+`brainstorming` (Stage 1) is built and is the **reference implementation** every sibling skill imitates. `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) is also built; see "Worktree isolation" below. The remaining stages are not yet created.
 
 This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `.claude/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
 
@@ -35,6 +35,15 @@ When building `requirement`, `design`, etc., follow what `brainstorming` establi
 - **Never-guess at the strictest setting**: any uncertainty is surfaced, never silently assumed. Kept ergonomic by *batching* related uncertainties into pre-analyzed multiple-choice questions, not by relaxing the bar.
 - **Evidence-backed**: use Context7 for library/framework docs and WebSearch for patterns/prior art; cite every URL in the artifact.
 - **DAR** (Decision Analysis & Resolution) for trade-offs that are hard to reverse — weighted criteria, scoring matrix, recorded decision.
+
+### Worktree isolation (hard-mandatory, Stage 1.5)
+
+Once a brainstorm is approved, **development of that approach is hard-mandatory in an isolated git worktree on a feature branch** — never on the base branch (`main`/`master`). The `worktree` skill performs the move; a `PreToolUse` hook makes it non-negotiable.
+
+- **The 100% gate.** `.claude/hooks/enforce-worktree.py` is registered as a `PreToolUse` hook (matcher `Edit|Write|NotebookEdit`) in `.claude/settings.json`. On a base branch it **denies** edits to feature code. The point: a markdown rule is probabilistic (the model may forget); a harness-run hook is deterministic. The script lives in the canonical `.claude/hooks/` (not inside the skill) so the gate survives even if the skill is disabled — see `worktree/references/enforcement.md`. Exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude` — these stay editable on the base branch so each stage can write its own artifact.
+- **`EnterWorktree` is authorized here.** The native `EnterWorktree` tool may only be used when the user or **CLAUDE.md/memory** instructs worktree use — *this section is that instruction*. It is the only mechanism that switches the live session's CWD into the worktree (a script cannot), so the `worktree` skill uses it for the move.
+- **`worktree.baseRef: head`** so worktrees branch from local HEAD (capturing the just-committed approved spec, which may be unpushed); the default `fresh` would branch from `origin/<default>` and miss it.
+- **No opt-out.** There is no "stay on main" path for feature code; the only runtime choice the skill offers is the branch name.
 
 ### Agent-team ("teammate") mode
 
