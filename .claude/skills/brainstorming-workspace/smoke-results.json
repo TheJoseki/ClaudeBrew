@@ -1,0 +1,37 @@
+{
+  "model": "claude-opus-4-7",
+  "runs_per_query": 1,
+  "threshold": 0.5,
+  "queries_passed": 2,
+  "queries_total": 2,
+  "precision": 1.0,
+  "recall": 1.0,
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "tn": 1,
+  "results": [
+    {
+      "query": "I have an idea for a mobile app that helps roommates split rent and shared bills fairly \u2014 can you help me think it through before we build anything?",
+      "should_trigger": true,
+      "trigger_rate": 1.0,
+      "triggers": 1,
+      "runs": 1,
+      "raw": [
+        "yes"
+      ],
+      "pass": true
+    },
+    {
+      "query": "what's the difference between a LEFT JOIN and an INNER JOIN in postgres? i always mix them up",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "raw": [
+        "no"
+      ],
+      "pass": true
+    }
+  ]
+}

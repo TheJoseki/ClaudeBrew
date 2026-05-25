@@ -1,0 +1,24 @@
+{
+  "skill_name": "brainstorming",
+  "notes": "Brainstorming is a human-in-the-loop dialogue skill. Its core behavior (never guess; ask the user) can't be exercised by an autonomous subagent with no human to answer AskUserQuestion. Primary evaluation is qualitative: run the skill interactively and judge the real back-and-forth. evals below double as (a) interactive walkthrough prompts and (b) inputs for an optional one-shot structural smoke test where a cooperative simulated user is baked into the runner prompt.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to build a habit tracker app. Help me think it through before we start building.",
+      "expected_output": "Recommends single mode (narrow, solo). Explores context, then runs a batched, pre-analyzed clarify loop instead of assuming defaults (platform, audience, core habit model, reminders, data sync, monetization). Produces docs/specs/<date>-habit-tracker-brainstorm.md with all 12 sections, ends with handoff and does NOT auto-start the requirement stage.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We're building a real-time chat feature for our existing web app and I can't decide on the backend transport — WebSockets vs long-polling vs server-sent events. Help me brainstorm the right approach.",
+      "expected_output": "Recognizes a real, hard-to-reverse trade-off and runs DAR: criteria (latency, scale, infra cost, complexity, browser/client support), weighted matrix, recommendation with counter-argument and 'revisit if'. Researches/cites current best practices. Records a decision record in the artifact.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I have an idea for a marketplace platform connecting freelance tutors with students — payments, scheduling, video calls, ratings, the whole thing. Let's brainstorm this before I commit to anything.",
+      "expected_output": "Recognizes a broad, multi-domain, high-stakes problem and recommends TEAM mode with reasoning, asking the user to confirm before spawning teammates. Flags the multiple independent subsystems and proposes decomposing into ordered sub-topics. Surfaces many uncertainties via batched questions rather than assuming.",
+      "files": []
+    }
+  ]
+}

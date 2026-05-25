@@ -1,0 +1,20 @@
+[
+  {"query": "ok so i've been kicking around this idea for a little SaaS that helps freelance designers send contracts and get them e-signed. havent written any code yet, where do i even start?", "should_trigger": true},
+  {"query": "we want to build an internal tool for our support team to triage incoming tickets with some AI tagging. can you help me scope it out before we commit eng time?", "should_trigger": true},
+  {"query": "I have an idea for a Chrome extension that summarizes long Slack threads. help me think it through", "should_trigger": true},
+  {"query": "thinking about adding a referral program to our mobile app — not sure what it should even look like yet. lets brainstorm", "should_trigger": true},
+  {"query": "my cofounder and i keep going back and forth on whether to build a marketplace or a plain saas for the dog-walking space. can you help us reason through which direction makes sense?", "should_trigger": true},
+  {"query": "greenfield project: a CLI that lints terraform for security misconfigs. nothing built yet. wanna design it properly first before i write anything", "should_trigger": true},
+  {"query": "build me an app that lets people track their houseplants and when to water them", "should_trigger": true},
+  {"query": "we've got budget for a brand new analytics product for the sales team next quarter. before anyone codes anything i want to figure out what we're actually building and what success looks like", "should_trigger": true},
+  {"query": "I'm exploring a feature where users can collaborate on documents in real time in our notes app. lots of unknowns still. help me explore the design space", "should_trigger": true},
+  {"query": "brainstorm a list of catchy names for my new coffee shop", "should_trigger": false},
+  {"query": "the login endpoint in src/auth/session.ts is throwing a 500 when the token expires. can you debug it?", "should_trigger": false},
+  {"query": "implement the password reset flow we already specced in docs/specs/2026-05-10-auth-brainstorm.md", "should_trigger": false},
+  {"query": "write unit tests for the InvoiceCalculator class in billing/invoice.py", "should_trigger": false},
+  {"query": "can you review my PR? it adds rate limiting to the public API", "should_trigger": false},
+  {"query": "help me brainstorm gift ideas for my mom's 60th birthday", "should_trigger": false},
+  {"query": "what's the best way to structure a postgres schema for a multi-tenant app? we're already mid-build and just need the schema", "should_trigger": false},
+  {"query": "turn the approved design doc at docs/design/checkout-redesign.md into actual react components", "should_trigger": false},
+  {"query": "we already wrote the SRS for the inventory module. now i need help writing the detailed function definitions and the database design", "should_trigger": false}
+]

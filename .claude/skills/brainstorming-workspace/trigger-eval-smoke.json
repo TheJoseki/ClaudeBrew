@@ -1,0 +1,4 @@
+[
+  {"query": "I have an idea for a mobile app that helps roommates split rent and shared bills fairly — can you help me think it through before we build anything?", "should_trigger": true},
+  {"query": "what's the difference between a LEFT JOIN and an INNER JOIN in postgres? i always mix them up", "should_trigger": false}
+]
