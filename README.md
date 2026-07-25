@@ -53,6 +53,16 @@ python evals/test_hook.py             # unit-test the worktree gate
 
 See [CLAUDE.md](CLAUDE.md) for the full architecture, conventions, ship process, and Windows caveats.
 
+## Also from Joseki
+
+[**Clawform**](https://clawform.thejoseki.com) — safe AWS CloudFormation
+workflows for Claude Code. Same idea applied to infrastructure: rules the agent
+reads before it writes, a CLI that runs every change through a change set you
+approve, and a hook that refuses the commands nobody should run by accident.
+Commercial, one-time licence.
+
+ClaudeBrew is MIT and stays MIT. This is a pointer, not a bundle.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
