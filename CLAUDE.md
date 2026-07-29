@@ -4,13 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**ClaudeBrew** is a harness-engineering toolkit that implements a **full software-development lifecycle (SDLC) as a suite of Claude Code skills** — one skill per stage, each handing a structured artifact to the next:
+**ClaudeBrew** is a harness-engineering toolkit that implements a **full software-development lifecycle (SDLC) as Claude Code skills + role agents** — each stage handing a structured artifact to the next:
 
 ```
-brainstorming → (worktree) → requirement → design → coding → testing → ship
+brainstorming → (worktree) → requirement → UI/tech design → implement → review → test → security → delivery → retro
 ```
 
-`brainstorming` (Stage 1) is built and is the **reference implementation** every sibling skill imitates. `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) is also built; see "Worktree isolation" below. The remaining stages are not yet created.
+Two bodies of work sit side by side in the tree — know which one you're touching:
+
+- **The committed core (reference implementation).** `brainstorming` (Stage 1) and `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) are the only *committed* skills and set the house style every sibling is meant to imitate. See "Worktree isolation" below.
+- **An imported SDLC engine (uncommitted, partially adapted).** The working tree also carries ~40 skills, 10 role **agents** (`plugins/cbr/agents/*-agent.md`), and 16 **rules** (`plugins/cbr/rules/*.md`) that together form an orchestrated multi-agent pipeline (`full-sdlc`, `orchestrate`). This suite was imported from a sibling project — its files are still titled **"ClaudeKit"** — and is **not yet reconciled** to ClaudeBrew's plugin layout or conventions. Treat it as work-in-progress, not settled design: see "The SDLC engine" and "Reconciliation gaps" below. `git status` shows the entire suite as untracked.
 
 This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `plugins/cbr/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
 
@@ -24,13 +27,15 @@ ClaudeBrew/                          # repo root = marketplace catalog + dev wor
 ├── .claude/settings.json            # DEV-ONLY harness settings (dogfooding; not shipped)
 ├── plugins/cbr/                      # ── THE SHIPPED UNIT (copied to users' plugin cache) ──
 │   ├── .claude-plugin/plugin.json    # name "cbr", displayName "ClaudeBrew", version (source of truth)
-│   ├── skills/<stage>/SKILL.md       # the SDLC skills, plus the `setup` skill
-│   └── hooks/{hooks.json, enforce-worktree.py}  # the worktree gate, auto-registered
+│   ├── skills/<name>/SKILL.md        # ~40 skills: committed brainstorming+worktree, setup, + imported suite
+│   ├── agents/<role>-agent.md        # 10 role subagents spawned by the orchestrator skills (uncommitted)
+│   ├── rules/*.md                    # 16 always-loaded convention files (gates, artifact paths, standards; uncommitted)
+│   └── hooks/{hooks.json, *.sh, *.js, enforce-worktree.py}  # expanded hook set — see "The SDLC engine"
 ├── evals/                            # DEV-ONLY trigger/behavioral evals + the hook unit test
 └── examples/                         # sample artifacts (e.g. a brainstorm output)
 ```
 
-Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced: `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:setup`.
+Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced, e.g. `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:orchestrate`, `/cbr:full-sdlc`, `/cbr:setup`.
 
 **Users install** (the marketplace's relative `source` requires a git add, not a raw `marketplace.json` URL):
 ```
@@ -58,9 +63,32 @@ plugins/cbr/skills/<stage>/
 
 SKILL.md stays lean (<500 lines); deep procedure lives in `references/` and is pulled in on demand (for `brainstorming`: `clarify-loop.md`, `dar-analysis.md`, `artifact-template.md`, `teammate-mode.md`). **Read `plugins/cbr/skills/brainstorming/SKILL.md` and its references first** — that is the house style to match before authoring a sibling skill.
 
+### The SDLC engine (imported suite — how the pieces fit)
+
+The imported half turns the flat skill list into a **two-layer, artifact-driven pipeline**. To understand it, read `orchestrate/SKILL.md`, `full-sdlc/SKILL.md`, `rules/sdlc-conventions.md`, and a couple of `agents/*.md` together — no single file shows the whole shape.
+
+- **Layer 1 — orchestrator skills** (`full-sdlc`, `orchestrate`) run in the *main* context. Each SDLC phase is **one `Agent` tool call** that spawns an isolated role agent; the orchestrator verifies that phase's artifact, pauses at human-approval gates, and **never does the work itself**. `intelligent-routing` picks a skill/agent from a raw request; `parallel-agents` and `retro` are multi-agent patterns the orchestrator invokes.
+- **Layer 2 — role agents** (`agents/*-agent.md`: ba, ui-designer, architect, developer, code-review, unit-test, integration-test, security-tester, bug-fix, orchestrator). Each has frontmatter (`tools`, `model`, `permissionMode`, `memory: project`) and a spec-driven body. Names ending in `-agent` are **load-bearing**: the `.*-agent` matcher in `hooks.json` is what binds the `SubagentStart` context-injection and `SubagentStop` quality-gate hooks to them.
+- **The contract is the artifact, written into the *user's* `docs/`** (not this repo). `rules/sdlc-conventions.md` is the authority — it holds the **canonical artifact-path table** (`docs/specs/requirements/SRS-*`, `docs/specs/detail-design/TECH-*`, `docs/reviews/`, `docs/test-reports/`, …) and the **CMMI-style quality gates G1–G8** (each gate's pass criteria + who decides). Trust that file over any single skill's inline paths.
+- **State lives in project-level registries** the orchestrators create in the user's repo: `docs/plans/PLAN-REGISTRY.md`, `DECISION-LEDGER.md`, `BACKLOG-REGISTRY.md`, `docs/memory/PROJECT-MEMORY.md` — plus a 4-tier memory convention (core rules → project registries → per-agent `.claude/agent-memory/` → session work-logs).
+- **Skill categories** (buckets, not an exhaustive list — the 40 names rot fast): *orchestrators* (full-sdlc, orchestrate, intelligent-routing, retro…), *stage executors* (analyze-requirement, design-screen/function, implement-feature, review-code, unit/integration-test, fix-bug, create-pr…), *knowledge/reference* (architecture, clean-code, database-design, testing-patterns, ui-ux-pro-max, vulnerability-scanner…), and *infrastructure* (setup, lint-and-validate, run-tests; `context-inject` self-marked DEPRECATED).
+
+Its **hooks** (`hooks.json`, currently tracked-but-modified) go well beyond the committed gate: `SubagentStart`/`SubagentStop` (matcher `.*-agent`) run context-inject / quality-gate scripts; `PreToolUse` runs `protect-files.sh` (Edit|Write|Read), `guard-bash.sh`, `guard-webfetch.sh`; `PreCompact`/`PostCompact`/`SessionStart:compact` persist and re-inject context; `Stop` runs `post-edit-reminder.sh`.
+
+### Reconciliation gaps (imported suite — verify before relying on it)
+
+The imported suite is mid-adaptation. Known gaps at time of writing, all in the **uncommitted** tree — confirm current state before trusting any of it:
+
+- **"ClaudeKit" naming unfinished.** Under `plugins/cbr/`, 16 files (rules, hook scripts, skill scripts) still say "ClaudeKit"; only 4 say "ClaudeBrew".
+- **Wrong agent/rule paths.** 10 references send agents to `.claude/agents/*.md` and `.claude/rules/*.md` (e.g. `orchestrate/SKILL.md`, `full-sdlc/references/spawn-templates.md`, `parallel-agents/SKILL.md`), but the files live at `plugins/cbr/agents/` and `plugins/cbr/rules/`. Some skills correctly use `${CLAUDE_PLUGIN_ROOT}/...`; the mix confirms partial adaptation.
+- **Dangling hook.** `hooks.json` invokes `pixel-status-update.js` in 5 places, but that file was never copied into `hooks/`. The calls are `async`, so they fail silently — but the reference is dead.
+- **Two artifact-path conventions coexist.** `brainstorming` writes `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`; the imported suite writes `docs/specs/requirements/SRS-<feature>.md` etc. Not yet unified.
+- **Shipped worktree gate absent.** The shipped `hooks.json` dropped `enforce-worktree.py`; its `Edit|Write` replacement (`protect-files.sh`) is a secrets guard, not a branch gate — so installed users get no base-branch denial (intent unresolved). See "Worktree isolation" below.
+- **`plugin.json` version still `0.1.0`** despite the expansion — not yet bumped.
+
 ### Conventions inherited across the suite
 
-When building `requirement`, `design`, etc., follow what `brainstorming` established:
+ClaudeBrew's house style, set by `brainstorming` (the reference implementation). Reconciled skills should follow these; the **imported suite diverges from several** — artifact paths especially (see "Reconciliation gaps"):
 
 - **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`); once installed they namespace to `/cbr:<stage>`.
 - **Handoff artifacts** at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md` (in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
@@ -73,7 +101,10 @@ When building `requirement`, `design`, etc., follow what `brainstorming` establi
 
 Once a brainstorm is approved, **development of that approach is hard-mandatory in an isolated git worktree on a feature branch** — never on the base branch (`main`/`master`). The `worktree` skill performs the move; a `PreToolUse` hook makes it non-negotiable.
 
-- **The 100% gate.** `plugins/cbr/hooks/enforce-worktree.py` is registered as a `PreToolUse` hook (matcher `Edit|Write|NotebookEdit`) by the plugin's `hooks/hooks.json`, referenced via `${CLAUDE_PLUGIN_ROOT}`. On a base branch it **denies** edits to feature code. The point: a markdown rule is probabilistic (the model may forget); a harness-run hook is deterministic. Because the registration ships in the plugin, **the gate is active whenever the `cbr` plugin is enabled** (disabling the plugin removes the skills and the gate together) — see `worktree/references/enforcement.md`. Exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`. For dogfooding, *this* repo's `.claude/settings.json` also registers the same script via `${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py`, so the gate is on for contributors even without `--plugin-dir`.
+- **The gate (deterministic, not probabilistic).** A markdown rule is probabilistic — the model may forget; a harness-run `PreToolUse` hook is deterministic — on a base branch it **denies** edits to feature code. `enforce-worktree.py`'s exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`. See `worktree/references/enforcement.md`. **⚠ Two registrations currently differ, and the divergence is unresolved — verify against the actual files before relying on the gate:**
+  - *This repo (dogfooding):* `.claude/settings.json` registers `enforce-worktree.py` on `Edit|Write|NotebookEdit` via `${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py`. So the gate **is live for contributors here**, even without `--plugin-dir`.
+  - *The shipped plugin:* `plugins/cbr/hooks/hooks.json` **no longer registers `enforce-worktree.py`** (the file still exists, unwired). Its `Edit|Write` slot now runs `protect-files.sh`, which is a **secrets/lock-file guard, not a branch gate** — it blocks writes to `.env*`/keys/lock files and has no worktree logic. Net effect: **installed users currently get no base-branch denial**; the gate `enforcement.md` describes is absent from the shipped plugin. Whether that drop was intentional (vs. collateral from importing the new hook set) is the **unresolved** question — the behavioral gap itself is not in doubt.
+  - *Test coverage:* `evals/test_hook.py` still validates `enforce-worktree.py` (throwaway repo on `main` + a feature branch), so it passes — but it now covers the dev-`settings.json` registration only, nothing the plugin ships.
 - **`EnterWorktree` authorization travels in the skill, not in CLAUDE.md.** The native `EnterWorktree` tool may only be used when the user or project instructions (CLAUDE.md/memory) call for worktree use. An installed plugin runs in repos with no ClaudeBrew CLAUDE.md, so the `worktree` skill body carries its own authorization — invoking that skill *is* the instruction. `/cbr:setup` can also persist the policy into the user's CLAUDE.md/memory for the always-on case. `EnterWorktree` is the only mechanism that switches the live session's CWD into the worktree (a script cannot).
 - **`worktree.baseRef: head`** so worktrees branch from local HEAD (capturing the just-committed approved spec, which may be unpushed); the default `fresh` would branch from `origin/<default>` and miss it. Applied to users by `/cbr:setup` (it cannot ship inside the plugin).
 - **No opt-out.** There is no "stay on main" path for feature code; the only runtime choice the skill offers is the branch name.

@@ -1,0 +1,226 @@
+---
+name: context-inject
+description: "DEPRECATED — replaced by SubagentStart hook (.claude/hooks/subagent-context-inject.js). Hook fires automatically on every agent spawn with scoring + token budget. This skill is kept for backward compatibility only."
+allowed-tools: Read, Grep, Glob
+user-invocable: false
+disable-model-invocation: false
+metadata:
+  version: "1.1"
+  category: orchestration
+  status: deprecated
+  replaced_by: ".claude/hooks/subagent-context-inject.js"
+---
+
+# Context Injector — RAG Retrieve + Augment
+
+> **⚠️ DEPRECATED (2026-03-25)**: This skill has been replaced by the SubagentStart hook
+> at `.claude/hooks/subagent-context-inject.js`. The hook fires automatically on every
+> `*-agent` spawn — no orchestrator invocation needed. It includes the same scoring algorithm
+> (`domain_match×0.4 + recency×0.3 + importance×0.3`) and ≤1500 token budget.
+> This file is kept for backward compatibility with projects that haven't updated their hooks.
+
+$ARGUMENTS
+
+> **Internal skill** — invoked by orchestrator-agent before every subagent spawn.
+> NOT for direct user invocation. Reads registries and memory files, assembles a structured context block.
+
+---
+
+## Input Parameters (from $ARGUMENTS)
+
+Parse the following from $ARGUMENTS (provided by orchestrator):
+
+```
+AGENT_ROLE:    [agent role being spawned — e.g., developer, architect, ba, code-review]
+FEATURE:       [feature name from current plan]
+PHASE:         [current SDLC phase — P0 through P8]
+DOMAIN_TAGS:   [comma-separated domain tags relevant to this task — e.g., auth,approval,permission]
+PLAN_FILE:     [path to current PLAN file — e.g., docs/plans/PLAN-wave1-20260322.md]
+```
+
+If any required parameter is missing → use reasonable defaults:
+- DOMAIN_TAGS: empty (retrieve all active decisions)
+- PLAN_FILE: glob `docs/plans/PLAN-*-*.md` and use most recent ACTIVE plan
+
+---
+
+## Step 1: Read Plan Registry
+
+Read `docs/plans/PLAN-REGISTRY.md` (if exists).
+
+Extract:
+- All plans with status `ACTIVE` or `SUSPENDED` → include in context block
+- Parent chain for current PLAN_FILE → trace up to EPIC level
+- Any `SUSPENDED` plans that list current feature as resume prereq
+
+If PLAN-REGISTRY.md does not exist → skip this step (first-run scenario).
+
+---
+
+## Step 2: Read Decision Ledger
+
+Read `docs/plans/DECISION-LEDGER.md` (if exists).
+
+### Retrieval Filter
+
+1. If DOMAIN_TAGS provided → filter decisions by matching Domain Tag
+2. Always include ALL decisions with status `⚠️ CONTESTED` or `🔄 NEEDS RESOLUTION` (regardless of domain)
+3. Include `✅ ACTIVE` decisions in matching domains
+4. For `❌ SUPERSEDED` decisions → include only if they are part of a chain leading to a CONTESTED decision
+5. Read the **Domain Index** section for quick summary
+
+### Scoring (apply to each retrieved decision)
+
+```
+score = (domain_match × 0.4) + (recency × 0.3) + (importance × 0.3)
+
+domain_match:
+  1.0 — decision domain tag exactly matches one of DOMAIN_TAGS
+  0.5 — decision domain tag is related (e.g., "auth" relates to "permission")
+  0.0 — no match
+
+recency:
+  1.0 — decision date < 1 day from now
+  0.7 — decision date < 3 days
+  0.5 — decision date < 7 days
+  0.3 — older than 7 days
+
+importance:
+  1.0 — status is CONTESTED or NEEDS RESOLUTION
+  0.7 — status is ACTIVE
+  0.3 — status is SUPERSEDED
+```
+
+Select **top 10 decisions** by score.
+
+---
+
+## Step 3: Read Backlog Registry
+
+Read `docs/plans/BACKLOG-REGISTRY.md` (if exists).
+
+### Retrieval Filter by Agent Role
+
+| AGENT_ROLE | Include Types |
+|------------|--------------|
+| developer | CODE_QUALITY, DESIGN_DEBT |
+| code-review | All types |
+| unit-test | CODE_QUALITY, BUG_DEFERRED |
+| integration-test | CODE_QUALITY, BUG_DEFERRED |
+| security-tester | SECURITY |
+| architect | DESIGN_DEBT, PROCESS |
+| ba | PROCESS, DESIGN_DEBT |
+| orchestrator | All types |
+
+Filter by:
+- Status = `⏳ OPEN` only
+- Target matches current feature/wave (or is unassigned)
+- Priority: HIGH items always included, MEDIUM/LOW scored
+
+Select **top 5 backlog items** by priority.
+
+---
+
+## Step 4: Read Project Memory
+
+Read `docs/memory/PROJECT-MEMORY.md` (if exists).
+
+Retrieve entries where:
+- `Applies To` matches AGENT_ROLE's domain (e.g., "FE unit tests" for unit-test agent working on frontend)
+- OR `Agent` column matches AGENT_ROLE (role-specific learnings)
+- Confidence = HIGH or MEDIUM preferred
+
+Select **top 5 memory entries** by relevance.
+
+---
+
+## Step 5: Read Checkpoint (if resuming)
+
+Check if PLAN_FILE contains a `## Checkpoint` section.
+
+If found:
+- Extract: last completed phase/batch, pending decisions, loaded context files
+- Check for `## Impact Notes` section — extract all accumulated impact notes from interrupt plans
+
+---
+
+## Step 6: Assemble Context Block
+
+Combine all retrieved information into a structured context block.
+
+### Output Format
+
+```markdown
+## Injected Context (auto-generated by context-injector)
+
+### Active Plans
+<!-- From Step 1 — list active/suspended plans with status and current phase -->
+
+### Relevant Decisions (top 10)
+<!-- From Step 2 — formatted as: status emoji + ID + summary -->
+<!-- CONTESTED decisions MUST appear first with ⚠️ prefix -->
+
+### Backlog Items (your scope, top 5)
+<!-- From Step 3 — filtered by agent role -->
+
+### Project Memory (top 5)
+<!-- From Step 4 — non-obvious learnings relevant to this task -->
+
+### Resume Context
+<!-- From Step 5 — only if checkpoint exists -->
+<!-- Include: last progress, pending decisions, impact notes -->
+
+### Warnings
+<!-- Auto-generated alerts: -->
+<!-- - Specs that may be stale (pre-date a CONTESTED or SUPERSEDED decision) -->
+<!-- - Unresolved DESIGN_DEBT items in the agent's scope -->
+<!-- - BACKLOG items with HIGH priority targeting this feature -->
+```
+
+### Token Budget Enforcement
+
+The assembled context block MUST stay within **≤1500 tokens** (~1100 words).
+
+Note: Agent-specific memory is handled by Claude Code native auto-load (`.claude/agent-memory/<agent>/MEMORY.md`, 200 lines) — NOT injected by this skill. This skill focuses on cross-agent knowledge only.
+
+If the block exceeds budget:
+1. Keep all CONTESTED decisions and HIGH priority items (non-negotiable)
+2. Reduce Project Memory to top 3 entries
+3. Reduce ACTIVE decisions to top 5
+4. Truncate Backlog to top 3 items
+5. If still over budget → summarize each section to 1-line bullet points
+
+### Batch-Scoped Filtering (Phase 4 spawns only)
+
+When injecting context for a **Phase 4** agent spawn that has a specific BATCH scope (modules listed):
+
+1. **Decision Ledger**: Include only decisions relevant to the batch's modules (match by entity/module name). Drop decisions for modules in other batches
+2. **Backlog Registry**: Include only items targeting files within the batch scope
+3. **Agent Memory**: Include only patterns relevant to the batch's tech layers — BE-only batch skips FE patterns, FE-only batch skips DB/ORM patterns
+4. **Effect**: Reduces injection from full 2000 tokens to ~800–1200 tokens for Phase 4, freeing context headroom for actual implementation work
+
+---
+
+## Step 7: Return Context Block
+
+Return the assembled context block as the skill output. The orchestrator will prepend this to the subagent's spawn prompt.
+
+```
+BEFORE (orchestrator spawns agent without context):
+  Agent.spawn(prompt: "OBJECTIVE: ... OUTPUT FORMAT: ... TOOL HINTS: ... BOUNDARIES: ...")
+
+AFTER (orchestrator spawns agent WITH injected context):
+  context = [output of this skill]
+  Agent.spawn(prompt: context + "\n---\n" + "OBJECTIVE: ... OUTPUT FORMAT: ... TOOL HINTS: ... BOUNDARIES: ...")
+```
+
+---
+
+## Edge Cases
+
+| Scenario | Behavior |
+|----------|----------|
+| Registry files don't exist yet (first-run) | Skip registry steps, return minimal context block (just project memory if available) |
+| No decisions match DOMAIN_TAGS | Include only CONTESTED decisions (always included regardless of domain) |
+| PLAN has no checkpoint | Skip resume context section |
+| All registries empty | Return: "No accumulated context available. This appears to be the first execution." |
