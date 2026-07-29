@@ -9,16 +9,6 @@
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/subagent-context-inject.js\""
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/pixel-status-update.js\" subagentstart",
-            "async": true,
-            "timeout": 5000
-          }
-        ]
       }
     ],
     "SubagentStop": [
@@ -27,17 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/subagent-quality-gate.sh\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/pixel-status-update.js\" subagentstop",
-            "async": true,
-            "timeout": 5000
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/subagent-quality-gate.py\""
           }
         ]
       }
@@ -48,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.sh\""
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.py\""
           }
         ]
       },
@@ -57,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.sh\" read"
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.py\" read"
           }
         ]
       },
@@ -66,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-bash.sh\""
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-bash.py\""
           }
         ]
       },
@@ -75,31 +55,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-webfetch.sh\""
-          }
-        ]
-      },
-      {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/pixel-status-update.js\" pre",
-            "async": true,
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/pixel-status-update.js\" post",
-            "async": true,
-            "timeout": 5000
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-webfetch.py\""
           }
         ]
       }
@@ -109,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/compact-context-saver.sh\""
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/compact-context-saver.py\""
           }
         ]
       }
