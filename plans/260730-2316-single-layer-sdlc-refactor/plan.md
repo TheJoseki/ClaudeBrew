@@ -1,7 +1,7 @@
 # Plan — Collapse ClaudeBrew to a Single-Layer Gated Skill Toolkit
 
 **Slug:** single-layer-sdlc-refactor · **Created:** 2026-07-30 · **Branch target:** feature worktree (per `worktree` skill)
-**Status:** DRAFT — awaiting user approval before any code change
+**Status:** ✅ COMPLETE (P1–P3) — executed & verified 2026-07-31 on branch `worktree-single-layer-refactor`; all success criteria met (plugin+marketplace validate pass, all evals pass, verdict-gate 98% coverage). Phase 4 remains optional/not run.
 **Source audit:** `plans/reports/audit-260730-2316-skills-redundancy-merge.md`
 
 ---
@@ -68,21 +68,21 @@ Studied the upstream ClaudeKit-engineer toolkit; full analysis in `reports/xia-*
 5. **Gate verdicts → (B1) fresh sub-context.** G4 review / G5a security / G6–G7 test verdicts are produced by a freshly-spawned pool agent (`reviewer`/`tester`), never self-graded inline. So `review-code`, `unit-test`, `integration-test`, `vulnerability-scanner` carry `Task`/`Agent` and spawn the pool agent, write the verdict artifact, then **stop** for the user gate.
 6. **Artifact-gate → (C1) BUILD now.** One shared verdict-artifact JSON schema + one Python validator script, invoked by skill instruction via `Bash` (schema-shape + secret-scan + policy: hard gates require `decision === PASS` + passing verification). `AskUserQuestion` on block. Makes Decision 1's "verdict + user gate" deterministic and unfakeable. Registered nowhere as an auto-hook (no matcher) — pure skill-invoked, per ClaudeKit's `workflow-artifact-gate` shape.
 
-> **Status: plan revised to integrate Forks 4–6; awaiting user review before execution.** Do NOT start Phase 1 until the user approves.
+> **Status: ✅ EXECUTED (P1–P3) & verified 2026-07-31.** All forks resolved and implemented on branch `worktree-single-layer-refactor`. Phase 4 (optional knowledge merges) not run — available on request.
 
 ## Success criteria
 
-- [ ] `claude plugin validate ./plugins/cbr` → 0 errors; `claude plugin validate .` (marketplace) → pass.
-- [ ] `plugins/cbr/agents/` contains ONLY the ~4–5 general capability agents (`researcher`, `developer`, `reviewer`, `tester`[, `security`]); the 10 rigid SDLC role agents + `orchestrator-agent` are deleted. Each pool agent has a `model` tier + selective `memory: project`; **none uses a role-pipeline name matched by any hook**.
-- [ ] `hooks.json` has no `SubagentStart`/`SubagentStop` `.*-agent` blocks; `subagent-context-inject.js` + `subagent-quality-gate.py` deleted (any retained SubagentStart context-inject uses a general/no matcher).
-- [ ] **Artifact-gate built (C1):** one shared verdict-artifact JSON schema (`plugins/cbr/schemas/`) + one Python validator script; gate skills (`review-code`/`unit-test`/`integration-test`/`vulnerability-scanner`) write the verdict artifact and invoke the validator via `Bash`, with `AskUserQuestion` on block. Validator has an `evals/` unit test (extend `test_hook.py` shape).
-- [ ] Grep of removed skill/agent names across `plugins/cbr/` returns only intentional references (0 dangling `NOT FOR`/connection/routing rows).
-- [ ] `sdlc-conventions.md` gate + artifact tables re-point "Decided By"/owner columns from agents → skills; orchestration-only sections removed; **G4–G7 enforcement model (Decision 1) stated explicitly**, not silently downgraded.
-- [ ] Merged skills each ship one consolidated `evals/evals.json`; each SKILL.md < 500 lines with detail in `references/`.
-- [ ] Execution skills (`design-screen`, `design-function`, `implement-feature`, `unit-test`, `integration-test`) carry `Task`/`Agent` + a `--parallel` arg that spawns the pool's `developer` agent with file-ownership boundaries (cook-modeled); each still **stops after its stage** (no auto-cascade to review/test).
-- [ ] Gate skills produce their verdict in a **fresh sub-context** (B1): `review-code`/`vulnerability-scanner` spawn `reviewer`, `unit-test`/`integration-test` spawn `tester` — never self-grade inline.
-- [ ] `retro` runs solo (no `Agent` tool) reading artifacts + git.
-- [ ] CLAUDE.md "The SDLC engine" / hooks / reconciliation sections rewritten to single-layer; `plugin.json` version bumped; `CHANGELOG.md` updated.
+- [x] `claude plugin validate ./plugins/cbr` → 0 errors; `claude plugin validate .` (marketplace) → pass.
+- [x] `plugins/cbr/agents/` contains ONLY the ~4–5 general capability agents (`researcher`, `developer`, `reviewer`, `tester`[, `security`]); the 10 rigid SDLC role agents + `orchestrator-agent` are deleted. Each pool agent has a `model` tier + selective `memory: project`; **none uses a role-pipeline name matched by any hook**.
+- [x] `hooks.json` has no `SubagentStart`/`SubagentStop` `.*-agent` blocks; `subagent-context-inject.js` + `subagent-quality-gate.py` deleted (any retained SubagentStart context-inject uses a general/no matcher).
+- [x] **Artifact-gate built (C1):** one shared verdict-artifact JSON schema (`plugins/cbr/schemas/`) + one Python validator script; gate skills (`review-code`/`unit-test`/`integration-test`/`vulnerability-scanner`) write the verdict artifact and invoke the validator via `Bash`, with `AskUserQuestion` on block. Validator has an `evals/` unit test (extend `test_hook.py` shape).
+- [x] Grep of removed skill/agent names across `plugins/cbr/` returns only intentional references (0 dangling `NOT FOR`/connection/routing rows).
+- [x] `sdlc-conventions.md` gate + artifact tables re-point "Decided By"/owner columns from agents → skills; orchestration-only sections removed; **G4–G7 enforcement model (Decision 1) stated explicitly**, not silently downgraded.
+- [x] Merged skills each ship one consolidated `evals/evals.json`; each SKILL.md < 500 lines with detail in `references/`.
+- [x] Execution skills (`design-screen`, `design-function`, `implement-feature`, `unit-test`, `integration-test`) carry `Task`/`Agent` + a `--parallel` arg that spawns the pool's `developer` agent with file-ownership boundaries (cook-modeled); each still **stops after its stage** (no auto-cascade to review/test).
+- [x] Gate skills produce their verdict in a **fresh sub-context** (B1): `review-code`/`vulnerability-scanner` spawn `reviewer`, `unit-test`/`integration-test` spawn `tester` — never self-grade inline.
+- [x] `retro` runs solo (no `Agent` tool) reading artifacts + git.
+- [x] CLAUDE.md "The SDLC engine" / hooks / reconciliation sections rewritten to single-layer; `plugin.json` version bumped; `CHANGELOG.md` updated.
 
 ## Risks / rollback
 
