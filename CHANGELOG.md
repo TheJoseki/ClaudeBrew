@@ -16,8 +16,8 @@ Reconcile release: made the advertised "hard gates" real, ported hooks to Python
 - **Worktree gate is now OPT-IN** via `/cbr:setup` (registers `enforce-worktree.py` into the user's `settings.json`) instead of always-on — a plugin cannot ship harness settings, and always-on would hard-deny edits in every repo. Default = no gate.
 - Dropped the deprecated manual `context-inject` mandate (a SubagentStart hook auto-injects). Renamed remaining "ClaudeKit" → "ClaudeBrew"; removed shipped `.coverage` cruft.
 
-### Deferred (see `docs/BACKLOG-REGISTRY.md`)
-- Unify the artifact-path convention; author remaining skill evals; add quoted `TRIGGER:`/`NOT FOR:` guards to overlapping knowledge skills.
+### Consistency
+- Unified artifact-path to `docs/specs/<stage>/<TYPE>-<slug>.md` (brainstorms/worktrees/decisions folded into the authority table). Authored `evals/evals.json` for all 40 skills (was 2). Added quoted `TRIGGER:`/`NOT FOR:` guards to overlapping knowledge skills.
 
 ## [0.1.0] — 2026-05-26
 

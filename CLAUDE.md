@@ -85,11 +85,13 @@ The imported suite has been reconciled to ClaudeBrew's layout — `claude plugin
 - **Hooks ported to Python** (see the hooks paragraph above); the dead `pixel-status-update.js` calls were removed.
 - **`plugin.json` bumped `0.1.0` → `0.2.0`**; stray `.coverage` cruft removed.
 
-Remaining gaps (tracked in `docs/BACKLOG-REGISTRY.md`):
+Also resolved (P2 consistency, same reconcile):
 
-- **Two artifact-path conventions still coexist.** `brainstorming` writes `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`, `clean-code` writes `docs/decisions/`, and the imported suite writes `docs/specs/requirements/SRS-<feature>.md` etc. Not yet unified.
-- **Most skills lack evals.** Only `brainstorming` and `worktree` ship `evals/evals.json`; ~38 skills don't, so their trigger reliability is unverified.
-- **`TRIGGER:`/`NOT FOR:` guards pending** on overlapping knowledge skills (must keep the `description` scalar double-quoted).
+- **Artifact-path unified** to `docs/specs/<stage>/<TYPE>-<slug>.md` — `brainstorms/`, `worktrees/`, `decisions/` folded into the authority table; no date-based or `docs/decisions/` paths remain.
+- **All 40 skills ship `evals/evals.json`** (was 2), each 2 positive + 1 boundary case.
+- **`TRIGGER:`/`NOT FOR:` guards** added to the overlapping knowledge skills, `description` scalars kept double-quoted.
+
+No reconciliation gaps from the original audit remain open (see `docs/BACKLOG-REGISTRY.md`).
 
 ### Conventions inherited across the suite
 
