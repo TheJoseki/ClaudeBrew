@@ -63,8 +63,11 @@ def main():
 
     # AWS shared credentials — path-aware so a bare "credentials" basename elsewhere
     # is not a false positive.
-    if norm.endswith("/.aws/credentials"):
+    if norm.endswith("/.aws/credentials") or norm == ".aws/credentials":
         deny(f"protect-files: cannot {verb} AWS credentials file.")
+
+    if base in (".env.example", ".env.sample", ".env.template"):
+        sys.exit(0)  # non-secret env templates are committed and edited routinely
 
     if base in CRED_BASENAMES or base.startswith(".env") or base.endswith(CRED_EXTS):
         deny(f"protect-files: cannot {verb} sensitive/credential file: {base}")

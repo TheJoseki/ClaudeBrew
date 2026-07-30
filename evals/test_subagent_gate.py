@@ -30,6 +30,8 @@ def run(hook, payload, env=None):
 # (payload, expected returncode)
 GATE_CASES = [
     ({"agent_type": "general-purpose", "last_assistant_message": "all done"}, 0),           # non-SDLC -> allow
+    ({"agent_type": "cbr:developer-agent", "last_assistant_message": "finished the work"}, 2),  # namespaced -> still gated
+    ({"agent_type": "developer-agent", "last_assistant_message": "STATUS: DONE. Updated the profile page."}, 2),  # 'profile' != evidence
     ({"agent_type": "developer-agent", "last_assistant_message": "finished the work"}, 2),   # SDLC, no STATUS -> block
     ({"agent_type": "developer-agent", "last_assistant_message": "STATUS: DONE\nEVIDENCE: 3/3 tests pass"}, 0),
     ({"agent_type": "developer-agent", "last_assistant_message": "STATUS: DONE"}, 2),         # DONE, no evidence -> block

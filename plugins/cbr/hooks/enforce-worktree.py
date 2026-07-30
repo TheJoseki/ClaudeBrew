@@ -86,6 +86,8 @@ def main():
     rel = rel.replace("\\", "/")
     if rel.startswith("./"):
         rel = rel[2:]
+    if rel.startswith("../"):
+        sys.exit(0)  # file outside the repo -> not this repo's feature code -> allow
 
     if any(fnmatch.fnmatch(rel, pat) for pat in EXEMPT_GLOBS):
         sys.exit(0)  # SDLC artifact / harness config / docs -> allow

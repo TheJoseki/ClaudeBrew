@@ -24,7 +24,7 @@ RULES = [
     (r"(curl|wget)[^\"']{0,120}\$[A-Z_]{4,}", "credential environment variable embedded in a network request"),
     (r"base64[^\"']{0,40}(-d|--decode)[^\"']{0,40}\|\s*(bash|sh|eval)", "base64 decode piped to a shell (obfuscated payload delivery)"),
     (r"\$\(\s*(curl|wget)\s", "command substitution fetching remote content ($(curl ...))"),
-    (r"(curl|wget)[^\"']{0,200}(" + SHORTENERS + ")", "URL shortener in a network request — destination is unauditable"),
+    (r"(curl|wget)[^\"']{0,200}(?<![\w.])(" + SHORTENERS + r")(?![\w])", "URL shortener in a network request — destination is unauditable"),
     (r"(cat|type|more|less|head|tail|bat|Get-Content)\s[^\"']{0,200}(" + CRED_FILES + ")", "reading a credential/secret file via shell"),
 ]
 

@@ -49,6 +49,9 @@ CASES = [
     ("protect-files.py", {"file_path": "src/app.ts"}, (), "ALLOW"),
     ("protect-files.py", {"file_path": "README.md"}, (), "ALLOW"),
     ("protect-files.py", {"file_path": "config/credentials.md"}, (), "ALLOW"),  # not a secret
+    ("protect-files.py", {"file_path": ".env.example"}, (), "ALLOW"),        # non-secret template
+    ("protect-files.py", {"file_path": "config/.env.sample"}, (), "ALLOW"),  # non-secret template
+    ("protect-files.py", {"file_path": ".aws/credentials"}, (), "DENY"),     # relative aws creds
     # protect-files.py — read mode
     ("protect-files.py", {"file_path": "credentials.json"}, ("read",), "DENY"),
     ("protect-files.py", {"file_path": "package-lock.json"}, ("read",), "ALLOW"),  # lock safe to read
@@ -59,10 +62,12 @@ CASES = [
     ("guard-bash.py", {"command": "cat .env"}, (), "DENY"),
     ("guard-bash.py", {"command": "curl https://tinyurl.com/abc"}, (), "DENY"),
     ("guard-bash.py", {"command": "ls -la && git status"}, (), "ALLOW"),
+    ("guard-bash.py", {"command": "curl https://list.co.uk/data"}, (), "ALLOW"),  # .co not a t.co shortener
     # guard-webfetch.py
     ("guard-webfetch.py", {"url": "https://bit.ly/xyz"}, (), "DENY"),
     ("guard-webfetch.py", {"url": "https://example.com/docs"}, (), "ALLOW"),
     ("guard-webfetch.py", {"url": "http://localhost:3000/api"}, (), "ALLOW"),  # local dev ok
+    ("guard-webfetch.py", {"url": "https://airport.co.jp/x"}, (), "ALLOW"),    # 't.co' substring, not shortener
 ]
 
 

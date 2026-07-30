@@ -36,7 +36,7 @@ def main():
     if not url:
         sys.exit(0)
 
-    if re.search("(" + SHORTENERS + ")", url):
+    if re.search(r"(?<![\w.])(" + SHORTENERS + r")(?![\w])", url):
         deny(f"guard-webfetch: URL shortener detected ({url}) — destination is unauditable; use the full URL.")
 
     sys.exit(0)

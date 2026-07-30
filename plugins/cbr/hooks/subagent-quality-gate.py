@@ -40,7 +40,8 @@ def main():
     if data.get("stop_hook_active"):
         sys.exit(0)  # loop guard — already continuing from a prior block
 
-    agent_type = data.get("agent_type") or "unknown"
+    # Plugin agents may arrive namespaced (e.g. "cbr:developer-agent"); match bare name.
+    agent_type = (data.get("agent_type") or "unknown").split(":")[-1]
     if agent_type not in SDLC_AGENTS:
         sys.exit(0)  # only gate cbr SDLC role agents
 
@@ -49,7 +50,7 @@ def main():
     if re.search(r"STATUS:\s*(DONE|DONE_WITH_CONCERNS|BLOCKED|NEEDS_CONTEXT)", last_msg):
         # A bare DONE must carry evidence; the other statuses carry their own context.
         if re.search(r"STATUS:\s*DONE\b", last_msg):
-            if re.search(r"(EVIDENCE:|test.*pass|created|modified|verified|file|coverage)",
+            if re.search(r"(EVIDENCE:|\btests?\b.{0,20}\bpass|\bcreated\b|\bmodified\b|\bverified\b|\bcoverage\b)",
                          last_msg, re.IGNORECASE):
                 sys.exit(0)
             block([
