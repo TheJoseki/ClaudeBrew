@@ -73,7 +73,7 @@ $ARGUMENTS
 ## Optional: Decision Log
 
 If significant schema decisions were made this session, write a record to:
-`docs/decisions/database-design-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-database-design-[YYYYMMDD].md`
 
 ```markdown
 ## Database Design Decisions — [YYYYMMDD]

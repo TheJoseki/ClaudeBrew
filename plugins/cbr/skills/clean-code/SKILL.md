@@ -94,7 +94,7 @@ Rules:
 ## Optional: Decision Log
 
 If significant recommendations were made this session, write a brief decision record to:
-`docs/decisions/clean-code-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-clean-code-[YYYYMMDD].md`
 
 ```markdown
 ## Clean Code Review — [YYYYMMDD]

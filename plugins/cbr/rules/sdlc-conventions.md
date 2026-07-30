@@ -32,10 +32,13 @@ All agents write output to these paths. Never deviate without explicit project o
 
 | Agent | Artifact | Path Pattern |
 |-------|----------|-------------|
+| brainstorming skill | Brainstorm | `docs/specs/brainstorms/BRAINSTORM-[topic].md` |
+| worktree skill | Worktree handoff | `docs/specs/worktrees/WORKTREE-[topic].md` |
 | ba-agent | SRS | `docs/specs/requirements/SRS-[feature].md` |
 | ui-designer-agent | Screen Design | `docs/specs/requirements/SCREEN-[feature].md` |
 | architect-agent (BASIC_DESIGN) | Basic Design (BD書) | `docs/specs/basic-design/BASIC-[feature].md` |
 | architect-agent (DETAIL_DESIGN) | Detail Design (DD書) | `docs/specs/detail-design/TECH-[feature].md` |
+| knowledge skills | Decision record (ADR) | `docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md` |
 | architect-agent (DETAIL_DESIGN) | Coding Checklist | `docs/CODING-CHECKLIST.md` (project-level, created once per project) |
 | developer-agent | Work Log | `docs/work-logs/DEV-[feature]-[YYYYMMDD].md` |
 | architect-agent (DESIGN_REVIEW) | Design Review Report | `docs/reviews/DESIGN-REVIEW-[feature]-[YYYYMMDD].md` |

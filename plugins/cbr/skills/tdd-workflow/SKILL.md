@@ -82,7 +82,7 @@ Rules:
 ## Optional: Decision Log
 
 If TDD was applied to a significant new module or a problematic area this session, write a record to:
-`docs/decisions/tdd-workflow-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-tdd-workflow-[YYYYMMDD].md`
 
 ```markdown
 ## TDD Session — [YYYYMMDD]

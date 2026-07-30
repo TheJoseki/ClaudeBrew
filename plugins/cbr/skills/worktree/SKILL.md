@@ -133,7 +133,7 @@ proceeding to a half-isolated state.
 ### Phase 1 — Confirm the input artifact
 
 This skill consumes the approved brainstorm. Locate the most recent
-`docs/specs/YYYY-MM-DD-<topic>-brainstorm.md` and confirm its `Status: approved`.
+`docs/specs/brainstorms/BRAINSTORM-<topic>.md` and confirm its `Status: approved`.
 If there is no approved brainstorm, you are being invoked too early — say so and
 point back to the `brainstorming` stage rather than inventing scope here.
 
@@ -166,7 +166,7 @@ enter it with `EnterWorktree`'s `path` argument instead.)
 
 ### Phase 5 — Write the handoff artifact
 
-Inside the worktree, write `docs/specs/YYYY-MM-DD-<topic>-worktree.md` following
+Inside the worktree, write `docs/specs/worktrees/WORKTREE-<topic>.md` following
 `references/artifact-template.md`. It records the branch, worktree path, base
 ref, the source brainstorm spec, and the enforcement status — so the
 `requirement` stage can start from this file alone.

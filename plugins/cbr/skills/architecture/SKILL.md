@@ -98,7 +98,7 @@ New structural requirement
 ## Optional: Decision Log
 
 If significant architecture decisions were made this session, write an ADR to:
-`docs/decisions/architecture-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-architecture-[YYYYMMDD].md`
 
 ```markdown
 ## Architecture Decision — [YYYYMMDD]

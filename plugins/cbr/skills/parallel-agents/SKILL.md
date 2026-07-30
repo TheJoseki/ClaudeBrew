@@ -104,7 +104,7 @@ After both:
 
 ### Pattern 3: SDLC Feature Pipeline (Sequential)
 ```
-1. ba-agent → analyze requirements → docs/specs/REQ-[feature].md
+1. ba-agent → analyze requirements → docs/specs/requirements/SRS-[feature].md
 2. architect-agent → produce TECH spec → docs/specs/detail-design/TECH-[feature].md
 3. developer-agent → implement → backend/ + frontend/
 4. unit-test-agent → unit tests → docs/test-reports/UTR-[feature]-R1.md

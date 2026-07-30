@@ -6,7 +6,7 @@ honesty here directly determine downstream quality. Fill every section. If a
 section genuinely does not apply, write `Not applicable —` followed by the
 one-line reason; never leave it blank or as a placeholder.
 
-Write the file to `docs/specs/YYYY-MM-DD-<topic>-brainstorm.md`.
+Write the file to `docs/specs/brainstorms/BRAINSTORM-<topic>.md`.
 
 ## Template
 

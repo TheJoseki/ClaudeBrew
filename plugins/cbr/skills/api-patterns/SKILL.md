@@ -64,7 +64,7 @@ Before designing an API, answer:
 ## Optional: Decision Log
 
 If significant design decisions were made this session, write a record to:
-`docs/decisions/api-patterns-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-api-patterns-[YYYYMMDD].md`
 
 ```markdown
 ## API Design Decisions — [YYYYMMDD]

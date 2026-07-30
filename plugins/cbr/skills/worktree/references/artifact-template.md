@@ -1,6 +1,6 @@
 # Handoff artifact template — worktree stage
 
-Write to `docs/specs/YYYY-MM-DD-<topic>-worktree.md` (date = today; `<topic>` =
+Write to `docs/specs/worktrees/WORKTREE-<topic>.md` (`<topic>` =
 the same slug as the brainstorm). Write it **inside the worktree** (Phase 5), so
 it lives on the feature branch alongside the work it describes. It is the contract
 the `requirement` stage reads — that stage should be able to start from this file

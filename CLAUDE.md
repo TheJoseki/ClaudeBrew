@@ -96,7 +96,7 @@ Remaining gaps (tracked in `docs/BACKLOG-REGISTRY.md`):
 ClaudeBrew's house style, set by `brainstorming` (the reference implementation). Reconciled skills should follow these; the **imported suite still diverges on a few** — artifact paths especially (see "Reconciliation status" and `docs/BACKLOG-REGISTRY.md`):
 
 - **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`); once installed they namespace to `/cbr:<stage>`.
-- **Handoff artifacts** at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md` (in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
+- **Handoff artifacts** at `docs/specs/<stage>/<TYPE>-<slug>.md` (e.g. `brainstorms/BRAINSTORM-`, `worktrees/WORKTREE-`, `requirements/SRS-`, `detail-design/TECH-`; in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
 - **Hard gate + no auto-cascade**: a stage does no downstream work and does not invoke the next skill until its artifact is written and the user explicitly approves; then it **stops** so the user decides when the next stage begins. Cascading silently is a bug, not a feature.
 - **Never-guess at the strictest setting**: any uncertainty is surfaced, never silently assumed. Kept ergonomic by *batching* related uncertainties into pre-analyzed multiple-choice questions, not by relaxing the bar.
 - **Evidence-backed**: use Context7 for library/framework docs and WebSearch for patterns/prior art; cite every URL in the artifact.
