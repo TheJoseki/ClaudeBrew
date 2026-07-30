@@ -1,31 +1,14 @@
----
-name: ui-styling
-description: "UI implementation guide for shadcn/ui (Radix UI + Tailwind) and Tailwind CSS. Component patterns, dark mode, accessibility, responsive layouts, theme customization. TRIGGER: user asks to implement UI components, set up shadcn/ui, configure Tailwind theme, add dark mode, build responsive layouts, or style with utility classes. Works with any React-based framework (Next.js, Vite, Remix, Astro)."
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit
-metadata:
-  version: "3.1"
-  category: design
----
+# Implementation — shadcn/ui + Tailwind CSS
 
-# UI Styling — shadcn/ui + Tailwind CSS
+Turning tokens into shipped UI: shadcn/ui (Radix UI primitives) setup, component
+patterns, dark mode, responsive layout, theme customization, and accessibility
+rules.
 
-Implementation guide for building accessible, themeable UIs with shadcn/ui components and Tailwind CSS utility styling.
+**Applies to** React-based frameworks (Next.js, Vite, Remix, Astro).
 
-## When to Use
-
-- Building UI with React-based frameworks (Next.js, Vite, Remix, Astro)
-- Implementing accessible components (dialogs, forms, tables, navigation)
-- Styling with utility-first CSS
-- Creating responsive, mobile-first layouts
-- Implementing dark mode and theme customization
-- Building design systems with consistent tokens
-- Adding complex UI patterns (data tables, command palettes, dropdowns)
-
-## Skip When
-
-- Project uses Vue.js (use Vuetify/Nuxt UI patterns instead)
-- Project uses mobile-native stacks (React Native / Flutter)
-- Project uses non-Tailwind CSS (Bootstrap, plain CSS)
+**Skip when** the project uses Vue.js (use Vuetify/Nuxt UI patterns), a
+mobile-native stack (React Native / Flutter), or non-Tailwind CSS (Bootstrap,
+plain CSS).
 
 ---
 
@@ -37,7 +20,8 @@ Implementation guide for building accessible, themeable UIs with shadcn/ui compo
 | Styling | Tailwind CSS | Utility-first, design tokens |
 | Types | TypeScript | Full type safety |
 
-**shadcn/ui model:** Components are copied into your codebase (`components/ui/`), not imported from npm. You own the code.
+**shadcn/ui model:** Components are copied into your codebase
+(`components/ui/`), not imported from npm. You own the code.
 
 ---
 
@@ -49,7 +33,8 @@ Implementation guide for building accessible, themeable UIs with shadcn/ui compo
 npx shadcn@latest init
 ```
 
-CLI prompts for framework, TypeScript, paths, and theme. Configures both shadcn/ui and Tailwind.
+CLI prompts for framework, TypeScript, paths, and theme. Configures both
+shadcn/ui and Tailwind.
 
 ```bash
 # Add components
@@ -287,6 +272,9 @@ export default {
 }
 ```
 
+The `hsl(var(--token))` values come from the semantic layer in
+`references/tokens.md` — define tokens there first, wire them here.
+
 ---
 
 ## Accessibility Rules
@@ -362,7 +350,7 @@ className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ri
 
 1. **Composition over props** — Use `cn()` and slot pattern for component variants
 2. **Mobile-first** — Start with mobile styles, add responsive variants
-3. **Semantic tokens** — Never hardcode hex values; use CSS variables from design system
+3. **Semantic tokens** — Never hardcode hex values; use CSS variables from the token layer
 4. **Dark mode parity** — Every themed element needs a dark: variant
 5. **No dynamic class names** — Tailwind purges unknown classes; full class names only
 6. **TypeScript strict** — No `any` in component props; use proper TS types
@@ -379,9 +367,7 @@ const className = `bg-${color} text-${color}-foreground`
 
 ---
 
-## Reference Docs
-
-Deep-dive references are in `references/`:
+## Deeper implementation references
 
 | File | Content |
 |------|---------|
@@ -391,22 +377,13 @@ Deep-dive references are in `references/`:
 | `references/tailwind-utilities.md` | Comprehensive utility class reference: layout, spacing, typography, colors, borders, shadows |
 | `references/tailwind-responsive.md` | Mobile-first breakpoints, responsive patterns, container queries, max-width queries |
 | `references/tailwind-customization.md` | @theme directive, custom utilities, @apply, plugins, complete tailwind.config.ts example |
+| `references/canvas-design-system.md` | Canvas/poster visual design philosophy and composition (uses the bundled `canvas-fonts/`) |
 
-Utility scripts in `scripts/`:
+## Implementation scripts
 
 | File | Purpose |
 |------|---------|
 | `scripts/shadcn_add.py` | Programmatic shadcn/ui component installer with dependency handling |
 | `scripts/tailwind_config_gen.py` | Tailwind config generator with custom theme configuration |
 
----
-
-## Skill Connections
-
-| Direction | Skill | When |
-|-----------|-------|------|
-| After | `design-system` | Use token architecture defined in design-system |
-| After | `ui-ux-pro-max` | Apply style/color/font recommendations from design intelligence |
-| Consumed by | `implement-feature` | Frontend developer uses this as implementation reference |
-| Pairs with | `design-screen` | SCREEN spec defines components; this skill implements them |
-| On accessibility findings | `review-code` | Accessibility violations → flag in code review |
+Both have unit tests under `scripts/tests/`.

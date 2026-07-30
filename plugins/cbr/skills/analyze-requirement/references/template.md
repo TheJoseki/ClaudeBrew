@@ -4,7 +4,7 @@ Use this template when creating `docs/specs/requirements/SRS-[feature-name].md`.
 
 ```markdown
 # SRS: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: ba-agent | **Status**: DRAFT
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: analyze-requirement | **Status**: DRAFT
 
 ## 1. Description
 

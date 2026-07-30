@@ -1,10 +1,10 @@
 ---
-description: DAR (Decision Analysis and Resolution) protocol — structured evaluation for decisions with uncertainty. Produces DECISION-LEDGER entries. Always loaded alongside sdlc-conventions.md.
+description: DAR (Decision Analysis and Resolution) protocol — structured evaluation for decisions with uncertainty. Produces ADR records. Always loaded alongside sdlc-conventions.md.
 ---
 
 # DAR Evaluation Protocol — ClaudeBrew
 
-> Structured process for evaluating alternatives BEFORE making a decision. DECISION-LEDGER records WHAT was decided; DAR defines HOW to evaluate alternatives.
+> Structured process for evaluating alternatives BEFORE making a decision. An ADR records WHAT was decided; DAR defines HOW to evaluate the alternatives.
 
 ## 1. Trigger Conditions
 
@@ -32,7 +32,7 @@ For medium-impact decisions. Inline in the producing artifact (COUNCIL, TECH spe
 **Why not others**: A) [reason rejected] | C) [reason rejected]
 ```
 
-After completing → append 1 row to DECISION-LEDGER with `Source: DAR-QUICK`.
+After completing → record the outcome inline in the stage artifact, tagged `Source: DAR-QUICK`.
 
 ## 3. Full DAR (separate artifact)
 
@@ -77,7 +77,7 @@ For critical/irreversible decisions. Artifact path: `docs/dars/DAR-[feature]-[to
 | [risk-1] | [mitigation] |
 ```
 
-After completing → append row to DECISION-LEDGER with `Source: DAR-[feature]-[topic]`.
+After completing → write the ADR, tagged `Source: DAR-[feature]-[topic]`.
 
 ## 4. Standard Evaluation Criteria
 
@@ -97,17 +97,17 @@ Pick 3-5 relevant criteria per DAR. Weights MUST sum to 1.0.
 
 ## 5. Integration Rules
 
-- Full DAR → always creates 1 DECISION-LEDGER entry (status: ACTIVE)
-- Quick DAR → always creates 1 DECISION-LEDGER entry (Source: DAR-QUICK)
-- If DAR revisits a previous decision → mark old entry SUPERSEDED, new entry references old ID
-- Orchestrator: before Phase 4, verify all NEEDS RESOLUTION decisions have a DAR
+- Full DAR → always writes an ADR at `docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md`
+- Quick DAR → recorded inline in the stage artifact that raised it (SRS, TECH, work log)
+- If a DAR revisits a previous decision → mark the old ADR SUPERSEDED and reference its ID from the new one
+- Before implementation starts, verify every NEEDS RESOLUTION decision has a DAR
 - **"Why not" is mandatory** — every rejected option MUST have a recorded rationale
 
-## 6. Agent Responsibility
+## 6. Stage Responsibility
 
-| Agent | DAR Responsibility |
+| Stage | DAR Responsibility |
 |-------|-------------------|
-| architect-agent | Full DAR for architecture decisions in BASIC/DETAIL design |
-| ba-agent | Quick DAR for requirement ambiguity resolution |
-| orchestrator-agent | Full DAR for process/tooling decisions; triage NEEDS RESOLUTION entries |
-| developer-agent | Quick DAR for implementation approach choices during coding |
+| `design-function` | Full DAR for architecture decisions in the BASIC/DETAIL design |
+| `architecture` | Full DAR for cross-cutting/system-level decisions; writes the ADR |
+| `analyze-requirement` | Quick DAR for requirement ambiguity resolution |
+| `implement-feature` | Quick DAR for implementation approach choices during coding |

@@ -20,11 +20,11 @@ Date: [YYYY-MM-DD] | ITC: docs/test-cases/ITC-[feature].md
 | TC ID | Error | Severity |
 |-------|-------|---------|
 
-## Bug Reports (→ bug-fix-agent)
+## Bug Reports (→ fix-bug)
 | Bug ID | TC ID | Description | Steps | Expected | Actual | Severity |
 |--------|-------|-------------|-------|---------|--------|---------|
 
 ## Next
-- FAIL: bug-fix-agent fixes → re-run R[n+1]
-- R5 PASS: Notify orchestrator
+- FAIL: fix-bug fixes → re-run R[n+1]
+- R5 PASS: report to the user with the verdict artifact
 ```

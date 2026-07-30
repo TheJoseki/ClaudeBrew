@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "Add a CSV export button to the reports page.",
-      "expected_output": "Should route to implement-feature / full-sdlc, not fire, because this is net-new functionality, not a reported bug — fix-bug is NOT FOR new features, refactoring, or performance work.",
+      "expected_output": "Should route to implement-feature, not fire, because this is net-new functionality, not a reported bug — fix-bug is NOT FOR new features, refactoring, or performance work.",
       "files": []
     }
   ]

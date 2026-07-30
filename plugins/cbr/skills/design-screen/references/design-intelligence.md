@@ -1,6 +1,6 @@
-# Design Intelligence Reference — UI Designer Agent
+# Design Intelligence Reference
 
-> Reference for ui-designer-agent. Loaded on-demand during Step 1 design intelligence.
+> Reference for `design-screen`. Loaded on-demand during Step 1 design intelligence.
 
 ## Extract from SRS Input
 
@@ -9,27 +9,26 @@
 - **Style keywords** from project context: minimal / enterprise / modern / playful / dark
 - **Target audience**: internal users (enterprise) / end consumers (B2C) / mixed
 
-## Run ui-ux-pro-max Design System (MANDATORY)
+## Run the design-system search (MANDATORY)
 
 ```bash
-# Try install locations in order:
-python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "[product_type] [industry] [style_keywords]" --design-system -p "[Project Name]"
-# OR
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "[product_type] [industry] [style_keywords]" --design-system -p "[Project Name]"
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+  "[product_type] [industry] [style_keywords]" --design-system -p "[Project Name]"
 ```
 
-Example: `python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "admin dashboard hr management minimal enterprise" --design-system -p "HRM Portal"`
+Example: `python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "admin dashboard hr management minimal enterprise" --design-system -p "HRM Portal"`
 
 Outputs: color palette, typography pairing, component library recommendations, spacing system, icon style.
 
-**Additional domain searches** (if Python scripts available):
+**Additional domain searches:**
 ```bash
-python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "[product_type]" --domain ux
-python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "[style_keywords]" --domain typography
-python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "[product_type]" --domain color
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[product_type]" --domain ux
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[style_keywords]" --domain typography
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[product_type]" --domain color
 ```
 
-If Python unavailable → use `/ui-ux-pro-max` skill inline Quick Reference (Product Type → Style Guide table + 99 UX rules). Do NOT skip design intelligence.
+If Python is unavailable → use the `design-system` skill's Product Type → Style Guide
+fallback table in `references/ux-intelligence.md`. Do NOT skip design intelligence.
 
 ## Design System Fallback Table
 

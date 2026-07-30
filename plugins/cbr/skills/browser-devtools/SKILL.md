@@ -127,9 +127,9 @@ Produce a diagnostic block:
 | Calls → | `systematic-debugging` | Root cause unclear after DOM inspection |
 | Calls → | `context7` MCP | Framework-specific JS/CSS error detected (React, Vue, etc.) |
 | Calls → | `deepwiki` MCP | Custom library or project-specific error |
-| Calls → | `bug-fix-agent` | Root cause identified — needs code fix |
-| Called from | `integration-test-agent` | Test scenario fails visually — inspect actual browser state |
-| Called from | `bug-fix-agent` | Bug has UI component — need browser evidence first |
+| Calls → | `fix-bug` | Root cause identified — needs code fix |
+| Called from | `integration-test` | Test scenario fails visually — inspect actual browser state |
+| Called from | `fix-bug` | Bug has UI component — need browser evidence first |
 
 ## Checklist Before Done
 

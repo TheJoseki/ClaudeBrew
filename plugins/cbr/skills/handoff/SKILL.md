@@ -58,22 +58,21 @@ Glob and Read the following (skip if not found — note as missing):
 | UTC | `docs/test-cases/UTC-[feature].md` | |
 | ITC | `docs/test-cases/ITC-[feature].md` | |
 | Bug reports | `docs/bug-reports/BUG-*.md` | |
-| Agent flags | `docs/agent-comms/flags/FLAG-*-[feature].md` | |
+| Gate verdicts | `docs/reviews/VERDICT-[feature]-*.json` | |
 
-**Registry & Memory State (CAO context):**
+**Cross-cutting state:**
 
-| Registry/Memory | Path | Status |
-|-----------------|------|--------|
-| Plan Registry | `docs/plans/PLAN-REGISTRY.md` | |
-| Decision Ledger | `docs/plans/DECISION-LEDGER.md` | |
-| Backlog Registry | `docs/plans/BACKLOG-REGISTRY.md` | |
-| Project Memory | `docs/memory/PROJECT-MEMORY.md` | |
-| Agent Memory | `.claude/agent-memory/*/MEMORY.md` | |
+| Source | Path | Status |
+|--------|------|--------|
+| Plan | `docs/plans/PLAN-[feature]-*.md` | |
+| Decision records | `docs/specs/decisions/ADR-*.md` | |
+| Risk register | `docs/risks/RISK-*.md` (or the PLAN's Risk Register section) | |
+| Agent memory | `.claude/agent-memory/*/MEMORY.md` | |
 
-Read each if they exist. Extract:
-- Active/Suspended plans from PLAN-REGISTRY
-- CONTESTED or NEEDS RESOLUTION decisions from DECISION-LEDGER
-- HIGH priority OPEN items from BACKLOG-REGISTRY
+Read each if it exists. Extract:
+- The active plan's open phases and their done conditions
+- SUPERSEDED or unresolved decisions from the ADRs
+- OPEN HIGH/CRITICAL risks from the risk register
 
 ---
 
@@ -161,36 +160,35 @@ File: `docs/handoffs/HANDOFF-[feature]-[YYYYMMDD].md`
 
 ---
 
-## CAO Registry State
+## Cross-Cutting State
 
 ### Active Plans
-<!-- From PLAN-REGISTRY.md — list all ACTIVE and SUSPENDED plans -->
+<!-- From docs/plans/PLAN-*.md — list plans with unfinished phases -->
 | Plan | Type | Status | Phase |
 |------|------|--------|-------|
 
 ### Unresolved Decisions
-<!-- From DECISION-LEDGER.md — only CONTESTED and NEEDS RESOLUTION -->
+<!-- From docs/specs/decisions/ADR-*.md — only open or superseded-pending -->
 | ID | Domain | Decision | Status |
 |----|--------|----------|--------|
 
-### Open Backlog (HIGH priority)
-<!-- From BACKLOG-REGISTRY.md — only HIGH + OPEN -->
-| ID | Type | Description | Target |
-|----|------|-------------|--------|
+### Open Risks (HIGH priority)
+<!-- From the risk register — only HIGH/CRITICAL + OPEN -->
+| ID | Category | Risk | Response |
+|----|----------|------|----------|
 
 ---
 
 ## Resume Instructions
 
 ```
-@orchestrator-agent Resume feature [feature-name]
+Next stage: /cbr:[stage-skill] [feature-name]
 Plan file: docs/plans/PLAN-[feature]-[date].md
-Continue from phase with status ⏳ PENDING
+Resume at the first phase still marked ⏳ PENDING.
 
-Context: See docs/handoffs/HANDOFF-[feature]-[date].md for full state summary.
-Open issues: [count] — see Open Issues table above.
-CAO Context: Registries (PLAN-REGISTRY, DECISION-LEDGER, BACKLOG-REGISTRY) contain
-accumulated context. Context-injector will auto-retrieve relevant entries at agent spawn.
+Context: See docs/handoffs/HANDOFF-[feature]-[date].md for the full state summary.
+Open issues: [count] — see the Open Issues table above.
+Last gate passed: [G-n]. The user starts the next stage; nothing cascades on its own.
 ```
 
 ---
@@ -207,7 +205,7 @@ accumulated context. Context-injector will auto-retrieve relevant entries at age
 | Direction | Skill | When |
 |-----------|-------|------|
 | Prerequisite | Any in-progress skill | Complete or checkpoint current work before creating handoff |
-| On resume | `orchestrate` | Use handoff as context when resuming session |
+| On resume | The stage skill named in Resume Instructions | Read the handoff first, then start that stage |
 | Related | `plan-writing` | PLAN file is the primary input for handoff state assessment |
 | Related | `retro` | After delivery: use retro instead of handoff for formal review |
 

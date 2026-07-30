@@ -1,7 +1,8 @@
 ---
 name: integration-test
 description: "Integration Test agent tests E2E workflows, key business workflows, and role-based access for any project. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run integration/E2E tests, test API workflows, test browser flows. NOT FOR: unit tests (use unit-test), or code review."
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, Agent, AskUserQuestion
+argument-hint: "[feature name] [--parallel]"
 metadata:
   version: "3.1"
   category: core-sdlc
@@ -21,18 +22,21 @@ Do NOT hardcode framework assumptions.
 | Section | When to read |
 | --- | --- |
 | Step 0 | Always — detect test framework first |
-| Mode A: Create ITC | When called in Phase 4c (parallel with developer) |
-| Mode B: Execute | When called in Phase 7 (after unit tests PASS) |
+| Mode A: Create ITC | When writing test cases (supports `--parallel`) |
+| Mode B: Execute | When running the suite as the G7 gate |
+| Parallel mode | Mode A only, when invoked with `--parallel` |
 
 ## Determine Operating Mode
 
-**Mode A (CREATE)**: Parallel with developer-agent (Phase 4c)
+**Mode A (CREATE)** — author the test cases
 - Input: TECH spec + SRS
 - Output: `docs/test-cases/ITC-[feature].md`
+- This is execution work; it may run `--parallel`.
 
-**Mode B (EXECUTE R[n])**: After Code Review PASS (Phase 7)
+**Mode B (EXECUTE R[n])** — the **G7 quality gate**
 - Input: `docs/test-cases/ITC-[feature].md`
-- Output: `docs/test-reports/ITR-[feature]-R[n].md`
+- Output: `docs/test-reports/ITR-[feature]-R[n].md` + the G7 verdict artifact
+- Run by a freshly spawned `cbr:tester`, never graded here — see Mode B below.
 - **Precondition**: Grep for `docs/test-cases/ITC-[feature].md` before proceeding.
   If NOT FOUND → STOP: "ITC not found. Run `/integration-test` Mode A first to create the test cases."
 
@@ -59,13 +63,36 @@ File: `docs/test-cases/ITC-[feature].md`
 - Admin-only routes: non-admin → 403
 - Soft delete: deleted records do not appear in listings
 
+### Parallel mode (`--parallel`) — Mode A only
+
+**Default is single-stream.** With `--parallel`, when the feature has several
+independent workflows or endpoint chains, spawn N `cbr:developer` subagents in
+one message — one workflow per worker, each owning only its own test/script
+files — then merge their cases into the single ITC document here. Shared
+fixtures, seed data and auth setup stay in this context: they are the files
+every worker would otherwise collide on.
+
+Workers are always `cbr:developer`. **Never spawn `cbr:tester` as a parallel
+worker** — it is reserved for the Mode B gate, where its value is that it did
+not author what it runs.
+
+> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+
+Mode A ends at the ITC document. It does **not** roll on into Mode B — the user
+decides when the gate runs.
+
 ---
 
-## Mode B: Execute Round R[n]
+## Mode B: Execute Round R[n] — the G7 gate (fresh eyes)
 
-### Commands
+**Do not run the suite and grade it yourself.** A freshly spawned `cbr:tester`
+executes the tests and writes the verdict; this skill owns the criteria and the
+user gate, not the judgment.
 
-Run commands from PROJECT.md Build Commands section. Typical examples:
+### The criteria this skill owns (hand these to the tester)
+
+Test commands come from PROJECT.md's Build Commands section — never assume a
+framework. Typical shapes:
 
 ```bash
 # Backend integration / E2E tests
@@ -75,20 +102,62 @@ cd backend && [backend E2E test command] --verbose
 cd frontend && [E2E test command] --reporter=list
 ```
 
-Adapt syntax to the detected test framework from PROJECT.md:
 - [HTTP integration test library] (e.g. Supertest, httpx, RestAssured — per PROJECT.md)
 - [E2E test framework] (e.g. Playwright, Cypress, Selenium — per PROJECT.md)
 
-### ITR Document (MUST CREATE after each round)
+Round gates — pass rate required at each round:
 
-File: `docs/test-reports/ITR-[feature]-R[n].md`
-
-> **Template**: See [`references/itr-template.md`](references/itr-template.md) for the full ITR document template.
-
-### Round Gates
 | R1 | R2 | R3 | R4 | R5 |
 |----|----|----|----|----|
 | Baseline | ≥70% | ≥90% | ≥95% | 100% GATE |
+
+G7 covers both the API integration suite and, where the project has a UI, the
+critical-journey E2E suite. Run against a production-equivalent database, and
+require 100% of BASIC workflows plus the TECH API contracts to be covered
+(Workflow-API Matrix). E2E browser coverage is **N/A for backend-only projects**
+— say so explicitly rather than passing it silently.
+
+### Step 1 — Spawn one `cbr:tester`
+
+Single `Agent` call, Mode EXECUTE, with a prompt carrying:
+
+- **Scope**: `docs/test-cases/ITC-[feature].md` + the workflows under test.
+- **Commands**: the PROJECT.md test commands above (tell it to detect, not assume).
+- **Round**: which R[n] this is, and the pass-rate bar for that round.
+- **Outputs**, both mandatory:
+  - Test report → `docs/test-reports/ITR-[feature]-R[n].md`
+    (template: [`references/itr-template.md`](references/itr-template.md))
+  - Verdict artifact → `docs/test-reports/VERDICT-[feature]-G7.json`, conforming
+    to `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
+    `producedBy: "cbr:tester"` and **`gate: "G7"` exactly** — the API/E2E split
+    is reported inside the ITR, never as a `G7a`/`G7b` gate value, which the
+    validator rejects.
+- **Evidence requirement**: `verification` MUST hold the actual command(s) run
+  and their result — G7 blocks without at least one `result: "pass"` entry.
+  Summarize output; never paste raw dumps or secrets into the artifact.
+- `decision: PASS` only when the targeted suite is fully green at this round's bar.
+
+### Step 2 — Validate
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G7 --artifact docs/test-reports/VERDICT-[feature]-G7.json
+```
+
+Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no
+passing verification entry**, leaked secret, or malformed artifact). Fails
+**closed** — an unrun suite cannot pass.
+
+### Step 3 — Gate the user in, then stop
+
+- **Exit 0** → report PASS with the command(s) run, pass rate, and which suites
+  ran vs were N/A, then **stop**.
+- **Exit 2, or `decision: FAIL`** → `AskUserQuestion` presenting the blocking
+  reason and each failing workflow, with options along the lines of: *fix now
+  via `/fix-bug`* · *re-run this round after manual fixes* · *accept and proceed
+  anyway* · *stop here*.
+
+**Stop either way.** No automatic fix-loop and no self-triggered next round —
+the user re-invokes `/fix-bug` and then this skill for R[n+1].
 
 ## Verification
 
@@ -104,8 +173,11 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 
 **Expected outputs:**
 - Artifact (Mode A): `docs/test-cases/ITC-[feature].md`
-- Artifact (Mode B): `docs/test-reports/ITR-[feature]-R[n].md`
-- Quality gate: All key business workflows covered; R5 = 100% pass rate
+- Artifacts (Mode B, written by the spawned `cbr:tester`):
+  `docs/test-reports/ITR-[feature]-R[n].md` and
+  `docs/test-reports/VERDICT-[feature]-G7.json`
+- Quality gate: G7 — all key business workflows covered, R5 = 100% pass rate,
+  `verdict-gate.py --gate G7` run with its exit code reported
 
 ---
 
@@ -117,5 +189,4 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 | Parallel with | `unit-test` | Mode A — both created concurrently; unit tests execute first |
 | After Mode A | `run-tests` | Mode B — execute the ITC document just created |
 | On FAIL (Mode B) | `fix-bug` | Fix integration test failures |
-| Called from | `full-sdlc` | Phase 4c (Mode A) and Phase 7 (Mode B) |
-| Related | `api-patterns` | For REST API test patterns and endpoint chain design |
+| Related | `architecture` | For REST API test patterns and endpoint chain design |

@@ -1,6 +1,6 @@
 # Mode C — Browser Live Testing (Chrome DevTools MCP)
 
-> Reference for integration-test-agent. Loaded on-demand when executing Mode C.
+> Reference for integration-test. Loaded on-demand when executing Mode C.
 
 ## When to Use
 
@@ -59,7 +59,7 @@ File: `docs/test-reports/ITR-[feature]-browser-R[n].md`
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
-**Author**: integration-test-agent
+**Author**: integration-test
 **Tool**: Playwright MCP (mcp__playwright__*)
 **Mode**: C — Browser Live (interactive MCP tool calls)
 **App URL**: [base url]
@@ -80,11 +80,11 @@ File: `docs/test-reports/ITR-[feature]-browser-R[n].md`
 | TC-ID | Failure Step | Browser State | Screenshot | Action |
 |-------|-------------|---------------|-----------|--------|
 
-## Bug Reports (for bug-fix-agent)
+## Bug Reports (for fix-bug)
 | Bug ID | TC ID | Description | Steps to Reproduce | Expected | Actual | Severity |
 |--------|-------|-------------|-------------------|---------|--------|---------|
 
 ## Next Action
-- FAIL → bug-fix-agent fixes bugs → re-run R[n+1]
-- R5 PASS → Notify orchestrator: Integration Tests 100% PASS
+- FAIL → fix-bug fixes bugs → re-run R[n+1]
+- R5 PASS → report to the user with the verdict artifact: Integration Tests 100% PASS
 ```

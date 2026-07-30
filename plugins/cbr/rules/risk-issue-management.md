@@ -1,22 +1,22 @@
 ---
-description: Proactive risk management and corrective action (CAR) for materialized issues. Complements FLAG system (reactive blockers) with forward-looking risk identification.
+description: Proactive risk management and corrective action (CAR) for materialized issues. Adds forward-looking risk identification to the reactive handling of blockers at each gate.
 ---
 
 # Risk & Issue Management — ClaudeBrew
 
-> Proactive risk identification + structured corrective action when issues materialize. FLAG system handles urgent blockers; this rule handles systematic risk tracking and root-cause resolution.
+> Proactive risk identification + structured corrective action when issues materialize. Urgent blockers go straight to the user; this rule handles systematic risk tracking and root-cause resolution.
 
 ## 1. Risk Assessment Timing
 
 | Trigger | Who | Action |
 |---------|-----|--------|
-| Project start (Step 0) | orchestrator-agent | Initial risk register in PLAN file |
-| Each phase transition | orchestrator-agent | Review + update risk register |
-| Scope change or new requirement | ba-agent | Add new risks |
-| New technology introduced | architect-agent | Add technical risks |
-| 3-Strike escalation triggered | any agent | Add issue + CAR |
-| Gate FAIL (≥2 times same gate) | orchestrator-agent | Assess if systemic → CAR |
-| Security scan findings | security-tester-agent | Add security risks |
+| Project start (Step 0) | `plan-writing` | Initial risk register in PLAN file |
+| Each stage gate | the stage skill | Review + update risk register before asking for approval |
+| Scope change or new requirement | `analyze-requirement` | Add new risks |
+| New technology introduced | `design-function` / `architecture` | Add technical risks |
+| 3-Strike escalation triggered | any stage | Add issue + CAR |
+| Gate FAIL (≥2 times same gate) | user, at the gate | Assess if systemic → CAR |
+| Security scan findings | `vulnerability-scanner` | Add security risks |
 
 ## 2. Risk Register Format
 
@@ -41,7 +41,7 @@ For EPIC plans: separate file at `docs/risks/RISK-[epic-name].md`.
 |-------|-------|----------------|
 | 1–4 | LOW | Accept — monitor only |
 | 5–9 | MEDIUM | Mitigate — define specific action in plan |
-| 10–15 | HIGH | Mitigate + FLAG to orchestrator |
+| 10–15 | HIGH | Mitigate + raise to the user immediately |
 | 16–25 | CRITICAL | Avoid or Transfer — escalate to user immediately |
 
 ### Risk Categories
@@ -101,23 +101,23 @@ For EPIC plans: separate file at `docs/risks/RISK-[epic-name].md`.
 ## Verification
 - [ ] Corrective action completed
 - [ ] Affected gate re-passed
-- [ ] Preventive action documented in PROJECT-MEMORY / BACKLOG / rule update
+- [ ] Preventive action documented in the CAR, the risk register, or a rule update
 ```
 
 ## 4. Integration Rules
 
-- HIGH/CRITICAL risks (score ≥10) → also write FLAG to `docs/agent-comms/flags/`
-- Risk materializes → update status to OCCURRED, create CAR, add BACKLOG entry (type: RISK)
-- CAR preventive actions → append to BACKLOG-REGISTRY (type: PROCESS, source: CAR-[ref])
-- Orchestrator at phase transition: review risk register, update scores, close resolved risks
+- HIGH/CRITICAL risks (score ≥10) → raise to the user immediately, do not wait for the gate
+- Risk materializes → update status to OCCURRED and create a CAR
+- CAR preventive actions → recorded in the CAR and surfaced to the user at the next gate
+- At each stage gate: review risk register, update scores, close resolved risks
 - Risk register review is MANDATORY at Step 0 for all plans (not just Medium+ complexity)
 
-## 5. Agent Responsibility
+## 5. Stage Responsibility
 
-| Agent | Risk Responsibility |
+| Stage | Risk Responsibility |
 |-------|-------------------|
-| orchestrator-agent | Maintain risk register in PLAN, review at transitions, create CARs for gate failures |
-| architect-agent | Identify technical risks during BASIC/DETAIL design |
-| developer-agent | Report emerged risks during implementation (→ FLAG + register update) |
-| unit-test / integration-test | Report quality risks when coverage gaps found |
-| security-tester-agent | Report security risks from scan findings |
+| `plan-writing` | Maintain risk register in PLAN, review it at each gate, create CARs for gate failures |
+| `design-function` / `architecture` | Identify technical risks during BASIC/DETAIL design |
+| `implement-feature` | Report risks that emerge during implementation (→ register update + raise at the gate) |
+| `unit-test` / `integration-test` | Report quality risks when coverage gaps found |
+| `vulnerability-scanner` | Report security risks from scan findings |

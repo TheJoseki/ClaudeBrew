@@ -21,7 +21,7 @@ Agents cannot directly measure token count, but can estimate based on activity:
 
 | Activity | Approximate Tokens |
 |----------|-------------------|
-| Agent body + rules (baseline) | ~90K |
+| Session baseline (rules + skill body) | ~90K |
 | Each file read (avg) | ~2-5K |
 | Each file written/edited | ~1-3K |
 | Spec document (TECH/BASIC) | ~5-15K |
@@ -45,14 +45,11 @@ Agents cannot directly measure token count, but can estimate based on activity:
 
 | Protocol | How This Rule Applies |
 |----------|----------------------|
-| **PARTIAL return** (developer-agent) | DEGRADING/POOR tier → return PARTIAL instead of rushing to finish |
-| **Layer-by-layer writing** (unit-test-agent) | GOOD tier → mandatory checkpoint after each layer |
-| **Workflow-by-workflow** (integration-test-agent) | GOOD tier → mandatory checkpoint after each workflow |
-| **Input Pruning** (TIGHT batches) | DEGRADING tier → auto-apply pruning even for SAFE batches |
-| **3-Strike Rule** | If 2 strikes occurred in DEGRADING tier → likely context-related, not logic-related |
+| **PARTIAL return** | DEGRADING/POOR tier → return PARTIAL with remaining scope listed, instead of rushing to finish |
+| **Incremental test writing** | GOOD tier → checkpoint after each layer (unit) or each workflow (integration) |
+| **3-Strike Rule** (`coding-standards.md`) | If 2 strikes occurred in DEGRADING tier → likely context-related, not logic-related |
 
-## Agent Responsibility
+## Responsibility
 
-- **All agents**: Monitor tier, write checkpoints per thresholds above
-- **Orchestrator**: When reading PARTIAL work-logs, check tier field to understand why agent stopped
-- **Developer-agent**: In TIGHT batches, start in GOOD tier (baseline already ~140K) — extra vigilance needed
+- Monitor tier and write checkpoints per the thresholds above — in the main session and in any spawned subagent.
+- A PARTIAL result with an accurate tier field is more useful than a complete-looking result produced past the POOR threshold.

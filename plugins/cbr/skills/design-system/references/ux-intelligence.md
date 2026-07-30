@@ -1,19 +1,19 @@
+# UX Intelligence — Rules, Database, and Style Selection
+
+Design intelligence for web and mobile: the full UX rule set by priority
+category, the searchable database (67+ styles, 161 color palettes, 57 font
+pairings, 161 product types, 99 UX guidelines, 25 chart types across 10
+technology stacks), the product-type style guide, AI anti-patterns, and the
+pre-delivery checklist.
+
+The 10 priority categories are summarized in `SKILL.md`; the rules for each are
+below.
+
 ---
-name: ui-ux-pro-max
-description: "UI/UX design intelligence for web and mobile. 99 UX guidelines, 67 styles, 161 color palettes, 57 font pairings, 161 product types with reasoning rules, 25 chart types. TRIGGER: user asks to design UI, choose style/color/font, review UX, check accessibility, plan interaction patterns. Works standalone (inline Quick Reference) or with Python scripts for full database search."
-allowed-tools: Read, Grep, Glob, Write, Edit
-metadata:
-  version: "3.1"
-  category: design
----
 
-# UI/UX Pro Max — Design Intelligence
+## When to apply
 
-Comprehensive design guide for web and mobile applications. Contains 67+ styles, 161 color palettes, 57 font pairings, 161 product types with reasoning rules, 99 UX guidelines, and 25 chart types across 10 technology stacks.
-
-## When to Apply
-
-**Must Use:**
+**Must use:**
 - Designing new pages (Landing Page, Dashboard, Admin, SaaS, Mobile App)
 - Creating or refactoring UI components (buttons, modals, forms, tables, charts)
 - Choosing color schemes, typography systems, spacing standards, or layout systems
@@ -28,31 +28,14 @@ Comprehensive design guide for web and mobile applications. Contains 67+ styles,
 - Aligning cross-platform design (Web / iOS / Android)
 - Building design systems or reusable component libraries
 
-**Skip:**
-- Pure backend logic, API/database design, infrastructure, DevOps work
+**Skip:** pure backend logic, API/database design, infrastructure, DevOps work.
 
-**Decision criteria**: If the task will change how a feature **looks, feels, moves, or is interacted with**, use this skill.
-
----
-
-## Rule Categories by Priority
-
-| Priority | Category | Impact | Key Checks (Must Have) | Anti-Patterns (Avoid) |
-|----------|----------|--------|------------------------|------------------------|
-| 1 | Accessibility | CRITICAL | Contrast 4.5:1, Alt text, Keyboard nav, Aria-labels | Removing focus rings, Icon-only buttons without labels |
-| 2 | Touch & Interaction | CRITICAL | Min size 44×44px, 8px+ spacing, Loading feedback | Reliance on hover only, Instant state changes (0ms) |
-| 3 | Performance | HIGH | WebP/AVIF, Lazy loading, Reserve space (CLS < 0.1) | Layout thrashing, Cumulative Layout Shift |
-| 4 | Style Selection | HIGH | Match product type, Consistency, SVG icons (no emoji) | Mixing flat & skeuomorphic randomly, Emoji as icons |
-| 5 | Layout & Responsive | HIGH | Mobile-first breakpoints, Viewport meta, No horizontal scroll | Horizontal scroll, Fixed px container widths |
-| 6 | Typography & Color | MEDIUM | Base 16px, Line-height 1.5, Semantic color tokens | Text < 12px body, Gray-on-gray, Raw hex in components |
-| 7 | Animation | MEDIUM | Duration 150–300ms, Motion conveys meaning | Decorative-only animation, Animating width/height |
-| 8 | Forms & Feedback | MEDIUM | Visible labels, Error near field, Progressive disclosure | Placeholder-only label, Errors only at top |
-| 9 | Navigation Patterns | HIGH | Predictable back, Bottom nav ≤5, Deep linking | Overloaded nav, Broken back behavior |
-| 10 | Charts & Data | LOW | Legends, Tooltips, Accessible colors | Relying on color alone to convey meaning |
+**Decision criteria:** if the task will change how a feature **looks, feels,
+moves, or is interacted with**, these rules apply.
 
 ---
 
-## Quick Reference
+## The rules
 
 ### 1. Accessibility (CRITICAL)
 
@@ -195,23 +178,15 @@ Comprehensive design guide for web and mobile applications. Contains 67+ styles,
 
 ---
 
-## Design System Generator (with Python scripts)
+## Design System Generator (bundled Python scripts)
 
-If Python is available and ui-ux-pro-max scripts are installed:
+The database and its BM25 search engine ship with this skill — no install step.
+Scripts resolve `data/` relative to themselves, so run them from any directory.
 
 ```bash
-# Check available install locations
-# Option 1: installed globally via uipro-cli
-python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system -p "Project Name"
-
-# Option 2: pixel-agents shared location
-python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system -p "Project Name"
-```
-
-**Install via uipro-cli:**
-```bash
-npm install -g uipro-cli
-uipro init --ai claude
+# Full design-system recommendation for a product
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+  "<product_type> <industry> <keywords>" --design-system -p "Project Name"
 ```
 
 **What `--design-system` outputs:**
@@ -224,15 +199,42 @@ uipro init --ai claude
 
 **Domain searches:**
 ```bash
-python3 search.py "<keyword>" --domain <domain>
-# Domains: product | style | color | typography | chart | ux | landing | google-fonts
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<keyword>" --domain <domain>
+# Domains: style | color | chart | landing | product | ux | typography | icons |
+#          react | web | google-fonts
 ```
 
-**If Python unavailable:** Use the Quick Reference sections above directly — they contain all UX rules inline and work without scripts.
+**Stack-specific guidelines:**
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<keyword>" --stack react-native
+```
+
+**Persisting a design system** (Master + Overrides pattern):
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<query>" \
+  --design-system --persist -p "Project Name" [--page "dashboard"]
+```
+Writes `design-system/<project-slug>/MASTER.md` as the global source of truth,
+plus optional per-page override files under `pages/`. When building a page,
+check its override file first; it wins over MASTER.md.
+
+Add `--json` for machine-readable output, `-n` to change the result count
+(default 3).
+
+**If Python is unavailable:** use the rule sections above and the fallback style
+guide below — they contain the guidance inline and work without scripts.
+
+### Database files
+
+`data/` holds the CSV corpus the scripts search: `styles.csv`, `colors.csv`,
+`typography.csv`, `google-fonts.csv`, `products.csv`, `landing.csv`,
+`ux-guidelines.csv`, `charts.csv`, `icons.csv`, `react-performance.csv`,
+`app-interface.csv`, `ui-reasoning.csv` (the reasoning rules behind
+`--design-system`), and `stacks/react-native.csv`.
 
 ---
 
-## Product Type → Style Guide (Fallback Reference)
+## Product Type → Style Guide (fallback reference)
 
 | Product Type | Recommended Style | Color Mood | Typography Mood |
 |-------------|------------------|------------|-----------------|
@@ -290,16 +292,3 @@ python3 search.py "<keyword>" --domain <domain>
 - [ ] Semantic color tokens used (no hardcoded hex in components)
 - [ ] Both light and dark modes tested
 - [ ] Body text ≥ 16px on mobile
-
----
-
-## Skill Connections
-
-| Direction | Skill | When |
-|-----------|-------|------|
-| Before `design-screen` | This skill | Always — run design intelligence before wireframing |
-| After this | `design-screen` | Apply style/color/font recommendations to wireframes |
-| After this | `ui-styling` | For shadcn/ui + Tailwind implementation guidance |
-| Pairs with | `design-system` | Derive token architecture from design system output |
-| Called by | `ui-designer-agent` | Step 1 — mandatory design intelligence step |
-| Called from | `full-sdlc` | Phase 2 — UI design phase, before screen spec |

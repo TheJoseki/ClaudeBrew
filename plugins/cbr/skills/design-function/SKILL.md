@@ -1,8 +1,8 @@
 ---
 name: design-function
 description: "System Architect designs ORM schema, API endpoints, and technical spec for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design API endpoints, ORM schema, or technical architecture for a feature. NOT FOR: writing actual code (use implement-feature)."
-allowed-tools: Read, Grep, Glob, Write, Edit
-argument-hint: "[feature name]"
+allowed-tools: Read, Grep, Glob, Write, Edit, Task, Agent
+argument-hint: "[feature name] [--parallel]"
 metadata:
   version: "3.1"
   category: core-sdlc
@@ -23,8 +23,10 @@ Do NOT hardcode framework assumptions.
 | Section | When to read |
 | --- | --- |
 | Step 0 | Always — detect tech stack first |
-| Step 1: Design | Always — core design work |
-| Step 2: TECH File | Always — mandatory output artifact |
+| Parallel mode | Only when invoked with `--parallel` |
+| Step 1.5: Basic Design | Always — high-level structure + G3a checkpoint |
+| Step 2: Design | Always — core detailed design work |
+| Step 3: TECH File | Always — mandatory output artifact |
 | Checklist | Before marking done |
 
 ## Step 1: Read Input (MANDATORY)
@@ -35,6 +37,35 @@ Do NOT hardcode framework assumptions.
 - `docs/API_DESIGN.md` — Existing endpoints for reference (if exists)
 - Input SRS: `docs/specs/requirements/SRS-[feature].md`
 - Input SCREEN: `docs/specs/requirements/SCREEN-[feature].md` (if exists)
+
+## Parallel mode (`--parallel`)
+
+**Default is single-stream** — design the whole feature in this context.
+
+When invoked with `--parallel` and the SRS covers several **independent bounded
+contexts / service boundaries**, spawn N `cbr:developer` subagents in one
+message — one context per worker, each owning only its own spec fragment — then
+merge the fragments into the single TECH spec here. Do **not** split the design
+chain itself (schema → service → controller feeds forward; it is a chain, not a
+fan-out), and keep cross-cutting decisions — shared entities, the API prefix,
+auth strategy — in this context so workers cannot contradict each other.
+
+> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+> — when to split, disjoint file ownership, the hard File Ownership Rules to
+> restate in every spawn prompt, and how to synthesize.
+
+Parallel or not, this skill **stops after Step 3**. It never spawns
+`implement-feature` — the user starts the next stage.
+
+## Step 1.5: Basic Design → BASIC file (G3a)
+
+Produce the high-level **structure first** — a cheap checkpoint before detailing:
+- Module structure (files/components to create)
+- DB table list (entities + key relations — names only, not full schema)
+- API endpoint list (method + route — signatures come in Step 2)
+
+File: `docs/specs/basic-design/BASIC-[feature-name].md` (template: [`references/basic-design-template.md`](references/basic-design-template.md)).
+**Stop for G3a user approval** before Step 2 — approving the structure cheaply avoids reworking a full detailed spec. (This is a checkpoint within this skill, not a hand-off; the skill still stops after Step 3 for the user to start the next stage.)
 
 ## Step 2: Design
 
@@ -83,5 +114,5 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 - "Design the UI screens for user management" (use design-screen)
 
 **Expected outputs:**
-- Artifact: `docs/specs/detail-design/TECH-[feature].md`
+- Artifacts: `docs/specs/basic-design/BASIC-[feature].md` (G3a) + `docs/specs/detail-design/TECH-[feature].md` (G3b)
 - Quality gate: All endpoints have auth guards, DTOs, and pagination; N+1 addressed

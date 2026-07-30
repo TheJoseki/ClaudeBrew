@@ -1,8 +1,8 @@
 ---
 name: design-screen
 description: "UI/UX Designer designs screen layout, wireframes, and UI component spec for any project. UI library detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design UI screens, create wireframes, specify components for a feature. NOT FOR: implementing frontend code (use implement-feature)."
-allowed-tools: Read, Grep, Glob, Write, Edit
-argument-hint: "[feature name]"
+allowed-tools: Read, Grep, Glob, Write, Edit, Task, Agent
+argument-hint: "[feature name] [--parallel]"
 metadata:
   version: "3.1"
   category: core-sdlc
@@ -25,6 +25,7 @@ Do NOT hardcode framework assumptions (UI library, component names, routing conv
 | Step 0 | Always — detect UI library and framework first |
 | Step 1: Read Input | Always — mandatory before designing |
 | Step 1b: Design Intelligence | Always — run before wireframing |
+| Parallel mode | Only when invoked with `--parallel` |
 | Step 2: Design | Always — core design work |
 | Step 3: SCREEN File | Always — mandatory output artifact |
 | Checklist | Before marking done |
@@ -40,7 +41,7 @@ Do NOT hardcode framework assumptions (UI library, component names, routing conv
 
 ## Step 1b: Design Intelligence (MANDATORY — run before wireframing)
 
-> **Invoke**: `/ui-ux-pro-max` — get style/color/typography recommendations before wireframing.
+> **Invoke**: `design-system` — get style/color/typography recommendations before wireframing.
 
 Extract from the SRS input:
 - **Product type**: dashboard / admin / consumer app / landing / mobile app / ...
@@ -48,17 +49,35 @@ Extract from the SRS input:
 - **Style keywords**: minimal / enterprise / modern / playful / dark / ...
 - **Target audience**: internal B2B / end consumers B2C / mixed
 
-Then apply `/ui-ux-pro-max` to get:
+Then apply `design-system` to get:
 - Recommended style direction and color palette
 - Typography pairing
 - Anti-patterns to avoid for this product type
 - UX priority rules (Priority 1–5: Accessibility, Touch, Performance, Style, Layout)
 
-**Fallback** (no scripts available): Use the Product Type → Style Guide table in the `/ui-ux-pro-max` Quick Reference.
+**Fallback** (no scripts available): Use the `design-system` skill's Product Type → Style Guide table in `references/ux-intelligence.md`.
 
 > **Do NOT produce**: Bento grid, Aurora/mesh gradients, neon on dark, glassmorphism everywhere, emoji icons, inconsistent spacing.
 
 Apply the design system output as the foundation for all wireframes in Step 2.
+
+## Parallel mode (`--parallel`)
+
+**Default is single-stream** — design every screen in this context.
+
+When invoked with `--parallel` and the feature has several **independent**
+screens, spawn N `cbr:developer` subagents in one message — one screen (or
+screen group) per worker, each owning only its own wireframe/asset files — then
+synthesize the slices into the single SCREEN spec here. The design-system
+decisions from Step 1b are shared context passed to every worker, so the screens
+stay visually consistent; a worker never re-picks the palette or typography.
+
+> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+> — when to split, disjoint file ownership, the hard File Ownership Rules to
+> restate in every spawn prompt, and how to synthesize.
+
+Parallel or not, this skill **stops after Step 3**. It never spawns
+`implement-feature` — the user starts the next stage.
 
 ## Step 2: Design
 
@@ -125,11 +144,9 @@ File: `docs/specs/requirements/SCREEN-[feature-name].md`
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Before this | `ui-ux-pro-max` | Always — run design intelligence first (Step 1b) |
+| Before this | `design-system` | Always — run design intelligence (style, color, typography) first (Step 1b) |
 | Before this | `analyze-requirement` | SRS does not exist yet — analyze requirements first |
-| After this | `design-system` | Establish token architecture from selected colors/fonts |
-| After this | `implement-feature` | Pass SCREEN spec to developer for implementation |
-| After this | `ui-styling` | Developer needs shadcn/ui + Tailwind patterns for implementation |
-| After this | `get_guidelines("code")` (Pencil MCP) | Developer needs Pencil code-gen guidelines (if Pencil path) |
-| Called from | `full-sdlc` | Phase 2 — UI design, invoked by ui-designer-agent |
+| After this | `design-system` | Token architecture from the selected colors/fonts, plus shadcn/ui + Tailwind implementation patterns |
+| After this | `implement-feature` | Pass the SCREEN spec on for implementation |
+| After this | `get_guidelines("code")` (Pencil MCP) | Pencil code-gen guidelines needed (if Pencil path) |
 | Pairs with | `design-function` | Parallel: SCREEN spec + TECH spec created together |

@@ -36,7 +36,7 @@ Do NOT hardcode project-specific domain assumptions.
 - `docs/CODING_RULES.md` — domain rules (if exists)
 - `docs/TEST_VIEWPOINT.md` — test scenarios to align AC (if exists)
 - `design/` or `specs/` — source design files (if exists)
-- Input plan file from orchestrator (if provided)
+- Input plan file `docs/plans/PLAN-[feature]-*.md` (if one exists)
 
 ## Step 2: Analyze
 
@@ -89,5 +89,3 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 | On success | `design-screen` | After G1 — design UI screens for the feature |
 | On success | `design-function` | After G1 — design API endpoints and ORM schema |
 | On FAIL (scope unclear) | `brainstorming` | Revisit and scope requirements before retrying |
-| Called from | `full-sdlc` | Phase 1 (Requirements, G1 gate) |
-| Called from | `orchestrate` | As Phase 1 delegate when task requires SRS |

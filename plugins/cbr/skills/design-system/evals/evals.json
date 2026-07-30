@@ -1,23 +1,23 @@
 {
   "skill_name": "design-system",
-  "notes": "Design-token architecture skill: three-layer tokens (primitive -> semantic -> component), CSS variables, Tailwind theme, component state specs, dark mode. Evaluate by checking it produces the layered token system and theming infra; positives should fire, the palette/style-selection boundary should route to ui-ux-pro-max (design intelligence, not token architecture).",
+  "notes": "design-system is the merged UI authority (absorbed the former ui-ux-pro-max and ui-styling skills). It spans three tracks: Decide (style/color/font selection, UX + accessibility review, backed by the bundled CSV database and BM25 search scripts), Define (three-layer token architecture, CSS variables, dark-mode theming, component state specs), and Build (shadcn/ui + Tailwind implementation, React-only). Evals cover one Decide-track positive, one Define+Build-track positive, and the genuine non-fire boundary. Note the merge INVERTED the old design-system boundary case: style/palette/typography selection now belongs to this skill and must fire. A secondary partial boundary not covered below: for Vue / React Native / Flutter the Decide track still applies but the shadcn/Tailwind Build guidance must be withheld.",
   "evals": [
     {
       "id": 1,
-      "prompt": "Set up a three-layer design token system with CSS variables and a Tailwind theme for our app.",
-      "expected_output": "Produces primitive -> semantic -> component token layers as CSS variables (no raw hex in components), an 8pt spacing scale and typography scale, a tailwind.config mapping tokens, and light/dark theming via [data-theme] overrides. Avoids inverting colors for dark mode.",
+      "prompt": "Help me choose a style, color palette, and font pairing for a healthcare patient dashboard.",
+      "expected_output": "Fires and works the Decide track. Uses the product-type style guide (healthcare: clean/accessible, soft teal + white, Lato/Source Sans) or the bundled scripts (search.py --design-system) to recommend a style, a WCAG-compliant palette expressed as semantic tokens, and a heading/body font pairing — verifying 4.5:1 contrast in both light and dark mode, designing the light/dark variants together, and steering clear of the AI anti-patterns (mesh/aurora gradients, glassmorphism-everywhere, bento grids, emoji as icons). Must NOT defer this to another skill.",
       "files": []
     },
     {
       "id": 2,
-      "prompt": "Define the component state specs and dark-mode tokens for our button and input components.",
-      "expected_output": "Specifies per-component state tokens (default/hover/active/focus/disabled/error/success) for button and input, focus-ring spec, and purpose-mapped dark-mode overrides tested for 4.5:1 contrast in both themes. References component-tokens.md / states-and-variants.md.",
+      "prompt": "Set up a three-layer design token system with CSS variables for our Next.js app, then wire it into the Tailwind theme and add dark mode with shadcn/ui.",
+      "expected_output": "Fires and chains the Define and Build tracks. Produces primitive -> semantic -> component token layers as CSS variables (no raw hex in components), an 8pt spacing scale and typography scale, a tailwind.config mapping tokens via hsl(var(--token)) with darkMode class, and dark mode via a next-themes ThemeProvider plus toggle — using purpose-mapped dark values rather than inverted colors, pairing every themed element with a dark: variant, and testing contrast independently in both modes. Routes detail to tokens.md and implementation.md instead of inlining everything.",
       "files": []
     },
     {
       "id": 3,
-      "prompt": "What color palette and font pairing should I choose for our new healthcare dashboard?",
-      "expected_output": "Should route to ui-ux-pro-max / not fire, because this is design-intelligence style/color/typography selection, not token-architecture or CSS-variable work.",
+      "prompt": "Design the database schema and REST API for our orders service.",
+      "expected_output": "Should not fire. Pure backend logic, API design, and database schema work are explicitly out of scope — nothing here changes how a feature looks, feels, moves, or is interacted with, which is this skill's decision criterion.",
       "files": []
     }
   ]

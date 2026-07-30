@@ -26,8 +26,8 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Write SRS with user stories (checkout, invoice, refund) | ba-agent | ✅ |
-| Define acceptance criteria for FR-PAY-01 through FR-PAY-08 | ba-agent | ✅ |
+| Write SRS with user stories (checkout, invoice, refund) | `analyze-requirement` | ✅ |
+| Define acceptance criteria for FR-PAY-01 through FR-PAY-08 | `analyze-requirement` | ✅ |
 | User review + approval | User | ✅ |
 
 ---
@@ -39,9 +39,9 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Checkout page: cart summary, payment form, order confirmation | ui-designer-agent | ✅ |
-| Invoice PDF template design | ui-designer-agent | ✅ |
-| Error states: card declined, network error, 3DS redirect | ui-designer-agent | ✅ |
+| Checkout page: cart summary, payment form, order confirmation | `design-screen` | ✅ |
+| Invoice PDF template design | `design-screen` | ✅ |
+| Error states: card declined, network error, 3DS redirect | `design-screen` | ✅ |
 
 ---
 
@@ -52,9 +52,9 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Module structure: PaymentModule, InvoiceModule, WebhookModule | architect-agent | ✅ |
-| DB tables: payments, invoices, payment_methods | architect-agent | ✅ |
-| API endpoints: POST /payments, GET /invoices/:id, POST /webhooks/stripe | architect-agent | ✅ |
+| Module structure: PaymentModule, InvoiceModule, WebhookModule | `design-function` | ✅ |
+| DB tables: payments, invoices, payment_methods | `design-function` | ✅ |
+| API endpoints: POST /payments, GET /invoices/:id, POST /webhooks/stripe | `design-function` | ✅ |
 
 ---
 
@@ -65,10 +65,10 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| ORM entities: Payment, Invoice, PaymentMethod | architect-agent | ✅ |
-| Service design: PaymentService.createIntent(), confirmPayment(), refund() | architect-agent | ✅ |
-| Stripe webhook signature verification flow | architect-agent | ✅ |
-| DTO validation: CreatePaymentDto, ConfirmPaymentDto | architect-agent | ✅ |
+| ORM entities: Payment, Invoice, PaymentMethod | `design-function` | ✅ |
+| Service design: PaymentService.createIntent(), confirmPayment(), refund() | `design-function` | ✅ |
+| Stripe webhook signature verification flow | `design-function` | ✅ |
+| DTO validation: CreatePaymentDto, ConfirmPaymentDto | `design-function` | ✅ |
 
 ---
 
@@ -78,11 +78,12 @@
 
 ---
 
-### Phase 4 — Implementation (agents spawned concurrently)
+### Phase 4 — Implementation
 **Status**: ⏳ IN PROGRESS
-**Spawn**: developer-agent + unit-test-agent + integration-test-agent (concurrent)
+**Stages**: `implement-feature` (`--parallel`), then `unit-test` (Mode A) and
+`integration-test` (Mode A) — each its own gated stage, started by the user.
 
-#### developer-agent tasks:
+#### `implement-feature` tasks:
 | # | Task | File | Status |
 |---|------|------|--------|
 | 4.1 | Payment entity + migration | `src/payment/payment.entity.ts` | ✅ |
@@ -95,12 +96,12 @@
 | 4.8 | Checkout FE component | `src/components/Checkout.vue` | ⏳ |
 | 4.9 | Payment store (Pinia) | `src/stores/payment.ts` | ⏳ |
 
-#### unit-test-agent (Mode A):
+#### `unit-test` (Mode A):
 | Task | Output | Status |
 |------|--------|--------|
 | UTC document for PaymentService + InvoiceService | `docs/test-cases/UTC-payment-processing.md` | ⏳ |
 
-#### integration-test-agent (Mode A):
+#### `integration-test` (Mode A):
 | Task | Output | Status |
 |------|--------|--------|
 | ITC document for /payments + /invoices + /webhooks/stripe | `docs/test-cases/ITC-payment-processing.md` | ⏳ |
@@ -143,15 +144,15 @@
 |---|------|-------------|-------|
 | 1 | Decision | PDF generation library — pdfkit vs puppeteer? | Architect |
 | 2 | Config | STRIPE_SECRET_KEY env var needs CI/CD secret | DevOps |
-| 3 | Risk | Webhook replay attack window — need idempotency key | developer-agent |
+| 3 | Risk | Webhook replay attack window — need idempotency key | `implement-feature` |
 
 ---
 
 ## Resume
 
 ```
-@orchestrator-agent Resume feature payment-processing
+Next stage: /cbr:implement-feature payment-processing
 Plan file: docs/plans/PLAN-payment-processing-20260320.md
-Continue from Phase 4 (Implementation) — status ⏳ IN PROGRESS
-developer-agent: continue from task 4.4 (confirmPayment)
+Resume at Phase 4 (Implementation) — status ⏳ IN PROGRESS
+Continue from task 4.4 (confirmPayment)
 ```

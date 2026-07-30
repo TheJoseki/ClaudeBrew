@@ -1,6 +1,6 @@
 {
   "skill_name": "plan-writing",
-  "notes": "Implementation-planning skill: turns scope into a short, specific phase/task table with verifiable done conditions, explicit dependencies, and optional multi-agent assignments; saves docs/plans/PLAN-[feature]-[YYYYMMDD].md. Evaluate that positives produce an actionable plan; the end-to-end delivery boundary should route to full-sdlc.",
+  "notes": "Implementation-planning skill: turns scope into a short, specific phase/task table with verifiable done conditions, explicit dependencies, and optional per-stage assignments; saves docs/plans/PLAN-[feature]-[YYYYMMDD].md. Evaluate that positives produce an actionable plan; the end-to-end delivery boundary should not fire, since delivery is a sequence of separately gated stages rather than one skill.",
   "evals": [
     {
       "id": 1,
@@ -11,13 +11,13 @@
     {
       "id": 2,
       "prompt": "Create a multi-agent execution plan for building the dashboard, with parallel agent assignments.",
-      "expected_output": "Produces a plan with the multi-agent extension: phase/task rows assigned to developer-agent / unit-test-agent / integration-test-agent, marking which phases run in parallel (launched in one message) vs sequenced by dependency, plus done conditions. Saved to docs/plans/PLAN-dashboard-[YYYYMMDD].md.",
+      "expected_output": "Produces a plan with the parallel-execution extension: phase/task rows assigned to the owning stage skills (implement-feature, unit-test Mode A, integration-test Mode A), noting that implement-feature --parallel fans out to cbr:developer workers, and marking which phases are independent vs sequenced by dependency, plus done conditions. Saved to docs/plans/PLAN-dashboard-[YYYYMMDD].md.",
       "files": []
     },
     {
       "id": 3,
       "prompt": "Take the login feature from requirements all the way through design, implementation, and tests end to end.",
-      "expected_output": "Should route to full-sdlc / not fire, because this asks for end-to-end feature delivery across all SDLC stages, not just writing the implementation plan artifact.",
+      "expected_output": "Should not fire, because this asks for end-to-end feature delivery across all SDLC stages, not just writing the implementation plan artifact. Correct response is to name the stage sequence (analyze-requirement, then design-screen/design-function, then implement-feature, then unit-test/integration-test) and start at the first one — each stage gates on user approval, so nothing runs the whole chain.",
       "files": []
     }
   ]

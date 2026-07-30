@@ -64,11 +64,11 @@ When estimating full feature lifecycle (not just implementation):
 
 | Trigger | Who Estimates | Output |
 |---------|--------------|--------|
-| New feature request | orchestrator (via `/estimate`) | `docs/estimates/EST-[feature]-[YYYYMMDD].md` |
-| Scope change during development | orchestrator | Update existing EST |
-| EPIC decomposition into WAVEs | orchestrator | EST per WAVE |
-| Sprint planning | orchestrator | Sprint capacity check |
-| 3-Strike escalation | affected agent | Re-estimate remaining work |
+| New feature request | `estimate` | `docs/estimates/EST-[feature]-[YYYYMMDD].md` |
+| Scope change during development | `estimate` | Update existing EST |
+| EPIC decomposition into WAVEs | `estimate` | EST per WAVE |
+| Sprint planning | `estimate` | Sprint capacity check |
+| 3-Strike escalation | the stage that stalled | Re-estimate remaining work |
 
 ## 7. Re-estimation Triggers
 
@@ -108,7 +108,7 @@ Format in PLAN WBS table — add `Depends On` column:
 
 ## 10. Estimation Accuracy Tracking
 
-After feature delivery (G8 pass), orchestrator MUST record:
+After feature delivery (G8 pass), `estimate` MUST record:
 
 ```markdown
 ## Estimation Accuracy (append to EST-[feature].md)
@@ -119,4 +119,4 @@ After feature delivery (G8 pass), orchestrator MUST record:
 | Rework rounds | X | X | — |
 ```
 
-Feed variance into `docs/memory/PROJECT-MEMORY.md` for calibrating future estimates.
+Feed variance back into the next `docs/estimates/EST-*.md` for calibrating future estimates.

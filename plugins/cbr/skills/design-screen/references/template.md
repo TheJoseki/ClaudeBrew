@@ -4,10 +4,10 @@ Use this template when creating `docs/specs/requirements/SCREEN-[feature-name].m
 
 ```markdown
 # Screen Design: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: ui-designer-agent
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: design-screen
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **UI Library**: [detected from PROJECT.md]
-**Design Style**: [selected from ui-ux-pro-max output]
+**Design Style**: [selected from design-system output]
 **Design Tool**: [Figma MCP / Pencil Dev / SVG fallback]
 **Pencil File**: [docs/specs/pencil/SCREEN-[feature].pen — or N/A]
 
@@ -89,7 +89,7 @@ ViewName.[ext]
 |--------|----------------|----------|---------|
 | [SCR-XX] [Name] | https://figma.com/design/[fileKey]/[name]?node-id=[nodeId] | [fileKey] | [nodeId] |
 
-<!-- Figma MCP tools for developer-agent:
+<!-- Figma MCP tools for implement-feature:
      get_design_context(fileKey, nodeId) → component structure + reference code + screenshot
      get_variable_defs(fileKey, nodeId)  → design tokens (colors, spacing, typography)
      get_screenshot(fileKey, nodeId)     → rendered screenshot for reference
@@ -107,7 +107,7 @@ ViewName.[ext]
 | [SCR-XX] [Name] Loading | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](pencil/exports/[frameId].png) |
 | [SCR-XX] [Name] Mobile  | [frameId] | [frame name] | 390x844  | [exports/[frameId].png](pencil/exports/[frameId].png) |
 
-<!-- Pencil MCP tools for developer-agent:
+<!-- Pencil MCP tools for implement-feature:
      batch_get(filePath, nodeIds, readDepth:3) → full node tree with layout/styles/component refs
      get_variables(filePath)                   → all design tokens with theme values
      get_screenshot(filePath, nodeId)          → visual reference screenshot

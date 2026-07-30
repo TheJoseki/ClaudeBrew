@@ -1,6 +1,6 @@
 {
   "skill_name": "implement-feature",
-  "notes": "Fires only when a TECH spec already exists (precondition gate). Boundary case tests the no-spec path routing to full-sdlc; bug reports route to fix-bug.",
+  "notes": "Fires only when a TECH spec already exists (precondition gate). Boundary case tests the no-spec path routing to design-function; bug reports route to fix-bug.",
   "evals": [
     {
       "id": 1,
@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "Add a dark-mode toggle to the settings page.",
-      "expected_output": "Should route to full-sdlc / not fire, because there is no existing TECH spec — implement-feature's precondition gate stops when docs/specs/detail-design/TECH-*.md is not found and directs the user to design-function/full-sdlc first.",
+      "expected_output": "Should not fire, because there is no existing TECH spec — implement-feature's precondition gate stops when docs/specs/detail-design/TECH-*.md is not found and directs the user to run design-function first.",
       "files": []
     }
   ]

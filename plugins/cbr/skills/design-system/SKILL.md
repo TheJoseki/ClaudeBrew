@@ -1,315 +1,148 @@
 ---
 name: design-system
-description: "Design token architecture — three-layer token system (Primitive → Semantic → Component), CSS variables, Tailwind theme configuration, and component state specs. TRIGGER: user asks to create design tokens, establish a design system, set up CSS variables, configure Tailwind theme, or define component variants. Pairs with ui-ux-pro-max (design intelligence) and ui-styling (implementation)."
-allowed-tools: Read, Grep, Glob, Write, Edit
+description: "Design system authority for web and mobile — UX intelligence, design tokens, and shadcn/Tailwind implementation in one skill. Covers style, color-palette and font-pairing selection from a bundled searchable database (67+ styles, 161 palettes, 57 font pairings, 161 product types, 99 UX guidelines, 25 chart types), three-layer token architecture (Primitive → Semantic → Component), CSS variables, Tailwind theme configuration, component state specs, dark mode, and shadcn/ui component patterns. TRIGGER: user asks to design a UI, choose a style, color palette or font pairing, review UX or accessibility, plan interaction patterns, create design tokens, establish a design system, set up CSS variables, configure a Tailwind theme, define component variants, implement UI components, set up shadcn/ui, add dark mode, or build responsive layouts. NOT FOR: pure backend logic, API or database design, infrastructure or DevOps work. The shadcn/Tailwind implementation half is React-only — skip it for Vue, React Native, or Flutter stacks."
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
-  version: "3.1"
+  version: "4.0"
   category: design
 ---
 
-# Design System — Token Architecture
+# Design System — UX Intelligence, Tokens, Implementation
 
-Token architecture, component specifications, and CSS variable systems for consistent, themeable UIs.
+The single authority for how a product **looks, feels, moves, and is interacted
+with**. Three tracks, one skill:
 
-## When to Use
+1. **Decide** — what style, palette, and typography this product should have,
+   and which UX rules govern it.
+2. **Define** — encode those decisions as a layered token system so they are
+   reusable and themeable.
+3. **Build** — implement the tokens as accessible shadcn/ui + Tailwind components.
 
-- Creating or auditing design token systems
-- Setting up CSS variable architecture for a project
-- Configuring Tailwind theme with custom tokens
-- Defining component state specs (hover, active, disabled, error)
-- Design-to-code handoff documentation
-- Establishing light/dark mode theming infrastructure
+**Decision criteria:** if the task changes how a feature looks, feels, moves, or
+is interacted with, this skill applies.
 
----
-
-## Three-Layer Token Architecture
-
-```
-Primitive (raw values)
-       ↓
-Semantic (purpose aliases)
-       ↓
-Component (component-specific)
-```
-
-**Why 3 layers:**
-- **Primitive** = raw values, changed rarely (brand palette)
-- **Semantic** = purpose mapping, enables theme switching
-- **Component** = component-specific overrides, enables per-component customization
-
-### Example
-
-```css
-/* Layer 1: Primitive */
---color-blue-50:  #EFF6FF;
---color-blue-600: #2563EB;
---color-blue-700: #1D4ED8;
-
-/* Layer 2: Semantic */
---color-primary:          var(--color-blue-600);
---color-primary-hover:    var(--color-blue-700);
---color-surface:          #FFFFFF;
---color-surface-muted:    var(--color-gray-50);
---color-text-primary:     var(--color-gray-900);
---color-text-muted:       var(--color-gray-500);
---color-error:            var(--color-red-600);
---color-success:          var(--color-green-600);
---color-border:           var(--color-gray-200);
-
-/* Layer 3: Component */
---button-bg:              var(--color-primary);
---button-bg-hover:        var(--color-primary-hover);
---button-text:            #FFFFFF;
---input-border:           var(--color-border);
---input-border-focus:     var(--color-primary);
---card-bg:                var(--color-surface);
---card-border:            var(--color-border);
-```
+**Skip for** pure backend logic, API/database design, infrastructure, and DevOps
+work. The *Build* track additionally assumes a React-based framework (Next.js,
+Vite, Remix, Astro) — for Vue, React Native, or Flutter, the *Decide* track still
+applies but the shadcn/Tailwind guidance does not.
 
 ---
 
-## Spacing Scale (8pt Grid)
+## Pick your track
 
-```css
---space-1:  4px;    /* tight */
---space-2:  8px;    /* compact */
---space-3:  12px;
---space-4:  16px;   /* default */
---space-5:  20px;
---space-6:  24px;   /* section */
---space-8:  32px;
---space-10: 40px;
---space-12: 48px;   /* large section */
---space-16: 64px;
---space-20: 80px;   /* page section */
-```
+| You need to… | Go to | Contains |
+|---|---|---|
+| Choose a style, palette, or font pairing; review UX/accessibility; plan interactions, layout, navigation, charts | `references/ux-intelligence.md` | Full rule set per category, the searchable database + scripts, product-type style guide, AI anti-patterns, pre-delivery checklist |
+| Create design tokens, set up CSS variables, define component states, wire a Tailwind theme, add dark-mode theming | `references/tokens.md` | Three-layer architecture, spacing/typography scales, dark-mode pattern, state specs, token file formats, SCREEN-spec token section |
+| Install shadcn/ui, build components, forms, dialogs, tables; make layouts responsive; ship dark mode | `references/implementation.md` | Setup, component patterns, next-themes dark mode, breakpoints, theme customization, accessibility rules, component catalog |
+
+**Normal order is Decide → Define → Build.** Style and palette choices feed the
+primitive/semantic token layers; those tokens feed the Tailwind theme. Jumping
+straight to Build with no tokens is how hardcoded hex values get shipped.
 
 ---
 
-## Typography Scale
+## Quick Reference — rule categories by priority
 
-```css
---text-xs:   12px;
---text-sm:   14px;
---text-base: 16px;   /* body default */
---text-lg:   18px;
---text-xl:   20px;
---text-2xl:  24px;
---text-3xl:  30px;
---text-4xl:  36px;
---text-5xl:  48px;
+| Priority | Category | Impact | Key Checks (Must Have) | Anti-Patterns (Avoid) |
+|----------|----------|--------|------------------------|------------------------|
+| 1 | Accessibility | CRITICAL | Contrast 4.5:1, Alt text, Keyboard nav, Aria-labels | Removing focus rings, Icon-only buttons without labels |
+| 2 | Touch & Interaction | CRITICAL | Min size 44×44px, 8px+ spacing, Loading feedback | Reliance on hover only, Instant state changes (0ms) |
+| 3 | Performance | HIGH | WebP/AVIF, Lazy loading, Reserve space (CLS < 0.1) | Layout thrashing, Cumulative Layout Shift |
+| 4 | Style Selection | HIGH | Match product type, Consistency, SVG icons (no emoji) | Mixing flat & skeuomorphic randomly, Emoji as icons |
+| 5 | Layout & Responsive | HIGH | Mobile-first breakpoints, Viewport meta, No horizontal scroll | Horizontal scroll, Fixed px container widths |
+| 6 | Typography & Color | MEDIUM | Base 16px, Line-height 1.5, Semantic color tokens | Text < 12px body, Gray-on-gray, Raw hex in components |
+| 7 | Animation | MEDIUM | Duration 150–300ms, Motion conveys meaning | Decorative-only animation, Animating width/height |
+| 8 | Forms & Feedback | MEDIUM | Visible labels, Error near field, Progressive disclosure | Placeholder-only label, Errors only at top |
+| 9 | Navigation Patterns | HIGH | Predictable back, Bottom nav ≤5, Deep linking | Overloaded nav, Broken back behavior |
+| 10 | Charts & Data | LOW | Legends, Tooltips, Accessible colors | Relying on color alone to convey meaning |
 
-/* Line heights */
---leading-tight:   1.25;
---leading-normal:  1.5;   /* body */
---leading-relaxed: 1.75;
-
-/* Font weights */
---font-normal:   400;
---font-medium:   500;
---font-semibold: 600;
---font-bold:     700;
-```
+The individual rules under each category are in `references/ux-intelligence.md`.
 
 ---
 
-## Dark Mode Token Pattern
+## The design database
 
-```css
-:root {
-  --color-surface:    #FFFFFF;
-  --color-text:       #111827;
-  --color-border:     #E5E7EB;
-  --color-muted:      #F9FAFB;
-}
+A BM25 search engine over the full corpus ships with this skill — no install
+step. Scripts resolve `data/` relative to themselves, so they run from any
+directory.
 
-[data-theme="dark"] {
-  --color-surface:    #1F2937;
-  --color-text:       #F9FAFB;
-  --color-border:     #374151;
-  --color-muted:      #111827;
-}
+```bash
+# Complete design-system recommendation (style + palette + fonts + effects)
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+  "healthcare patient dashboard" --design-system -p "Project Name"
+
+# Targeted lookup
+python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "saas dashboard" --domain product
 ```
 
-**Rules:**
-- Never invert colors for dark mode — use purpose-mapped dark values
-- Test contrast independently for both modes (4.5:1 minimum)
-- Semantic tokens enable theme switching with one attribute change
+Domains: `style` `color` `chart` `landing` `product` `ux` `typography` `icons`
+`react` `web` `google-fonts`. Add `--stack react-native` for stack-specific
+guidelines, `--persist` to write a MASTER.md design system, `--json` for
+machine-readable output.
+
+**If Python is unavailable**, the references carry the guidance inline — the
+rule set, the product-type style guide, and the token patterns all work without
+scripts.
 
 ---
 
-## Tailwind Theme Configuration
+## Non-negotiables
 
-```javascript
-// tailwind.config.js
-export default {
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: 'var(--color-primary)',
-          hover:   'var(--color-primary-hover)',
-        },
-        surface:  'var(--color-surface)',
-        border:   'var(--color-border)',
-        muted:    'var(--color-surface-muted)',
-      },
-      spacing: {
-        // custom spacing tokens map here
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Plus Jakarta Sans', 'sans-serif'],
-      },
-    },
-  },
-}
-```
+These hold across all three tracks. Everything else is a recommendation.
+
+- **Contrast ≥ 4.5:1** for body text, verified independently in light *and* dark
+  mode. Never convey meaning by color alone.
+- **Touch targets ≥ 44×44pt** (iOS) / 48×48dp (Android), with ≥ 8px spacing.
+- **Semantic tokens, never raw hex in components.** Primitive → Semantic →
+  Component; never skip the semantic layer.
+- **Never invert colors for dark mode** — use purpose-mapped dark values.
+- **Never remove focus rings.** Icon-only buttons always carry an `aria-label`.
+- **Spacing on the 4/8pt grid**, always.
+- **No emoji as icons** — use SVG (Lucide, Heroicons).
 
 ---
 
-## Component State Specs
+## Reference map
 
-### Standard Component States
-
-| State | Visual Signal | Token |
-|-------|--------------|-------|
-| Default | Normal render | `--button-bg` |
-| Hover | Slightly darker/elevated | `--button-bg-hover` |
-| Active/Pressed | Scale 0.98, deeper | `--button-bg-active` |
-| Focus | 2–3px focus ring, primary color | `--color-focus-ring` |
-| Disabled | 40–50% opacity, no pointer events | `opacity-50 cursor-not-allowed` |
-| Loading | Spinner, disabled interaction | same as disabled |
-| Error | Red border, error text below | `--color-error` |
-| Success | Green border/check | `--color-success` |
-
-### State Token Pattern (Per Component)
-
-```css
-/* Button */
---btn-primary-bg:        var(--color-primary);
---btn-primary-bg-hover:  var(--color-primary-hover);
---btn-primary-text:      #FFFFFF;
---btn-primary-disabled:  opacity 0.5;
-
-/* Input */
---input-bg:              var(--color-surface);
---input-border:          var(--color-border);
---input-border-focus:    var(--color-primary);
---input-border-error:    var(--color-error);
---input-text:            var(--color-text-primary);
---input-placeholder:     var(--color-text-muted);
-```
-
----
-
-## Design Token File Formats
-
-### JSON (Source of Truth)
-
-```json
-{
-  "primitive": {
-    "color": {
-      "blue-600": { "value": "#2563EB" },
-      "gray-900": { "value": "#111827" }
-    }
-  },
-  "semantic": {
-    "color": {
-      "primary": { "value": "{primitive.color.blue-600}" },
-      "text": { "value": "{primitive.color.gray-900}" }
-    }
-  }
-}
-```
-
-### CSS Output
-
-```css
-:root {
-  /* Primitive */
-  --color-blue-600: #2563EB;
-  --color-gray-900: #111827;
-  /* Semantic */
-  --color-primary: var(--color-blue-600);
-  --color-text:    var(--color-gray-900);
-}
-```
-
----
-
-## SCREEN Spec: Design Tokens Section
-
-When creating a SCREEN spec, include this token section:
-
-```markdown
-## Design Tokens
-
-### Colors
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-primary` | #2563EB | Primary buttons, active states |
-| `--color-surface` | #FFFFFF | Card backgrounds |
-| `--color-text-primary` | #111827 | Body text |
-| `--color-text-muted` | #6B7280 | Labels, hints |
-| `--color-border` | #E5E7EB | Input borders, dividers |
-| `--color-success` | #16A34A | Success states |
-| `--color-error` | #DC2626 | Error/destructive states |
-
-### Spacing Scale
-| Token | Value |
-|-------|-------|
-| `--space-2` | 8px |
-| `--space-4` | 16px |
-| `--space-6` | 24px |
-| `--space-8` | 32px |
-
-### Typography Scale
-| Token | Size | Weight | Usage |
-|-------|------|--------|-------|
-| `--text-4xl` | 36px | 700 | Page titles |
-| `--text-xl` | 20px | 600 | Section headings |
-| `--text-base` | 16px | 400 | Body text |
-| `--text-sm` | 14px | 500 | Labels, chips |
-```
-
----
-
-## Anti-Patterns
-
-| Anti-Pattern | Correct Approach |
-|---|---|
-| Raw hex in components (`color: #2563EB`) | Use semantic token (`color: var(--color-primary)`) |
-| Same token for both light and dark | Use `[data-theme="dark"]` override |
-| Skipping semantic layer | Map primitives → semantic → component; never skip |
-| Inconsistent spacing (17px, 23px, 41px) | Always use 4/8dp grid values |
-| One giant token file | Split: primitive.css + semantic.css + components.css |
-
----
-
-## Reference Docs
-
-Deep-dive references are in `references/`:
+**Track entry points** (start here):
 
 | File | Content |
 |------|---------|
-| `references/token-architecture.md` | Three-layer system, naming conventions, W3C DTCG format, migration guide |
-| `references/primitive-tokens.md` | Full color scales, spacing (4px base), typography, shadows, motion, z-index |
+| `references/ux-intelligence.md` | Design intelligence: full rule set, database usage, style selection, anti-patterns, checklist |
+| `references/tokens.md` | Token architecture: three layers, scales, dark mode, state specs, SCREEN-spec section |
+| `references/implementation.md` | shadcn/ui + Tailwind: setup, patterns, dark mode, responsive, accessibility |
+
+**Deep dives** (loaded on demand from the entry points):
+
+| File | Content |
+|------|---------|
+| `references/token-architecture.md` | Naming conventions, W3C DTCG format, migration guide |
+| `references/primitive-tokens.md` | Full color scales, spacing, typography, shadows, motion, z-index |
 | `references/semantic-tokens.md` | Color semantics, interactive states, dark mode overrides |
-| `references/component-tokens.md` | Per-component token specs: Button, Input, Card, Badge, Alert, Dialog, Table |
+| `references/component-tokens.md` | Per-component tokens: Button, Input, Card, Badge, Alert, Dialog, Table |
 | `references/states-and-variants.md` | State definitions, focus ring spec, ARIA state patterns |
-| `references/tailwind-integration.md` | CSS variables in HSL, tailwind.config.ts, @layer components, dark mode toggle |
-| `references/component-specs.md` | Variant/size/state tables + ASCII anatomy diagrams per component |
+| `references/tailwind-integration.md` | CSS variables in HSL, tailwind.config.ts, @layer components |
+| `references/component-specs.md` | Variant/size/state tables + ASCII anatomy diagrams |
+| `references/shadcn-components.md` | Component catalog with TSX examples (25+ components) |
+| `references/shadcn-accessibility.md` | Radix ARIA foundation, keyboard nav, focus management, testing checklist |
+| `references/shadcn-theming.md` | Dark mode, CSS variable system, HSL format, multiple themes, base presets |
+| `references/tailwind-utilities.md` | Utility class reference: layout, spacing, typography, colors, borders, shadows |
+| `references/tailwind-responsive.md` | Mobile-first breakpoints, container queries, max-width queries |
+| `references/tailwind-customization.md` | @theme directive, custom utilities, @apply, plugins, full config example |
+| `references/canvas-design-system.md` | Canvas/poster visual design philosophy (uses bundled `canvas-fonts/`) |
+
+**Bundled assets:** `scripts/` (search engine, design-system generator, shadcn
+installer, Tailwind config generator, token validators, slide tooling),
+`data/` (the CSV corpus), `templates/design-tokens-starter.json`,
+`canvas-fonts/` (open-licensed font files, see `LICENSE.txt`).
 
 ---
 
-## Skill Connections
+## Skill connections
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| After | `ui-ux-pro-max` | Derive token colors/fonts from design system output |
-| Before | `ui-styling` | Tokens defined here → configure Tailwind/shadcn theme |
-| Pairs with | `design-screen` | Include token table in every SCREEN spec |
-| Input to | `implement-feature` | Developer uses tokens when implementing components |
-| Called by | `ui-designer-agent` | Step 5 — Figma-compatible token section |
+| Pairs with | `design-screen` | Run design intelligence before wireframing; include the token table in every SCREEN spec |
+| Input to | `implement-feature` | Developer builds components against these tokens and patterns |
+| On accessibility findings | `review-code` | Accessibility violations → flag in code review |

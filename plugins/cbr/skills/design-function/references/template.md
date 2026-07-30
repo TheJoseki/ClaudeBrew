@@ -4,7 +4,7 @@ Use this template when creating `docs/specs/detail-design/TECH-[feature-name].md
 
 ```markdown
 # Technical Design: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: architect-agent
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: design-function
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **Tech Stack**: [detected from PROJECT.md]
 

@@ -31,8 +31,7 @@ Required reading:
 - `docs/CODING_RULES.md` — verify fix does not violate rules
 - `docs/CODING_CONVENTION.md` — follow patterns when fixing
 - `docs/specs/detail-design/TECH-[feature].md` — design source of truth; verify fix aligns with architecture
-- `docs/plans/DECISION-LEDGER.md` — check CONTESTED decisions (may explain root cause)
-- `.claude/agent-memory/bug-fix-agent/MEMORY.md` — Common Pitfalls section (avoid known patterns)
+- `docs/specs/decisions/ADR-*.md` — a recorded decision may explain the root cause
 
 ## Step 2: Reproduce Bug
 
@@ -135,5 +134,4 @@ File: `docs/bug-reports/BUG-[YYYYMMDD]-[nn].md`
 | Escalate to | `systematic-debugging` | Bug is intermittent, fix failed 2+ rounds, or root cause still unclear |
 | After this | `run-tests` | Always — full regression suite to confirm fix |
 | Pairs with | `vulnerability-scanner` | Bug is security-related (auth bypass, injection, data exposure) |
-| Called from | `full-sdlc` | Phase 6–7 bug-fix loop — invoked automatically by orchestrator |
 | Called from | `run-tests` | When test FAIL has a clear, known root cause |

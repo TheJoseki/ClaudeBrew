@@ -63,6 +63,12 @@ Input Boundary → Controller/View → Service → Repository/ORM → Database
 - **PRs**: Must pass code review (0 Critical) + all tests green before merge
 - **No force-push** to main/master — use PRs with squash merge
 
+## Working Discipline
+
+- **Read all inputs before writing output** — misscoped artifacts are more expensive than a slow start.
+- **3-strike rule**: after 3 consecutive failed fix attempts on the same problem, STOP. Document each attempt (what was tried, why it failed, what it ruled out), then either invoke `systematic-debugging`, reset and form a fresh hypothesis, or escalate to the user. Never attempt a 4th variation of a failed approach.
+- **Completion status**: end substantive work with exactly one of `DONE` / `DONE_WITH_CONCERNS` / `BLOCKED` / `NEEDS_CONTEXT`. Never declare `DONE` without evidence (test output, file paths, specific results). `DONE_WITH_CONCERNS` lists each concern with `[CRITICAL]` / `[MEDIUM]` / `[LOW]` severity. Never fail silently.
+
 ## AI Agent Security Standards
 
 > Applies to all agents, skills, and automated workflows in ClaudeBrew.

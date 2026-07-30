@@ -4,7 +4,7 @@ Use this template when creating `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`.
 
 ```markdown
 # Code Review: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Reviewer**: code-review-agent
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Reviewer**: review-code
 **Tech Stack**: [detected from PROJECT.md]
 
 ---
@@ -37,5 +37,5 @@ Use this template when creating `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`.
 
 ## Action
 - PASS → Phase 6: Unit Test Execution
-- FAIL → developer-agent fix Critical/Major → re-review
+- FAIL → implement-feature fix Critical/Major → re-review
 ```

@@ -1,7 +1,7 @@
 ---
 name: architecture
-description: "Architecture decision framework for any software project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: choosing system structure or module boundaries, evaluating hard-to-reverse structural trade-offs, or writing an ADR. NOT FOR: the per-feature endpoint/ORM technical spec (use design-function), API style selection (use api-patterns), or data model design (use database-design)."
-allowed-tools: Read, Grep
+description: "Design-decision framework covering system structure, API contracts, and data models. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: choosing module boundaries or system structure; picking an API style (REST/GraphQL/tRPC) or reviewing endpoint conventions — versioning, pagination, response format, auth, rate limiting, API security; choosing a database type, designing schemas/indexes, planning migrations, or optimizing queries; weighing a hard-to-reverse structural trade-off or writing an ADR. NOT FOR: producing a feature's endpoint/ORM tech-spec artifact (use design-function)."
+allowed-tools: Read, Write, Edit, Grep, Glob
 metadata:
   version: "3.1"
   category: design
@@ -13,9 +13,43 @@ $ARGUMENTS
 
 ---
 
-## Core Principle
+## Core Principles
 
-Prefer the simplest architecture that satisfies current requirements. Complexity must be justified by a concrete, present need — not a hypothetical future one.
+1. **Simplest thing that satisfies the requirement.** Complexity must be justified
+   by a concrete, present need — not a hypothetical future one.
+2. **Ask before choosing.** Database type, ORM, and API style are project-level
+   decisions with long half-lives. Confirm with the user or `PROJECT.md`; never
+   silently pick a default.
+3. **Decide once, record why.** Anything hard to reverse gets an ADR, so the next
+   session inherits the reasoning instead of re-deriving it.
+
+---
+
+## The three sub-areas
+
+This skill covers structural decisions at three layers. Identify which one the
+request touches, then read only that detail file.
+
+| Sub-area | Covers | Detail |
+| -------- | ------ | ------ |
+| **System structure** | Module boundaries, cross-cutting concerns, service split, async workflows, dependency cost | This file (below) |
+| **API contracts** | Style selection (REST/GraphQL/tRPC), resource naming, status codes, response envelope, pagination, versioning, auth, rate limiting, docs, security testing | [`references/api-design.md`](references/api-design.md) |
+| **Data models** | Database type, schema and column types, indexing, normalization, migrations, query shape | [`references/database-design.md`](references/database-design.md) |
+
+Read selectively — pull in a detail file only when the request lands in that
+sub-area. A request often spans two (e.g. "paginated orders endpoint" is API
+contract + indexing); read both, and keep the decisions consistent.
+
+**Entry points into the detail files:**
+
+| Question | Go to |
+| -------- | ----- |
+| REST, GraphQL, or tRPC? | [api-design.md § Choosing an API style](references/api-design.md#choosing-an-api-style) |
+| How should responses, errors, and pages be shaped? | [api-design.md § Response format and pagination](references/api-design.md#response-format-and-pagination) |
+| How do we version / authenticate / rate-limit this API? | [api-design.md § Versioning](references/api-design.md#versioning), [§ Authentication](references/api-design.md#authentication), [§ Rate limiting](references/api-design.md#rate-limiting) |
+| Is this endpoint set safe? | [api-design.md § API security testing](references/api-design.md#api-security-testing) |
+| Relational or document? Which ORM? | [database-design.md § Context questions](references/database-design.md#context-questions) |
+| What column types, keys, and indexes? | [database-design.md § Schema design](references/database-design.md#schema-design), [§ Indexing](references/database-design.md#indexing) |
 
 ---
 
@@ -48,13 +82,23 @@ New structural requirement
   Is this shared state across services?  → Evaluate event-driven or shared store
   Is this a new bounded domain?          → New module with its own service layer
   Does this require a new dependency?    → Evaluate cost vs. benefit explicitly
+  Does this expose a new contract?       → references/api-design.md
+  Does this add or reshape stored data?  → references/database-design.md
 ```
 
-### Step 3: Document the decision (ADR format)
+### Step 3: Document the decision (ADR)
+
+Write hard-to-reverse decisions to
+`docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md` — `[topic]` is a short
+kebab-case slug for the subject decided (e.g. `ADR-background-jobs-20260731.md`),
+not the name of this skill.
 
 ```markdown
 ## ADR: [Short Title]
 **Date**: YYYY-MM-DD | **Status**: Proposed / Accepted / Deprecated
+
+### Scope
+[System / module / API surface / schema analyzed]
 
 ### Context
 [What problem requires this decision?]
@@ -67,7 +111,18 @@ New structural requirement
 
 ### Consequences
 [What becomes easier? What becomes harder?]
+
+### Deferred
+[Decisions NOT made + reason]
+
+### Re-check
+[Trigger for revisiting — e.g., "when adding a second service",
+"if row count exceeds 1M", "when adding an external partner API"]
 ```
+
+The ADR is the handoff: a later stage (or a later session) reads this file rather
+than re-deriving the trade-off. Skip it for choices that are cheap to reverse —
+say so and move on.
 
 ---
 
@@ -91,27 +146,9 @@ New structural requirement
 - [ ] Respects existing module boundaries
 - [ ] Auth/authorization at the correct layer
 - [ ] Test strategy exists for this component
+- [ ] API contract decisions checked against `references/api-design.md`
+- [ ] Data model decisions checked against `references/database-design.md`
 - [ ] ADR written for non-obvious choices
-
----
-
-## Optional: Decision Log
-
-If significant architecture decisions were made this session, write an ADR to:
-`docs/specs/decisions/ADR-architecture-[YYYYMMDD].md`
-
-```markdown
-## Architecture Decision — [YYYYMMDD]
-
-**Scope**: [system / module / layer analyzed]
-**Decision made**: [what architecture choice was made]
-**Rationale**: [why this over alternatives]
-**Trade-offs accepted**: [what becomes harder with this choice]
-**Deferred**: [decisions NOT made + reason]
-**Re-check**: [trigger — e.g., "when adding second service", "when team grows past 5"]
-```
-
-This record enables future orchestrators to understand prior decisions without re-deriving them.
 
 ---
 
@@ -119,7 +156,6 @@ This record enables future orchestrators to understand prior decisions without r
 
 | Skill | When to use alongside |
 | ----- | --------------------- |
-| `design-function` | Translating architecture into API + service design |
-| `database-design` | Data layer decisions |
-| `api-patterns` | API style and endpoint design |
+| `design-function` | Translating these decisions into a feature's endpoint/ORM tech spec |
+| `vulnerability-scanner` | Security audit of the implemented endpoints |
 | `review-code` | Verifying implementation matches intent |

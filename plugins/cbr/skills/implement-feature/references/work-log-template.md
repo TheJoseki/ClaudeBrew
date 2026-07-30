@@ -1,6 +1,6 @@
 # Developer Work Log Template
 
-> Reference for developer-agent. Loaded on-demand when creating work log after implementation.
+> Reference for implement-feature. Loaded on-demand when creating work log after implementation.
 
 ## Work Log Output Template
 
@@ -11,7 +11,7 @@ File: `docs/work-logs/DEV-[feature]-BN.md` (replace BN with actual batch: B1, B2
 **Feature ID**: [feature-name]
 **Batch**: Batch-N | **Scope**: [modules/deliverables in this batch]
 **Date**: [YYYY-MM-DD]
-**Developer**: developer-agent
+**Developer**: implement-feature
 **Input TECH spec**: docs/specs/detail-design/TECH-[feature].md
 **Status**: COMPLETED
 
@@ -70,7 +70,7 @@ File: `docs/work-logs/DEV-[feature]-BN.md` (replace BN with actual batch: B1, B2
 [Any deviations from TECH spec, decisions made, known limitations]
 
 ## Known Gaps / TODO for QA
-[Anything QA (unit-test-agent, integration-test-agent) should pay attention to]
+[Anything QA (unit-test, integration-test) should pay attention to]
 
 ## Self-Review Result
 > Complete the checklist at `docs/CODING-CHECKLIST.md` (or `.claude/skills/review-code/references/self-review-checklist.md` if not available)

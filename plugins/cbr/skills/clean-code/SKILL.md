@@ -106,7 +106,7 @@ If significant recommendations were made this session, write a brief decision re
 **Re-check**: [suggest when to re-run — e.g., "after next feature addition to UserService"]
 ```
 
-This log enables code-review-agent to reference prior analysis and prevents duplicate work.
+This log lets `review-code` reference prior analysis and prevents duplicate work.
 
 ---
 

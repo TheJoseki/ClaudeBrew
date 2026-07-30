@@ -1,6 +1,6 @@
 # Integration Test Document Templates
 
-> Reference for integration-test-agent. Loaded on-demand when creating ITC/ITR documents.
+> Reference for integration-test. Loaded on-demand when creating ITC/ITR documents.
 
 ## ITC Document Template (Mode A Output)
 
@@ -10,7 +10,7 @@ File: `docs/test-cases/ITC-[feature-name].md`
 # Integration Test Cases: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: integration-test-agent
+**Author**: integration-test
 **Input TECH**: docs/specs/detail-design/TECH-[feature].md
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **HTTP Test Library**: [detected from PROJECT.md]
@@ -96,7 +96,7 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
-**Author**: integration-test-agent
+**Author**: integration-test
 **ITC Document**: docs/test-cases/ITC-[feature].md
 **Scripts**: tests/e2e/[feature].spec.ts, tests/integration/[feature].test.ts
 
@@ -120,7 +120,7 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 | TC ID | Workflow | Error | Steps to Reproduce | Severity |
 |-------|----------|-------|-------------------|---------|
 
-## Bug Reports (for bug-fix-agent)
+## Bug Reports (for fix-bug)
 | Bug ID | TC ID | Description | Steps to Reproduce | Expected | Actual | Severity |
 |--------|-------|-------------|-------------------|---------|--------|---------|
 
@@ -131,8 +131,8 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 [Paste actual terminal output from test run]
 
 ## Next Action
-- FAIL → bug-fix-agent fixes bugs above → re-run R[n+1]
-- R5 PASS → Notify orchestrator-agent: Integration Tests 100% PASS
+- FAIL → fix-bug fixes bugs above → re-run R[n+1]
+- R5 PASS → report to the user with the verdict artifact: Integration Tests 100% PASS (G7 is the user's call)
 ```
 
 

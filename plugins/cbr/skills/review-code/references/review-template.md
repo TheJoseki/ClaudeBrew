@@ -1,6 +1,6 @@
 # Code Review Output Template
 
-> Reference for code-review-agent. Loaded on-demand when creating review report.
+> Reference for review-code. Loaded on-demand when creating review report.
 
 ## Review Report Template
 
@@ -13,7 +13,7 @@ File: `docs/reviews/REVIEW-[feature]-BN.md`
 **Feature ID**: [feature-name]
 **Batch**: Batch-N | **Scope**: [modules/deliverables in this batch]
 **Date**: [YYYY-MM-DD]
-**Reviewer**: code-review-agent
+**Reviewer**: review-code
 **DEV Work Log**: docs/work-logs/DEV-[feature]-BN.md
 **TECH Spec**: docs/specs/detail-design/TECH-[feature].md
 
@@ -74,8 +74,8 @@ Deviations without a matching FLAG-developer-* file → Critical finding.
 
 ## Action Required
 - PASS: Proceed to next batch or Phase 5 Security Scan
-- CONDITIONAL PASS: developer-agent must fix Major findings before next batch
-- FAIL: developer-agent must fix Critical/Major → re-submit (max R2 per batch)
+- CONDITIONAL PASS: implement-feature must fix Major findings before next batch
+- FAIL: implement-feature must fix Critical/Major → re-submit (max R2 per batch)
 ```
 
 

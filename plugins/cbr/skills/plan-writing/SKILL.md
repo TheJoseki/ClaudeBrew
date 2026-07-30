@@ -1,6 +1,6 @@
 ---
 name: plan-writing
-description: "Creates clear, actionable implementation plans with task breakdowns and verification criteria. Trigger when planning features, creating sprint plans, writing work breakdown structures, or preparing multi-agent execution plans. NOT FOR: full end-to-end feature delivery from requirements to tests (use full-sdlc), quick bug fixes (use fix-bug)."
+description: "Creates clear, actionable implementation plans with task breakdowns and verification criteria. Trigger when planning features, creating sprint plans, writing work breakdown structures, or preparing multi-agent execution plans. NOT FOR: executing the plan (use implement-feature), quick bug fixes (use fix-bug)."
 allowed-tools: Read, Grep, Glob
 argument-hint: "[feature or task to plan]"
 metadata:
@@ -57,17 +57,19 @@ $ARGUMENTS
 
 ---
 
-## Multi-Agent Extension
+## Parallel Execution Extension
 
-Add agent assignments for parallel execution:
+Assign each phase to the stage skill that owns it:
 
-| Phase | Task | Agent | Status |
+| Phase | Task | Owner | Status |
 | ----- | ---- | ----- | ------ |
-| 3a | Implementation | developer-agent | PENDING |
-| 3b | Unit test cases | unit-test-agent | PENDING |
-| 3c | Integration test cases | integration-test-agent | PENDING |
+| 3a | Implementation | `implement-feature` (`--parallel` fans out to `cbr:developer` workers) | PENDING |
+| 3b | Unit test cases | `unit-test` (Mode A) | PENDING |
+| 3c | Integration test cases | `integration-test` (Mode A) | PENDING |
 
-Phases 3a/3b/3c are parallel — launch all three in a single message.
+3b and 3c can be written alongside 3a — they do not depend on each other. Each is
+still its own gated stage that the user starts; the plan records the ordering, it
+does not run it.
 
 ---
 
@@ -99,9 +101,7 @@ Save plans to: `docs/plans/PLAN-[feature]-[YYYYMMDD].md`
 | Prerequisite | `brainstorming` | Run first if task scope is unclear before planning |
 | Prerequisite | `analyze-requirement` | Ensure SRS exists before writing implementation plan |
 | On success | `implement-feature` | Execute the plan — design already done |
-| On success | `full-sdlc` | For end-to-end delivery of the planned feature |
 | On FAIL (requirements unclear) | `analyze-requirement` | Revisit requirements before retrying plan |
-| Related | `orchestrate` | Orchestrator uses plan-writing to create PLAN artifacts |
 
 ---
 

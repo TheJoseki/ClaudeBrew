@@ -1,6 +1,6 @@
-# DETAIL_DESIGN Output Template — Architect Agent
+# DETAIL_DESIGN Output Template
 
-> Reference for architect-agent. Loaded on-demand when MODE: DETAIL_DESIGN.
+> Reference for `design-function`. Loaded on-demand when producing the Detail Design (DD書 / TECH spec) — ORM schema, service methods, DTOs.
 
 ## Architecture Patterns
 
@@ -33,7 +33,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 # Technical Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: architect-agent
+**Author**: design-function
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **Input Basic Design**: docs/specs/basic-design/BASIC-[feature].md
 **Status**: DRAFT
@@ -64,7 +64,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 
 ### 4.3 Business Flow → Implementation Mapping
 
-> Maps each BASIC Business Flow (§6.5) to API call sequence + state transitions. Direct input for ITC agent — each row = 1 test step.
+> Maps each BASIC Business Flow (§6.5) to API call sequence + state transitions. Direct input for `integration-test` — each row = 1 test step.
 
 | Flow ID | Source | Reference |
 |---------|--------|-----------|
@@ -109,7 +109,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 | Business rules present? | Reference only — definitions in SRS |
 | UI layout present? | REMOVE — belongs in SCREEN spec |
 | Raw SQL? | Replace with ORM or justify |
-| Items not in BASIC? | STOP — retroactive gap, report to orchestrator |
+| Items not in BASIC? | STOP — retroactive gap, report to the user |
 
 ## Quality Rubric (G3b gate — ALL ≥ 3)
 
@@ -141,7 +141,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 ## Step D1: CODING-CHECKLIST Template
 
 File: `docs/CODING-CHECKLIST.md` — create if missing, update if exists.
-[See full template in architect-agent body § Step D1]
+[See full template in `design-function/SKILL.md` § Step D1]
 
 ## Step D2: TEST_VIEWPOINT Section 0
 

@@ -1,23 +1,23 @@
 {
   "skill_name": "architecture",
-  "notes": "Architecture is a decision-framework / knowledge skill for system-level structural choices and ADRs. It overlaps with design-function (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
+  "notes": "architecture is the merged design-decision skill covering three sub-areas: system structure (SKILL.md), API contracts (references/api-design.md), and data models (references/database-design.md) — it absorbed the former api-patterns and database-design skills. Eval 1 exercises the structural decision tree and ADR; eval 2 spans the two absorbed sub-areas at once (pagination model + supporting index), which is the behavior the merge exists to enable. It overlaps with design-function (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
   "evals": [
     {
       "id": 1,
       "prompt": "We're adding a background job system to our monolith. Should this be a new module, a separate service, or middleware? Walk me through the trade-offs before we commit.",
-      "expected_output": "Applies the decision tree, biases toward the simplest option that satisfies current needs, weighs the new-dependency cost explicitly, respects existing module boundaries, and records an ADR at docs/specs/decisions/ADR-architecture-[YYYYMMDD].md capturing decision, alternatives, and consequences.",
+      "expected_output": "Applies the decision tree, biases toward the simplest option that satisfies current needs, weighs the new-dependency cost explicitly, respects existing module boundaries, and records an ADR at docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md (topic slugged from the subject decided, e.g. ADR-background-jobs-*) capturing scope, context, decision, alternatives, consequences, and a re-check trigger.",
       "files": []
     },
     {
       "id": 2,
-      "prompt": "Write an ADR documenting our decision to stay a single deployable monolith instead of splitting into microservices right now.",
-      "expected_output": "Produces an ADR in the skill's ADR format (Context / Decision / Alternatives Considered table / Consequences), written to docs/specs/decisions/ADR-architecture-[YYYYMMDD].md, with a re-check trigger for when to revisit.",
+      "prompt": "We're exposing orders to third-party developers. Should it be REST or GraphQL, how should the list endpoint paginate over 5M rows, and what indexes does that need?",
+      "expected_output": "Reads both references/api-design.md and references/database-design.md, works the API decision checklist (consumers, style, auth, versioning, volume, pagination, errors, rate limiting), recommends REST + OpenAPI for a public multi-platform consumer, picks cursor or keyset pagination for the dataset size, and ties that choice to a sortable indexed key plus FK and ORDER BY indexing — answering the contract and data-layer halves consistently in one pass rather than deferring to a second skill.",
       "files": []
     },
     {
       "id": 3,
-      "prompt": "Design the API endpoints and ORM schema for the new orders feature.",
-      "expected_output": "Should route to design-function (produces docs/specs/detail-design/TECH-orders.md), not architecture — this is a per-feature endpoint/schema tech spec, whereas architecture is for system-level structural decisions and ADRs.",
+      "prompt": "Write the technical design — endpoints, DTOs, ORM schema, and service methods — for the payments module.",
+      "expected_output": "Should route to design-function (produces docs/specs/detail-design/TECH-payments.md), not architecture — architecture supplies the style, structure, and data-model decision frameworks, whereas this asks for a named feature's concrete tech-spec artifact.",
       "files": []
     }
   ]

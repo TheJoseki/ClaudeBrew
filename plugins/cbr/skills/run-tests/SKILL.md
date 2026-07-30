@@ -55,7 +55,7 @@ cd frontend && [frontend type check command]
 
 ## After Running: Create Quick Report
 
-If called by orchestrator or test agent, output results in this format:
+If called by another skill or a pool agent, output results in this format:
 
 ```markdown
 ## Test Run Result — [YYYY-MM-DD HH:MM]
@@ -94,6 +94,6 @@ If called by orchestrator or test agent, output results in this format:
 |-----------|-------|------|
 | On FAIL (clear cause) | `fix-bug` | Error message is clear, root cause obvious |
 | On FAIL (unclear/flaky) | `systematic-debugging` | Intermittent failures, no clear root cause, or previous fix didn't hold |
-| After PASS | `create-pr` | All tests green — ready for pull request |
-| Called from | `full-sdlc` | Phase 6 (unit tests) and Phase 7 (integration tests) |
+| After PASS | `implement-feature` | All tests green — the PR step lives in that skill |
+| Called from | `unit-test` / `integration-test` | Mode B — execute the UTC/ITC document just created |
 | Called from | `implement-feature` | Self-check step — quick verify during development |

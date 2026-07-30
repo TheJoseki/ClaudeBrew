@@ -4,7 +4,7 @@
 > Scenario: Mid-sprint handoff at Phase 6 (Unit Tests). Developer handing off to another team member.
 
 **Date**: 2026-03-20
-**Created by**: developer-agent (session ending)
+**Created by**: `implement-feature` (session ending)
 **Recipient**: next session / incoming developer
 **Feature**: User Authentication — register, login, JWT, password reset, auth guards
 
@@ -75,9 +75,9 @@ Expected: 16/16 pass, coverage ≥ 85%
 ## Resume Instructions
 
 ```
-@orchestrator-agent Resume feature user-authentication
+Next stage: /cbr:unit-test user-authentication
 Plan file: docs/plans/PLAN-user-auth-20260318.md
-Continue from Phase 6 (Unit Tests) — status ⏳ PENDING
+Resume at Phase 6 (Unit Tests) — status ⏳ PENDING
 
 Context: See docs/handoffs/HANDOFF-user-auth-20260320.md
 Open issues: 2 failing unit tests — see Open Issues table.

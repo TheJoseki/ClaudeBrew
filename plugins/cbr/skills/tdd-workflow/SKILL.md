@@ -68,14 +68,14 @@ Rules:
 
 ---
 
-## Multi-Agent TDD Pattern
+## TDD Across Stages
 
-| Agent | Responsibility |
+| Stage | Responsibility |
 | ----- | -------------- |
-| `unit-test-agent` (Mode A) | Writes UTC document (RED specification) |
-| `developer-agent` | Implements production code (GREEN) |
-| `unit-test-agent` (Mode B) | Executes tests, reports failures |
-| `bug-fix-agent` | Fixes failures |
+| `unit-test` (Mode A) | Writes UTC document (RED specification) |
+| `implement-feature` | Implements production code (GREEN) |
+| `unit-test` (Mode B) | Executes tests via `cbr:tester`, reports failures |
+| `fix-bug` | Fixes failures |
 
 ---
 

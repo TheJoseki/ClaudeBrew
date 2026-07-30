@@ -1,6 +1,6 @@
 # Design Context Fetch — Figma & Pencil MCP
 
-> Reference for developer-agent. Loaded on-demand when SCREEN spec has Figma or Pencil Frames.
+> Reference for implement-feature. Loaded on-demand when SCREEN spec has Figma or Pencil Frames.
 
 ## Figma Design Context Fetch
 

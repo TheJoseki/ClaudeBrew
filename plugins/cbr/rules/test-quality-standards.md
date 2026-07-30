@@ -61,7 +61,7 @@ Floor = max(formula_result, 5)
 - `R` = count of distinct roles involved in the flow
 - `C` = 1 if flow involves ≥2 actors (concurrent scenario), else 0
 
-ITC agent reads BASIC §6.5 Error/Rejection Paths table → each variant = 1 error scenario.
+`integration-test` reads BASIC §6.5 Error/Rejection Paths table → each variant = 1 error scenario.
 
 ### Flow Type → Required Scenario Patterns
 

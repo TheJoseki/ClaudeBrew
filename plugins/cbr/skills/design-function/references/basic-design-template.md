@@ -1,6 +1,6 @@
-# BASIC_DESIGN Output Template — Architect Agent
+# BASIC_DESIGN Output Template
 
-> Reference for architect-agent. Loaded on-demand when MODE: BASIC_DESIGN.
+> Reference for `design-function`. Loaded on-demand when producing the Basic Design (BD書) — module structure, DB table list, API endpoint list.
 
 ## Template
 
@@ -10,7 +10,7 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 # Basic Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: architect-agent
+**Author**: design-function
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **Status**: DRAFT
 

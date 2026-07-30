@@ -181,8 +181,6 @@ File: `docs/estimates/EST-[feature]-[YYYYMMDD].md`
 | Prerequisite | `analyze-requirement` | SRS should exist before estimating — provides clear scope |
 | Prerequisite | `brainstorming` | Run first if feature scope is not yet defined |
 | On success | `plan-writing` | Create implementation plan from the WBS |
-| On success | `full-sdlc` | Use estimate to inform sprint planning |
-| Related | `orchestrate` | Orchestrator may call estimate during Phase 0 triage |
 
 ---
 

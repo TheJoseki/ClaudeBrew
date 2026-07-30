@@ -1,6 +1,6 @@
 # Integration Test Script Templates
 
-> Reference for integration-test-agent Mode B. Loaded on-demand when creating test scripts.
+> Reference for integration-test Mode B. Loaded on-demand when creating test scripts.
 
 ## Playwright E2E Script Template
 
@@ -149,7 +149,7 @@ npx cypress run --spec "cypress/e2e/[feature].cy.ts"
 | Round | Trigger | Expected Pass Rate |
 |-------|---------|-------------------|
 | R1 | First run after Code Review PASS | Baseline |
-| R2 | After bug-fix-agent fixes R1 failures | ≥70% |
-| R3 | After bug-fix-agent fixes R2 failures | ≥90% |
+| R2 | After fix-bug fixes R1 failures | ≥70% |
+| R3 | After fix-bug fixes R2 failures | ≥90% |
 | R4 | Full regression | ≥95% |
 | R5 | Final verification | 100% — GATE |
