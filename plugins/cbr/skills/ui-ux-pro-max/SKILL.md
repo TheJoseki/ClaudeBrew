@@ -1,6 +1,6 @@
 ---
 name: ui-ux-pro-max
-description: UI/UX design intelligence for web and mobile. 99 UX guidelines, 67 styles, 161 color palettes, 57 font pairings, 161 product types with reasoning rules, 25 chart types. TRIGGER: user asks to design UI, choose style/color/font, review UX, check accessibility, plan interaction patterns. Works standalone (inline Quick Reference) or with Python scripts for full database search.
+description: "UI/UX design intelligence for web and mobile. 99 UX guidelines, 67 styles, 161 color palettes, 57 font pairings, 161 product types with reasoning rules, 25 chart types. TRIGGER: user asks to design UI, choose style/color/font, review UX, check accessibility, plan interaction patterns. Works standalone (inline Quick Reference) or with Python scripts for full database search."
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   version: "3.1"

@@ -1,6 +1,6 @@
 ---
 name: lint-and-validate
-description: Runs linting, type checking, and static analysis after code modifications. Ensures syntax correctness and project standards compliance. Use when finishing code changes, validating code quality, or setting up linting.
+description: "Runs linting, type checking, and static analysis after code modifications. Ensures syntax correctness and project standards compliance. Use when finishing code changes, validating code quality, or setting up linting."
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   version: "3.1"

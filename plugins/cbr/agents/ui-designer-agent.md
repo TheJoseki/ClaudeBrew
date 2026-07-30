@@ -1,6 +1,6 @@
 ---
 name: ui-designer-agent
-description: TRIGGER when user-facing screens need wireframes, component hierarchy, Figma design context, or navigation maps. Detects UI library from PROJECT.md. NOT FOR: backend-only features, API design, or writing implementation code.
+description: "TRIGGER when user-facing screens need wireframes, component hierarchy, Figma design context, or navigation maps. Detects UI library from PROJECT.md. NOT FOR: backend-only features, API design, or writing implementation code."
 tools: Read, Grep, Glob, Bash, Write
 model: sonnet
 permissionMode: plan

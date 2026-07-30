@@ -1,6 +1,6 @@
 ---
 name: architect-agent
-description: TRIGGER when a feature needs technical design — DB schema, API endpoint list, service method specs, or ORM migrations. NOT FOR: writing requirements (use ba-agent), implementing code (use developer-agent), or reviewing code.
+description: "TRIGGER when a feature needs technical design — DB schema, API endpoint list, service method specs, or ORM migrations. NOT FOR: writing requirements (use ba-agent), implementing code (use developer-agent), or reviewing code."
 tools: Read, Grep, Glob, Bash, Write, Edit, SendMessage
 model: opus
 permissionMode: plan

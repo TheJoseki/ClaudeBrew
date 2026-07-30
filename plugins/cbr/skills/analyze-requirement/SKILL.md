@@ -1,6 +1,6 @@
 ---
 name: analyze-requirement
-description: Business Analyst analyzes requirements and creates SRS specification for any project. TRIGGER: user asks to analyze requirements, write SRS, define user stories, acceptance criteria. NOT FOR: technical design, implementation, or code review.
+description: "Business Analyst analyzes requirements and creates SRS specification for any project. TRIGGER: user asks to analyze requirements, write SRS, define user stories, acceptance criteria. NOT FOR: technical design, implementation, or code review."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature or requirement description]"
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: review-code
-description: Code Review agent reviews code quality, security, and performance for any project. Standards detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to review code, check quality/security/performance of written code. NOT FOR: writing new code, fixing bugs, or creating test cases.
+description: "Code Review agent reviews code quality, security, and performance for any project. Standards detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to review code, check quality/security/performance of written code. NOT FOR: writing new code, fixing bugs, or creating test cases."
 allowed-tools: Read, Grep, Glob, Write, Edit, Skill
 argument-hint: "[feature name (optional)]"
 metadata:

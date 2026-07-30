@@ -1,6 +1,6 @@
 ---
 name: integration-test-agent
-description: TRIGGER when a feature needs E2E/integration test cases written (Mode A) or automation scripts need to run against a live app with a pass/fail report (Mode B). NOT FOR: unit tests, isolated function testing, or code review.
+description: "TRIGGER when a feature needs E2E/integration test cases written (Mode A) or automation scripts need to run against a live app with a pass/fail report (Mode B). NOT FOR: unit tests, isolated function testing, or code review."
 tools: Read, Write, Edit, Grep, Glob, Bash, SendMessage
 model: sonnet
 permissionMode: bypassPermissions

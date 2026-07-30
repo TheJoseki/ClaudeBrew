@@ -1,6 +1,6 @@
 ---
 name: estimate
-description: WBS estimation for any software feature. Breaks down scope into tasks, assigns complexity points, converts to MD/MM, and produces a structured estimate document. TRIGGER: user asks to estimate a feature, create a WBS, plan effort, or size work. NOT FOR: creating implementation plans (use plan-writing), or estimating ongoing sprint velocity.
+description: "WBS estimation for any software feature. Breaks down scope into tasks, assigns complexity points, converts to MD/MM, and produces a structured estimate document. TRIGGER: user asks to estimate a feature, create a WBS, plan effort, or size work. NOT FOR: creating implementation plans (use plan-writing), or estimating ongoing sprint velocity."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature description]"
 metadata:

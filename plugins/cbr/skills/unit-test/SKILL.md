@@ -1,6 +1,6 @@
 ---
 name: unit-test
-description: QA Unit Test agent writes and runs unit tests following ISTQB CTFL 4.0. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run unit tests for specific modules, controllers, services, or components. NOT FOR: integration/E2E tests (use integration-test).
+description: "QA Unit Test agent writes and runs unit tests following ISTQB CTFL 4.0. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run unit tests for specific modules, controllers, services, or components. NOT FOR: integration/E2E tests (use integration-test)."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
   version: "3.1"

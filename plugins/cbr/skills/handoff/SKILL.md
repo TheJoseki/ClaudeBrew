@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Creates a session handoff document capturing feature state — what's done, what's pending, key decisions, open issues. TRIGGER: user says "create handoff", "summarize progress for handoff", "I'm transferring this", "session is ending", "create context for next session". NOT FOR: creating implementation plans (use plan-writing), or full retrospectives (use retro).
+description: "Creates a session handoff document capturing feature state — what's done, what's pending, key decisions, open issues. TRIGGER: user says \"create handoff\", \"summarize progress for handoff\", \"I'm transferring this\", \"session is ending\", \"create context for next session\". NOT FOR: creating implementation plans (use plan-writing), or full retrospectives (use retro)."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature name]"
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Creates a Pull Request with a complete description for any project. TRIGGER: user asks to create PR, open pull request, push branch to review. NOT FOR: committing code, merging, or code review itself.
+description: "Creates a Pull Request with a complete description for any project. TRIGGER: user asks to create PR, open pull request, push branch to review. NOT FOR: committing code, merging, or code review itself."
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash
 metadata:

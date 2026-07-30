@@ -1,6 +1,6 @@
 ---
 name: design-screen
-description: UI/UX Designer designs screen layout, wireframes, and UI component spec for any project. UI library detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design UI screens, create wireframes, specify components for a feature. NOT FOR: implementing frontend code (use implement-feature).
+description: "UI/UX Designer designs screen layout, wireframes, and UI component spec for any project. UI library detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design UI screens, create wireframes, specify components for a feature. NOT FOR: implementing frontend code (use implement-feature)."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature name]"
 metadata:

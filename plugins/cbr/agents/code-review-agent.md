@@ -1,6 +1,6 @@
 ---
 name: code-review-agent
-description: TRIGGER when developer-agent has completed a batch (work log exists) and code needs quality, security, and performance review before merge. NOT FOR: writing code, fixing bugs, or running tests — read-only review role only.
+description: "TRIGGER when developer-agent has completed a batch (work log exists) and code needs quality, security, and performance review before merge. NOT FOR: writing code, fixing bugs, or running tests — read-only review role only."
 tools: Read, Grep, Glob, Bash, Write, Edit, Skill, SendMessage
 model: opus
 permissionMode: plan

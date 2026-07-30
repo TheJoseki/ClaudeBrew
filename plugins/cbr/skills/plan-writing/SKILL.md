@@ -1,6 +1,6 @@
 ---
 name: plan-writing
-description: Creates clear, actionable implementation plans with task breakdowns and verification criteria. Trigger when planning features, creating sprint plans, writing work breakdown structures, or preparing multi-agent execution plans. NOT FOR: full end-to-end feature delivery from requirements to tests (use full-sdlc), quick bug fixes (use fix-bug).
+description: "Creates clear, actionable implementation plans with task breakdowns and verification criteria. Trigger when planning features, creating sprint plans, writing work breakdown structures, or preparing multi-agent execution plans. NOT FOR: full end-to-end feature delivery from requirements to tests (use full-sdlc), quick bug fixes (use fix-bug)."
 allowed-tools: Read, Grep, Glob
 argument-hint: "[feature or task to plan]"
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: security-tester-agent
-description: TRIGGER after code review passes to audit for OWASP Top 10:2025, injection risks, auth flaws, and supply chain vulnerabilities. NOT FOR: functional testing, code review, or writing application code.
+description: "TRIGGER after code review passes to audit for OWASP Top 10:2025, injection risks, auth flaws, and supply chain vulnerabilities. NOT FOR: functional testing, code review, or writing application code."
 tools: Read, Grep, Glob, Bash, Write
 model: sonnet
 permissionMode: plan

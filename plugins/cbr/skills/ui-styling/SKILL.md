@@ -1,6 +1,6 @@
 ---
 name: ui-styling
-description: UI implementation guide for shadcn/ui (Radix UI + Tailwind) and Tailwind CSS. Component patterns, dark mode, accessibility, responsive layouts, theme customization. TRIGGER: user asks to implement UI components, set up shadcn/ui, configure Tailwind theme, add dark mode, build responsive layouts, or style with utility classes. Works with any React-based framework (Next.js, Vite, Remix, Astro).
+description: "UI implementation guide for shadcn/ui (Radix UI + Tailwind) and Tailwind CSS. Component patterns, dark mode, accessibility, responsive layouts, theme customization. TRIGGER: user asks to implement UI components, set up shadcn/ui, configure Tailwind theme, add dark mode, build responsive layouts, or style with utility classes. Works with any React-based framework (Next.js, Vite, Remix, Astro)."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
   version: "3.1"

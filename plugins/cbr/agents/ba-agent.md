@@ -1,6 +1,6 @@
 ---
 name: ba-agent
-description: TRIGGER when requirements need to be captured, user stories written, or an SRS document produced. NOT FOR: technical design, DB schema, API endpoint specs, UI wireframes, or writing implementation code.
+description: "TRIGGER when requirements need to be captured, user stories written, or an SRS document produced. NOT FOR: technical design, DB schema, API endpoint specs, UI wireframes, or writing implementation code."
 tools: Read, Grep, Glob, Write, SendMessage
 model: opus
 permissionMode: plan

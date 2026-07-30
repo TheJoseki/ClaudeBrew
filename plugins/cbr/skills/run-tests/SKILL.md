@@ -1,6 +1,6 @@
 ---
 name: run-tests
-description: Runs test suite for any project. Backend and frontend test commands detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to run the test suite, check test results, verify all tests pass. NOT FOR: writing test cases (use unit-test/integration-test).
+description: "Runs test suite for any project. Backend and frontend test commands detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to run the test suite, check test results, verify all tests pass. NOT FOR: writing test cases (use unit-test/integration-test)."
 allowed-tools: Read, Grep, Glob, Bash
 argument-hint: "[feature or module name (optional)]"
 metadata:

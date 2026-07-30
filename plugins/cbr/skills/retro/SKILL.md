@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Multi-agent retrospective ceremony. Orchestrator invokes this after Phase 8 delivery (auto) or after any phase/sprint (manual). Spawns contributing agents concurrently to provide phase-specific perspectives, then synthesizes 5 Why root-cause analysis, Lesson Learned per category, git velocity metrics, and prioritized Action Items. Output saved to docs/retros/.
+description: "Multi-agent retrospective ceremony. Orchestrator invokes this after Phase 8 delivery (auto) or after any phase/sprint (manual). Spawns contributing agents concurrently to provide phase-specific perspectives, then synthesizes 5 Why root-cause analysis, Lesson Learned per category, git velocity metrics, and prioritized Action Items. Output saved to docs/retros/."
 allowed-tools: Read, Grep, Glob, Bash
 disable-model-invocation: false
 context: fork

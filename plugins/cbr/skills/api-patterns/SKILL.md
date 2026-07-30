@@ -1,6 +1,6 @@
 ---
 name: api-patterns
-description: API design principles and decision-making framework. Covers REST vs GraphQL vs tRPC selection, response formats, versioning, pagination, authentication, rate limiting, and security testing. Use when designing APIs, choosing API style, or reviewing API endpoints.
+description: "API design principles and decision-making framework. Covers REST vs GraphQL vs tRPC selection, response formats, versioning, pagination, authentication, rate limiting, and security testing. Use when designing APIs, choosing API style, or reviewing API endpoints."
 allowed-tools: Read, Write, Edit, Grep, Glob
 metadata:
   version: "3.1"

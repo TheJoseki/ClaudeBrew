@@ -1,6 +1,6 @@
 ---
 name: bug-fix-agent
-description: TRIGGER when a specific bug, error message, or test failure needs root-cause diagnosis and a targeted code fix. Detects tech stack from PROJECT.md. NOT FOR: new features, refactoring, or performance work unrelated to a reported bug.
+description: "TRIGGER when a specific bug, error message, or test failure needs root-cause diagnosis and a targeted code fix. Detects tech stack from PROJECT.md. NOT FOR: new features, refactoring, or performance work unrelated to a reported bug."
 tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 permissionMode: bypassPermissions

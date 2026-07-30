@@ -1,6 +1,6 @@
 ---
 name: implement-feature
-description: Full-stack Developer implements a feature for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: technical design already exists (TECH spec), user wants to implement code. NOT FOR: features without existing specs (use full-sdlc), or bug fixes (use fix-bug).
+description: "Full-stack Developer implements a feature for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: technical design already exists (TECH spec), user wants to implement code. NOT FOR: features without existing specs (use full-sdlc), or bug fixes (use fix-bug)."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
 argument-hint: "[feature name (optional — reads TECH spec)]"
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: intelligent-routing
-description: Analyze user request and automatically route to the best skill or agent. Trigger: unclear requests, multi-domain tasks, or when user doesn't know which skill to use.
+description: "Analyze user request and automatically route to the best skill or agent. Trigger: unclear requests, multi-domain tasks, or when user doesn't know which skill to use."
 user-invocable: false
 allowed-tools: Read, Grep, Glob
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: orchestrate
-description: PM Orchestrator for any project. Triage + plan + delegate to specialized agents with artifact tracking. Project domain and tech stack detected from PROJECT.md/CLAUDE.md.
+description: "PM Orchestrator for any project. Triage + plan + delegate to specialized agents with artifact tracking. Project domain and tech stack detected from PROJECT.md/CLAUDE.md."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
 argument-hint: "[feature or enhancement description]"
 metadata:

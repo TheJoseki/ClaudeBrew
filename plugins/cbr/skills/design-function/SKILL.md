@@ -1,6 +1,6 @@
 ---
 name: design-function
-description: System Architect designs ORM schema, API endpoints, and technical spec for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design API endpoints, ORM schema, or technical architecture for a feature. NOT FOR: writing actual code (use implement-feature).
+description: "System Architect designs ORM schema, API endpoints, and technical spec for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to design API endpoints, ORM schema, or technical architecture for a feature. NOT FOR: writing actual code (use implement-feature)."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature name]"
 metadata:

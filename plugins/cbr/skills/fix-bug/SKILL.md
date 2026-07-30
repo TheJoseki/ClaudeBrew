@@ -1,6 +1,6 @@
 ---
 name: fix-bug
-description: Bug Fix agent debugs and fixes issues for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user reports a bug, error, test failure, or unexpected behavior. NOT FOR: new features, refactoring, or performance optimization.
+description: "Bug Fix agent debugs and fixes issues for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user reports a bug, error, test failure, or unexpected behavior. NOT FOR: new features, refactoring, or performance optimization."
 disable-model-invocation: false
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
 argument-hint: "[error message + steps to reproduce]"

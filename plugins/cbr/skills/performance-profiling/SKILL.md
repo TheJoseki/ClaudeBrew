@@ -1,6 +1,6 @@
 ---
 name: performance-profiling
-description: Analyzes and optimizes application performance. Covers Core Web Vitals, bundle analysis, runtime profiling, memory leaks, and optimization priorities. Use when investigating slow performance, optimizing page load, or profiling applications.
+description: "Analyzes and optimizes application performance. Covers Core Web Vitals, bundle analysis, runtime profiling, memory leaks, and optimization priorities. Use when investigating slow performance, optimizing page load, or profiling applications."
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   version: "3.1"

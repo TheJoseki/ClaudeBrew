@@ -1,6 +1,6 @@
 ---
 name: testing-patterns
-description: Testing patterns and strategies for any project. Trigger when writing tests, selecting test types, setting up test infrastructure, or reviewing test quality. Covers testing pyramid, AAA, mocking, test data, and anti-patterns.
+description: "Testing patterns and strategies for any project. Trigger when writing tests, selecting test types, setting up test infrastructure, or reviewing test quality. Covers testing pyramid, AAA, mocking, test data, and anti-patterns."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 metadata:
   version: "3.1"

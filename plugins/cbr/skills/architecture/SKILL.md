@@ -1,6 +1,6 @@
 ---
 name: architecture
-description: Architecture decision framework for any software project. Trigger when designing system structure, choosing patterns, evaluating trade-offs, or writing ADRs. Tech stack detected from PROJECT.md/CLAUDE.md.
+description: "Architecture decision framework for any software project. Trigger when designing system structure, choosing patterns, evaluating trade-offs, or writing ADRs. Tech stack detected from PROJECT.md/CLAUDE.md."
 allowed-tools: Read, Grep
 metadata:
   version: "3.1"

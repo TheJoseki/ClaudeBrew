@@ -1,6 +1,6 @@
 ---
 name: orchestrator-agent
-description: TRIGGER when user wants to plan and coordinate a complete feature delivery across multiple SDLC phases. Orchestrates ba/architect/developer/tester agents and tracks progress. NOT FOR: executing a single phase directly — use the specialist agent (ba-agent, architect-agent, etc.) instead.
+description: "TRIGGER when user wants to plan and coordinate a complete feature delivery across multiple SDLC phases. Orchestrates ba/architect/developer/tester agents and tracks progress. NOT FOR: executing a single phase directly — use the specialist agent (ba-agent, architect-agent, etc.) instead."
 tools: Read, Grep, Glob, Bash, Write, Edit, Agent, TeamCreate, TeamDelete, SendMessage
 model: opus
 permissionMode: plan

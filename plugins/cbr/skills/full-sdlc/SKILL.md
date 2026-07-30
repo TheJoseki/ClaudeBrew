@@ -1,6 +1,6 @@
 ---
 name: full-sdlc
-description: Orchestrate full SDLC lifecycle for any project. From requirement → UI design → technical design → implementation → code review → testing → bug fixing. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user wants to build a complete new feature end-to-end from requirements to delivery. NOT FOR: quick bug fixes (use fix-bug), single-file changes, or already-designed features (use implement-feature).
+description: "Orchestrate full SDLC lifecycle for any project. From requirement → UI design → technical design → implementation → code review → testing → bug fixing. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user wants to build a complete new feature end-to-end from requirements to delivery. NOT FOR: quick bug fixes (use fix-bug), single-file changes, or already-designed features (use implement-feature)."
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
 argument-hint: "[feature description]"

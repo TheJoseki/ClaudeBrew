@@ -1,6 +1,6 @@
 ---
 name: unit-test-agent
-description: TRIGGER when new code needs unit test cases written (Mode A) or the unit test suite needs execution and a pass/fail report (Mode B). Detects test runner from PROJECT.md. NOT FOR: integration or E2E tests — use integration-test-agent.
+description: "TRIGGER when new code needs unit test cases written (Mode A) or the unit test suite needs execution and a pass/fail report (Mode B). Detects test runner from PROJECT.md. NOT FOR: integration or E2E tests — use integration-test-agent."
 tools: Read, Write, Edit, Grep, Glob, Bash, SendMessage
 model: sonnet
 permissionMode: bypassPermissions

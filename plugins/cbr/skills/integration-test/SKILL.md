@@ -1,6 +1,6 @@
 ---
 name: integration-test
-description: Integration Test agent tests E2E workflows, key business workflows, and role-based access for any project. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run integration/E2E tests, test API workflows, test browser flows. NOT FOR: unit tests (use unit-test), or code review.
+description: "Integration Test agent tests E2E workflows, key business workflows, and role-based access for any project. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run integration/E2E tests, test API workflows, test browser flows. NOT FOR: unit tests (use unit-test), or code review."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
   version: "3.1"

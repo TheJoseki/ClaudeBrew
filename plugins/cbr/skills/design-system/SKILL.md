@@ -1,6 +1,6 @@
 ---
 name: design-system
-description: Design token architecture — three-layer token system (Primitive → Semantic → Component), CSS variables, Tailwind theme configuration, and component state specs. TRIGGER: user asks to create design tokens, establish a design system, set up CSS variables, configure Tailwind theme, or define component variants. Pairs with ui-ux-pro-max (design intelligence) and ui-styling (implementation).
+description: "Design token architecture — three-layer token system (Primitive → Semantic → Component), CSS variables, Tailwind theme configuration, and component state specs. TRIGGER: user asks to create design tokens, establish a design system, set up CSS variables, configure Tailwind theme, or define component variants. Pairs with ui-ux-pro-max (design intelligence) and ui-styling (implementation)."
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   version: "3.1"

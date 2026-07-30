@@ -1,6 +1,6 @@
 ---
 name: documentation-templates
-description: Provides templates and structure guidelines for README, API docs, changelogs, ADRs, and AI-friendly documentation. Use when creating documentation, structuring project docs, or setting up documentation standards.
+description: "Provides templates and structure guidelines for README, API docs, changelogs, ADRs, and AI-friendly documentation. Use when creating documentation, structuring project docs, or setting up documentation standards."
 allowed-tools: Read, Grep, Glob
 metadata:
   version: "3.1"

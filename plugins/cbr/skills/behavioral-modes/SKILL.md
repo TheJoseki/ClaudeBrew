@@ -1,6 +1,6 @@
 ---
 name: behavioral-modes
-description: Switch Claude's operational mode for different task types. Trigger: user wants to change interaction style (brainstorm, implement, debug, review, teach, ship, orchestrate).
+description: "Switch Claude's operational mode for different task types. Trigger: user wants to change interaction style (brainstorm, implement, debug, review, teach, ship, orchestrate)."
 user-invocable: false
 allowed-tools: Read, Grep
 metadata:

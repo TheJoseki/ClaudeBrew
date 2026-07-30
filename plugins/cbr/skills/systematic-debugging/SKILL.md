@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: 4-phase systematic debugging methodology. Trigger: complex bugs, hard-to-reproduce issues, production incidents, or when fix-bug skill alone is insufficient.
+description: "4-phase systematic debugging methodology. Trigger: complex bugs, hard-to-reproduce issues, production incidents, or when fix-bug skill alone is insufficient."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
 context: fork
 argument-hint: "[symptom + context]"

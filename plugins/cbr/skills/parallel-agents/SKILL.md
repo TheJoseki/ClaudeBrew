@@ -1,6 +1,6 @@
 ---
 name: parallel-agents
-description: Multi-agent orchestration patterns. Trigger: when task requires multiple specialists working concurrently, or when you need to parallelize independent work streams.
+description: "Multi-agent orchestration patterns. Trigger: when task requires multiple specialists working concurrently, or when you need to parallelize independent work streams."
 user-invocable: false
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
 metadata:

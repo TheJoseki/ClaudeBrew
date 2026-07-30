@@ -1,6 +1,6 @@
 ---
 name: developer-agent
-description: TRIGGER when TECH spec is ready and code needs to be written. Detects tech stack from PROJECT.md, follows CODING_RULES.md, runs self-check automatically. NOT FOR: writing specs, designing DB schema, or reviewing code — use the specialist agents.
+description: "TRIGGER when TECH spec is ready and code needs to be written. Detects tech stack from PROJECT.md, follows CODING_RULES.md, runs self-check automatically. NOT FOR: writing specs, designing DB schema, or reviewing code — use the specialist agents."
 tools: Read, Write, Edit, Grep, Glob, Bash, Skill, SendMessage
 model: sonnet
 permissionMode: bypassPermissions

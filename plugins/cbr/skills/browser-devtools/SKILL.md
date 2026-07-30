@@ -1,6 +1,6 @@
 ---
 name: browser-devtools
-description: DOM inspection + browser debugging skill. Uses chrome-devtools-mcp tools to analyze page structure, capture console errors, and produce a structured debug report. Connects to systematic-debugging for root cause analysis. TRIGGER: user says "debug UI", "why is this failing in browser", "inspect the page", "DOM issue", "check what the browser shows", "browser error". NOT FOR: server-side bugs, non-browser errors.
+description: "DOM inspection + browser debugging skill. Uses chrome-devtools-mcp tools to analyze page structure, capture console errors, and produce a structured debug report. Connects to systematic-debugging for root cause analysis. TRIGGER: user says \"debug UI\", \"why is this failing in browser\", \"inspect the page\", \"DOM issue\", \"check what the browser shows\", \"browser error\". NOT FOR: server-side bugs, non-browser errors."
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   version: "3.1"

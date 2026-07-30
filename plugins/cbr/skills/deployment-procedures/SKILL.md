@@ -1,6 +1,6 @@
 ---
 name: deployment-procedures
-description: Guides safe production deployments with pre-flight checks, rollback strategies, and verification procedures. TRIGGER: deploying to production, planning a release, or creating deployment workflows. NOT FOR: development environment setup or code review.
+description: "Guides safe production deployments with pre-flight checks, rollback strategies, and verification procedures. TRIGGER: deploying to production, planning a release, or creating deployment workflows. NOT FOR: development environment setup or code review."
 allowed-tools: Read, Grep, Glob, Bash
 disable-model-invocation: true
 metadata:
