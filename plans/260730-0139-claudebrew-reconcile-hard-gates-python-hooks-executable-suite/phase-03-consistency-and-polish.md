@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Consistency and polish"
-status: pending
+status: completed
 priority: P2
 effort: "1d"
 dependencies: [2]
@@ -39,11 +39,11 @@ Canonical artifact path = `docs/specs/<stage>/<TYPE>-<slug>.md` (authority `sdlc
 7. Update root `CLAUDE.md` (drift + reconciliation-gaps status).
 
 ## Success Criteria
-- [ ] One artifact-path scheme; no skill writes/reads a non-canonical `docs/specs/...` path.
-- [ ] `grep -rn "ClaudeKit" plugins/cbr` → 0.
-- [ ] `plugin.json` version bumped; CHANGELOG updated; `.coverage` gone.
-- [ ] Overlapping knowledge skills carry `TRIGGER:`/`NOT FOR:`; SDLC executor + orchestrator skills have evals.
-- [ ] `claude plugin validate ./plugins/cbr` and `claude plugin validate .` pass.
+- [x] One artifact-path scheme; no skill writes/reads a non-canonical `docs/specs/...` path.
+- [x] `grep -rn "ClaudeKit" plugins/cbr` → 0.
+- [x] `plugin.json` version bumped; CHANGELOG updated; `.coverage` gone.
+- [x] Overlapping knowledge skills carry `TRIGGER:`/`NOT FOR:`; SDLC executor + orchestrator skills have evals.
+- [x] `claude plugin validate ./plugins/cbr` and `claude plugin validate .` pass.
 
 ## Risk Assessment
 - **Rename false-positives:** "ClaudeKit" may appear in URLs/store-ids that shouldn't change — review each hit, don't blind-sed.

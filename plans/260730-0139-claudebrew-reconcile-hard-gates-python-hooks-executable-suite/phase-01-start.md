@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Real gates + Python hooks"
-status: pending
+status: completed
 priority: P1
 effort: "1.5-2.5d"
 dependencies: []
@@ -42,12 +42,12 @@ Claude Code delivers hook payloads as **JSON on stdin** (`tool_name`, `tool_inpu
 9. Extend `test_hook.py`: guard stdin block/allow (incl. case), `settings_merge.py` idempotent-merge test, master/develop/notebook/cross-drive.
 
 ## Success Criteria
-- [ ] Each guard, given a real stdin JSON payload, blocks the intended target (incl. mixed-case names) and allows others — proven by `test_hook.py`.
-- [ ] Zero `jq` and zero `bash` dependency across guards, quality-gate, and compact-saver; `hooks.json` has zero dead references.
-- [ ] **[RT-H3]** `settings_merge.py` is unit-tested for correct + idempotent registration (the runnable wiring proxy). The plan makes NO claim that a subprocess test invokes the `/cbr:setup` skill.
-- [ ] **[RT-C3]** `grep -rn "active whenever\|live whenever\|auto-register" plugins/cbr/{README.md,skills/worktree}` returns 0 always-on claims; all worktree docs describe opt-in.
-- [ ] `/cbr:setup` writes an absolute, resolvable cache path (not `${CLAUDE_PROJECT_DIR}`) and the doctor refuses to claim enforcement when the gate is not installed.
-- [ ] `enforce-worktree.py` no longer false-denies cross-drive.
+- [x] Each guard, given a real stdin JSON payload, blocks the intended target (incl. mixed-case names) and allows others — proven by `test_hook.py`.
+- [x] Zero `jq` and zero `bash` dependency across guards, quality-gate, and compact-saver; `hooks.json` has zero dead references.
+- [x] **[RT-H3]** `settings_merge.py` is unit-tested for correct + idempotent registration (the runnable wiring proxy). The plan makes NO claim that a subprocess test invokes the `/cbr:setup` skill.
+- [x] **[RT-C3]** `grep -rn "active whenever\|live whenever\|auto-register" plugins/cbr/{README.md,skills/worktree}` returns 0 always-on claims; all worktree docs describe opt-in.
+- [x] `/cbr:setup` writes an absolute, resolvable cache path (not `${CLAUDE_PROJECT_DIR}`) and the doctor refuses to claim enforcement when the gate is not installed.
+- [x] `enforce-worktree.py` no longer false-denies cross-drive.
 
 ## Risk Assessment
 - **[RT-H2] Accepted posture change (explicit):** with opt-in, a user who never runs `/cbr:setup` — including all headless `claude -p`/CI runs, which cannot answer the confirm — gets **no base-branch gate by default**. This intentionally relaxes the audit's "hard-mandatory" framing to "opt-in enforced"; the doctor must never overstate it. Accepted per locked-decision #2.
