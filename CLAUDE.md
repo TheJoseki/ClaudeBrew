@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**ClaudeBrew** is a harness-engineering toolkit that implements a **full software-development lifecycle (SDLC) as Claude Code skills + role agents** — each stage handing a structured artifact to the next:
+**ClaudeBrew** is a harness-engineering toolkit that implements a **full software-development lifecycle (SDLC) as one layer of self-sufficient, gated Claude Code skills** over a small pool of general capability agents — each stage handing a structured artifact to the next:
 
 ```
 brainstorming → (worktree) → requirement → UI/tech design → implement → review → test → security → delivery → retro
@@ -13,7 +13,7 @@ brainstorming → (worktree) → requirement → UI/tech design → implement �
 Two bodies of work sit side by side in the tree — know which one you're touching:
 
 - **The reference core.** `brainstorming` (Stage 1) and `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) set the house style every sibling is meant to imitate — read them first. See "Worktree isolation" below.
-- **An imported SDLC engine (now reconciled).** The tree also carries ~40 skills, 10 role **agents** (`plugins/cbr/agents/*-agent.md`), and 16 **rules** (`plugins/cbr/rules/*.md`) that together form an orchestrated multi-agent pipeline (`full-sdlc`, `orchestrate`). This suite was imported from a sibling project and has since been adapted to ClaudeBrew's plugin layout — renamed from **"ClaudeKit"**, frontmatter fixed, hooks ported to Python, so `claude plugin validate ./plugins/cbr` now passes. A few conventions are still being unified: see "The SDLC engine", "Reconciliation status" below, and `docs/BACKLOG-REGISTRY.md`.
+- **The single-layer SDLC skills.** The tree carries ~29 stage/knowledge **skills**, a **4-agent capability pool** (`plugins/cbr/agents/{researcher,developer,reviewer,tester}.md`), and ~13 **rules** (`plugins/cbr/rules/*.md`). This suite was imported from a sibling project ("ClaudeKit") as a two-layer orchestrator→role-agent engine, then **collapsed to a single layer** (the v0.3.0 pivot — see `plans/260730-2316-single-layer-sdlc-refactor/`): the orchestrators and 10 rigid role agents were removed; each stage skill is now self-sufficient, writes its artifact, applies its gate, and **stops**. Skills spawn pool agents on demand (fresh-eyes gate verdicts, `--parallel` workers) — a flat toolbox, not an orchestrated pipeline. `claude plugin validate ./plugins/cbr` passes. See "The SDLC engine" below.
 
 This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `plugins/cbr/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
 
@@ -27,15 +27,16 @@ ClaudeBrew/                          # repo root = marketplace catalog + dev wor
 ├── .claude/settings.json            # DEV-ONLY harness settings (dogfooding; not shipped)
 ├── plugins/cbr/                      # ── THE SHIPPED UNIT (copied to users' plugin cache) ──
 │   ├── .claude-plugin/plugin.json    # name "cbr", displayName "ClaudeBrew", version (source of truth)
-│   ├── skills/<name>/SKILL.md        # ~40 skills: brainstorming+worktree (reference), setup, + imported SDLC suite
-│   ├── agents/<role>-agent.md        # 10 role subagents spawned by the orchestrator skills
-│   ├── rules/*.md                    # 16 always-loaded convention files (gates, artifact paths, standards)
-│   └── hooks/{hooks.json, *.py, *.js, *.sh}  # Python guards+gate, JS/bash context hooks — see "The SDLC engine"
+│   ├── skills/<name>/SKILL.md        # ~29 skills: brainstorming+worktree (reference), setup, + single-layer SDLC stages
+│   ├── agents/<name>.md              # 4 general capability agents (researcher/developer/reviewer/tester) skills spawn on demand
+│   ├── rules/*.md                    # ~13 always-loaded convention files (gates, artifact paths, standards)
+│   ├── schemas/verdict-artifact.schema.json  # shape of a gate verdict (verdict-gate.py input)
+│   └── hooks/{hooks.json, *.py, *.sh}  # Python guards + skill-invoked verdict-gate, bash context hooks — see "The SDLC engine"
 ├── evals/                            # DEV-ONLY trigger/behavioral evals + the hook unit test
 └── examples/                         # sample artifacts (e.g. a brainstorm output)
 ```
 
-Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced, e.g. `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:orchestrate`, `/cbr:full-sdlc`, `/cbr:setup`.
+Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced, e.g. `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:implement-feature`, `/cbr:review-code`, `/cbr:setup`.
 
 **Users install** (the marketplace's relative `source` requires a git add, not a raw `marketplace.json` URL):
 ```
@@ -63,39 +64,32 @@ plugins/cbr/skills/<stage>/
 
 SKILL.md stays lean (<500 lines); deep procedure lives in `references/` and is pulled in on demand (for `brainstorming`: `clarify-loop.md`, `dar-analysis.md`, `artifact-template.md`, `teammate-mode.md`). **Read `plugins/cbr/skills/brainstorming/SKILL.md` and its references first** — that is the house style to match before authoring a sibling skill.
 
-### The SDLC engine (imported suite — how the pieces fit)
+### The SDLC engine (single layer — how the pieces fit)
 
-The imported half turns the flat skill list into a **two-layer, artifact-driven pipeline**. To understand it, read `orchestrate/SKILL.md`, `full-sdlc/SKILL.md`, `rules/sdlc-conventions.md`, and a couple of `agents/*.md` together — no single file shows the whole shape.
+The SDLC is a **flat set of self-sufficient, artifact-driven stage skills** — no orchestrator. To understand it, read `rules/sdlc-conventions.md` (the authority), a stage skill (`analyze-requirement/SKILL.md`), and a gate skill (`review-code/SKILL.md`) together.
 
-- **Layer 1 — orchestrator skills** (`full-sdlc`, `orchestrate`) run in the *main* context. Each SDLC phase is **one `Agent` tool call** that spawns an isolated role agent; the orchestrator verifies that phase's artifact, pauses at human-approval gates, and **never does the work itself**. `intelligent-routing` picks a skill/agent from a raw request; `parallel-agents` and `retro` are multi-agent patterns the orchestrator invokes.
-- **Layer 2 — role agents** (`agents/*-agent.md`: ba, ui-designer, architect, developer, code-review, unit-test, integration-test, security-tester, bug-fix, orchestrator). Each has frontmatter (`tools`, `model`, `permissionMode`, `memory: project`) and a spec-driven body. Names ending in `-agent` are **load-bearing**: the `.*-agent` matcher in `hooks.json` is what binds the `SubagentStart` context-injection and `SubagentStop` quality-gate hooks to them.
-- **The contract is the artifact, written into the *user's* `docs/`** (not this repo). `rules/sdlc-conventions.md` is the authority — it holds the **canonical artifact-path table** (`docs/specs/requirements/SRS-*`, `docs/specs/detail-design/TECH-*`, `docs/reviews/`, `docs/test-reports/`, …) and the **CMMI-style quality gates G1–G8** (each gate's pass criteria + who decides). Trust that file over any single skill's inline paths.
-- **State lives in project-level registries** the orchestrators create in the user's repo: `docs/plans/PLAN-REGISTRY.md`, `DECISION-LEDGER.md`, `BACKLOG-REGISTRY.md`, `docs/memory/PROJECT-MEMORY.md` — plus a 4-tier memory convention (core rules → project registries → per-agent `.claude/agent-memory/` → session work-logs).
-- **Skill categories** (buckets, not an exhaustive list — the 40 names rot fast): *orchestrators* (full-sdlc, orchestrate, intelligent-routing, retro…), *stage executors* (analyze-requirement, design-screen/function, implement-feature, review-code, unit/integration-test, fix-bug, create-pr…), *knowledge/reference* (architecture, clean-code, database-design, testing-patterns, ui-ux-pro-max, vulnerability-scanner…), and *infrastructure* (setup, lint-and-validate, run-tests; `context-inject` self-marked DEPRECATED).
+- **Stage skills do the work in the main context.** Each stage (`analyze-requirement`, `design-screen`, `design-function`, `implement-feature`, `review-code`, `unit-test`, `integration-test`, `vulnerability-scanner`, `fix-bug`, …) reads its input artifact, does its work, writes its output artifact, applies its gate, and **stops** for the user. No skill auto-invokes the next — the user drives stage-to-stage (house style: hard gate, no auto-cascade).
+- **The capability pool** (`agents/{researcher,developer,reviewer,tester}.md`) is a flat toolbox skills spawn **on demand**, not a pipeline. General personas with per-agent `model` tiering + selective `memory: project`. Two uses: (1) `--parallel` mode spawns `cbr:developer` workers under strict file-ownership; (2) **gate skills spawn a *fresh* `cbr:reviewer`/`cbr:tester`** to produce the verdict so the implementer never self-grades. Agent names are NOT matched by any hook (no `.*-agent` matcher exists anymore).
+- **Gates are "verdict + user".** A gate skill spawns the fresh pool agent, which writes a **verdict artifact** (JSON, `schemas/verdict-artifact.schema.json`). The skill then runs `hooks/verdict-gate.py --gate <G> --artifact <path>` via `Bash` (schema + secret-scan + per-gate policy; **fails closed**), and `AskUserQuestion` on block. No automatic FAIL→fix loop — the user decides (e.g. re-invoke `fix-bug`).
+- **The contract is the artifact, written into the *user's* `docs/`** (not this repo). `rules/sdlc-conventions.md` is the authority — it holds the **canonical artifact-path table** and the **CMMI-style quality gates G1–G8** (each gate's pass criteria + who decides; "Decided By" is now the owning skill's verdict + user). Trust that file over any single skill's inline paths. Project memory is just the `plan.md`/`phase-*.md` files — the old orchestrator registries (`PLAN-REGISTRY`, `DECISION-LEDGER`, `BACKLOG-REGISTRY`, `PROJECT-MEMORY`) were dropped with the orchestrators.
+- **Skill categories** (buckets, not exhaustive): *stage executors* (analyze-requirement, design-screen/function, implement-feature, review-code, unit/integration-test, vulnerability-scanner, fix-bug), *knowledge/reference* (architecture [absorbs api/db design], clean-code, testing-patterns, design-system [absorbs ui-styling + ui-ux-pro-max], code-review-checklist…), and *infrastructure* (setup, lint-and-validate, run-tests, retro).
 
-Its **hooks** (`hooks.json`) go well beyond the committed gate. The security/gate hooks are **Python**, reading the tool payload from stdin JSON: `SubagentStop` (matcher `.*-agent`) runs `subagent-quality-gate.py`; `PreToolUse` runs `protect-files.py` (on `Edit|Write`, and on `Read` with a `read` arg — a secrets/lock-file guard), `guard-bash.py` (`Bash`), and `guard-webfetch.py` (`WebFetch`); `PreCompact` runs `compact-context-saver.py`. Context re-injection stays in JS/bash: `SubagentStart` (matcher `.*-agent`) runs `subagent-context-inject.js`; `PostCompact`/`SessionStart:compact` re-inject via `post-compact-reinject.sh`/`re-inject-context.sh`; `Stop` runs `post-edit-reminder.sh`. (The earlier `.sh` guards read a non-existent `$CLAUDE_TOOL_INPUT` and never fired — they were deleted; the dead `pixel-status-update.js` calls are gone.)
+Its **hooks** (`hooks.json`) are all **general** (tool/event matchers, never a `.*-agent` matcher). Python, reading the tool payload from stdin JSON: `PreToolUse` runs `protect-files.py` (on `Edit|Write`, and on `Read` with a `read` arg — a secrets/lock-file guard), `guard-bash.py` (`Bash`), `guard-webfetch.py` (`WebFetch`); `PreCompact` runs `compact-context-saver.py`. Bash context hooks: `PostCompact`/`SessionStart:compact` re-inject via `post-compact-reinject.sh`/`re-inject-context.sh`; `Stop` runs `post-edit-reminder.sh`. Separately, **`verdict-gate.py` is a *skill-invoked* validator, not a registered hook** — it needs no matcher and works regardless of who wrote the artifact. (The former `.*-agent` `SubagentStart` context-inject + `SubagentStop` quality-gate hooks were removed with the role agents.)
 
-### Reconciliation status (imported suite)
+### Single-layer pivot (v0.3.0) — what changed
 
-The imported suite has been reconciled to ClaudeBrew's layout — `claude plugin validate ./plugins/cbr` passes with 0 errors. Resolved:
+The imported suite was first *reconciled* (v0.2.0: renamed ClaudeKit→ClaudeBrew, fixed `${CLAUDE_PLUGIN_ROOT}` paths, ported hooks to Python, double-quoted 33 `description` scalars) and then **collapsed from two layers to one** (v0.3.0). `claude plugin validate ./plugins/cbr` passes with 0 errors. The pivot:
 
-- **"ClaudeKit" fully renamed to "ClaudeBrew"** — 0 remaining references under `plugins/cbr/`.
-- **Agent/rule paths fixed** to `${CLAUDE_PLUGIN_ROOT}/...`. The two `.claude/` references at `rules/sdlc-conventions.md:241,248` are intentional and correct — they describe the *user's own* `.claude/` dir (their rules/agent files), not this plugin's tree.
-- **Frontmatter parses.** 33 skills/agents had an unquoted `description:` whose `TRIGGER:`/`NOT FOR:` text carried a `: ` that broke YAML; the `description` scalar is now double-quoted. Keeping it quoted is load-bearing — unquoting reintroduces the 33 parse failures.
-- **Hooks ported to Python** (see the hooks paragraph above); the dead `pixel-status-update.js` calls were removed.
-- **`plugin.json` bumped `0.1.0` → `0.2.0`**; stray `.coverage` cruft removed.
+- **Removed** the orchestrator skills (`full-sdlc`, `orchestrate`, `intelligent-routing`, `parallel-agents`, `behavioral-modes`, deprecated `context-inject`), the **10 rigid role agents**, the `.*-agent` `SubagentStart`/`SubagentStop` hooks, three orchestration-only rules, and the 4 project registries.
+- **Added** the 4-agent capability pool, `--parallel` mode on execution skills, and the skill-invoked verdict gate (`hooks/verdict-gate.py` + `schemas/verdict-artifact.schema.json`, 98% test coverage in `evals/test_verdict_gate.py`).
+- **Merged** knowledge clusters: `ui-styling`+`ui-ux-pro-max`→`design-system`; `api-patterns`+`database-design`→`architecture`. `retro` runs solo; `create-pr` folded into `implement-feature`.
+- **Load-bearing invariant (unchanged):** every skill/agent `description:` scalar stays **double-quoted** — its `TRIGGER:`/`NOT FOR:` text carries a `: ` that breaks YAML unquoted (would reintroduce parse failures).
 
-Also resolved (P2 consistency, same reconcile):
-
-- **Artifact-path unified** to `docs/specs/<stage>/<TYPE>-<slug>.md` — `brainstorms/`, `worktrees/`, `decisions/` folded into the authority table; no date-based or `docs/decisions/` paths remain.
-- **All 40 skills ship `evals/evals.json`** (was 2), each 2 positive + 1 boundary case.
-- **`TRIGGER:`/`NOT FOR:` guards** added to the overlapping knowledge skills, `description` scalars kept double-quoted.
-
-No reconciliation gaps from the original audit remain open (see `docs/BACKLOG-REGISTRY.md`).
+Plan + ClaudeKit study: `plans/260730-2316-single-layer-sdlc-refactor/`.
 
 ### Conventions inherited across the suite
 
-ClaudeBrew's house style, set by `brainstorming` (the reference implementation). Reconciled skills should follow these; the **imported suite still diverges on a few** — artifact paths especially (see "Reconciliation status" and `docs/BACKLOG-REGISTRY.md`):
+ClaudeBrew's house style, set by `brainstorming` (the reference implementation). All single-layer skills follow these:
 
 - **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`); once installed they namespace to `/cbr:<stage>`.
 - **Handoff artifacts** at `docs/specs/<stage>/<TYPE>-<slug>.md` (e.g. `brainstorms/BRAINSTORM-`, `worktrees/WORKTREE-`, `requirements/SRS-`, `detail-design/TECH-`; in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
