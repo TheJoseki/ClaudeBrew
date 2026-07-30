@@ -2,6 +2,23 @@
 
 All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-07-31
+
+Single-layer pivot: collapsed the imported two-layer orchestrator→role-agent engine into one layer of self-sufficient, gated stage skills over a small pool of general capability agents. Refactor plan + ClaudeKit study under `plans/260730-2316-single-layer-sdlc-refactor/`.
+
+### Removed
+- **Orchestrators + meta-skills** — `full-sdlc`, `orchestrate`, `parallel-agents`, `behavioral-modes`, `intelligent-routing`, and the deprecated `context-inject`. They forced entry through an orchestrator and over-cascaded; the house style is hard-gate + no auto-cascade.
+- **The 10 rigid SDLC role agents** (`ba-agent`, `architect-agent`, …, `orchestrator-agent`) and the `.*-agent` `SubagentStart`/`SubagentStop` hooks that bound to them (`subagent-context-inject.js`, `subagent-quality-gate.py`). Six general hook-guards remain.
+- **Orchestration-only rules** (`agent-comms-protocol`, `model-profiles`, `agent-best-practices`) and the orchestrator-maintained registries; `plan.md`/`phase-*.md` are the project memory.
+
+### Added
+- **Capability-agent pool** — a flat toolbox skills spawn on demand: `researcher`, `developer`, `reviewer`, `tester` (general personas with per-agent `model` tiering + selective `memory: project`). No orchestrator, no role-pipeline.
+- **`--parallel` mode** on execution skills — spawns `cbr:developer` workers under strict file-ownership.
+- **Verdict gate (`hooks/verdict-gate.py` + `schemas/verdict-artifact.schema.json`)** — gate skills spawn a fresh `cbr:reviewer`/`cbr:tester` for a no-self-grade verdict, then run the validator (schema + secret-scan + per-gate policy; fail-closed) with `AskUserQuestion` on block. Skill-invoked, no matcher. 98% test coverage.
+
+### Changed
+- **Merged knowledge clusters** — UI (`ui-styling` + `ui-ux-pro-max` → `design-system`) and technical-design (`api-patterns` + `database-design` → `architecture`), each one lean SKILL.md + references. `retro` reworked to run solo. `create-pr` folded into `implement-feature`.
+
 ## [0.2.0] — 2026-07-30
 
 Reconcile release: made the advertised "hard gates" real, ported hooks to Python, and made the imported SDLC suite executable. Reconcile audit + plan under `plans/`.
