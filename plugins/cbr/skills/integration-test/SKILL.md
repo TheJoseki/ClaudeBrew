@@ -169,7 +169,7 @@ the user re-invokes `/fix-bug` and then this skill for R[n+1].
 **Skill does NOT trigger for:**
 - "Write unit tests for the order service" (use unit-test)
 - "Review the integration test code quality" (use review-code)
-- "Run all tests including unit tests" (use run-tests)
+- "Run all tests including unit tests" (use validate-and-test)
 
 **Expected outputs:**
 - Artifact (Mode A): `docs/test-cases/ITC-[feature].md`
@@ -187,6 +187,6 @@ the user re-invokes `/fix-bug` and then this skill for R[n+1].
 |-----------|-------|------|
 | Parallel with | `implement-feature` | Mode A — write ITC alongside implementation (Phase 4c) |
 | Parallel with | `unit-test` | Mode A — both created concurrently; unit tests execute first |
-| After Mode A | `run-tests` | Mode B — execute the ITC document just created |
+| After Mode A | `validate-and-test` | Mode B — execute the ITC document just created |
 | On FAIL (Mode B) | `fix-bug` | Fix integration test failures |
 | Related | `architecture` | For REST API test patterns and endpoint chain design |

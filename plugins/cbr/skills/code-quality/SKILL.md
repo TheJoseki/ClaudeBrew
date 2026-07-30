@@ -1,19 +1,30 @@
 ---
-name: clean-code
-description: "Applies clean code principles to any codebase. Trigger when refactoring or establishing coding standards. Covers SRP, DRY, KISS, YAGNI, naming, function rules, and AI-specific coding style. TRIGGER: user wants clean-code principles / refactor guidance. NOT FOR: actively reviewing a specific diff or PR (review-code)."
-allowed-tools: Read, Grep
+name: code-quality
+description: "Clean-code principles and code-review checklists for any codebase. Covers SRP, DRY, KISS, YAGNI, naming, function rules, refactor guidance, AI coding style, plus comprehensive review checklists for correctness, security, performance, quality, and testing, with comment conventions and verdict criteria. TRIGGER: user wants clean-code principles, refactor guidance, coding standards, a code-review checklist, or review criteria to apply. NOT FOR: actively reviewing a specific diff or PR and producing findings/verdict (review-code)."
+allowed-tools: Read, Grep, Glob
 metadata:
   version: "3.1"
-  category: domain-guidance
+  category: quality
 ---
 
-# Clean Code
+# Code Quality
 
 $ARGUMENTS
 
 ---
 
-## Core Principles
+Two halves — use whichever the request calls for:
+
+- **Writing code** — principles, naming, function and structure rules (refactoring, establishing standards).
+- **Reviewing code** — checklist, comment conventions, verdict criteria (preparing a review, setting review standards).
+
+The shared **Anti-Patterns** table and **Self-Check** apply to both.
+
+---
+
+## Part A — Writing Clean Code
+
+### Core Principles
 
 | Principle | Rule |
 | --------- | ---- |
@@ -23,9 +34,7 @@ $ARGUMENTS
 | YAGNI | Do not implement what is not currently needed |
 | Fail Fast | Validate inputs early; return/throw before the happy path |
 
----
-
-## Naming Rules
+### Naming Rules
 
 | Context | Convention |
 | ------- | ---------- |
@@ -39,9 +48,7 @@ Rules:
 - No abbreviations unless universally understood (`url`, `id`, `dto`)
 - If you need a comment to explain a name, rename it
 
----
-
-## Function Rules
+### Function Rules
 
 1. **Do one thing** — if you need "and" to describe it, split it
 2. **Max 3 parameters** — group related params into an object beyond that
@@ -49,9 +56,7 @@ Rules:
 4. **Side effects must be obvious from the name**
 5. **Return early** — use guard clauses to avoid deep nesting
 
----
-
-## Code Structure
+### Code Structure
 
 | Pattern | Apply |
 | ------- | ----- |
@@ -64,9 +69,7 @@ Rules:
 - Why (not what) — business rationale, regulatory constraint
 - Known limitation with a TODO referencing an issue tracker
 
----
-
-## AI Coding Style
+### AI Coding Style
 
 1. **Be direct** — write final code, not a draft
 2. **Fix immediately** — spot a bug while implementing? Fix it in the same change
@@ -77,15 +80,84 @@ Rules:
 
 ---
 
+## Part B — Reviewing Code
+
+### Review Checklist
+
+#### Correctness
+
+- [ ] Code does what it's supposed to do
+- [ ] Edge cases handled
+- [ ] Error handling in place
+- [ ] No obvious bugs
+
+#### Security
+
+- [ ] Input validated and sanitized
+- [ ] No SQL/NoSQL injection vulnerabilities
+- [ ] No XSS or CSRF vulnerabilities
+- [ ] No hardcoded secrets or credentials
+- [ ] AI-specific: protection against prompt injection (if applicable)
+
+#### Performance
+
+- [ ] No N+1 queries
+- [ ] No unnecessary loops or allocations
+- [ ] Appropriate caching
+- [ ] Bundle size impact considered
+
+#### Code Quality
+
+- [ ] Clear, descriptive naming
+- [ ] DRY — no duplicate code
+- [ ] SOLID principles followed
+- [ ] Appropriate abstraction level
+- [ ] No magic numbers
+
+#### Testing
+
+- [ ] Unit tests for new/changed code
+- [ ] Edge cases tested
+- [ ] Tests are readable and maintainable
+
+#### Documentation
+
+- [ ] Complex logic explained
+- [ ] Public APIs documented
+- [ ] README updated if needed
+
+### Review Comment Conventions
+
+| Prefix | Meaning | Blocking |
+| ------ | ------- | -------- |
+| BLOCKING | Must fix before merge | Yes |
+| SUGGESTION | Recommended improvement | No |
+| NIT | Minor style preference | No |
+| QUESTION | Needs clarification | Maybe |
+
+### Review Verdicts
+
+| Verdict | Criteria |
+| ------- | -------- |
+| PASS | No blocking issues, ready to merge |
+| NEEDS WORK | Has blocking issues, needs fixes |
+| BLOCKED | Critical issues (security, data loss risk) |
+
+---
+
 ## Anti-Patterns
 
 | Anti-Pattern | Fix |
 | ------------ | --- |
-| Magic numbers (`price * 1.08`) | Named constant (`TAX_RATE = 0.08`) |
+| Magic numbers (`price * 1.08`, `if status === 3`) | Named constant (`TAX_RATE = 0.08`, `Status.ACTIVE`) |
 | God object | Split by responsibility |
 | Deep nesting (>3 levels) | Guard clauses + early returns |
+| Long functions (100+ lines) | Split into focused functions |
 | Long parameter list (>3) | Parameter object |
 | Boolean traps (`render(true, false)`) | Named options object |
+| `any` type usage | Proper type definitions |
+| Catch-all error handlers | Specific error handling |
+| `console.log` in production | Proper logging framework |
 | Dead code | Delete it — use version control |
 | Inconsistent abstraction levels | Extract low-level to helper |
 
@@ -94,10 +166,10 @@ Rules:
 ## Optional: Decision Log
 
 If significant recommendations were made this session, write a brief decision record to:
-`docs/specs/decisions/ADR-clean-code-[YYYYMMDD].md`
+`docs/specs/decisions/ADR-code-quality-[YYYYMMDD].md`
 
 ```markdown
-## Clean Code Review — [YYYYMMDD]
+## Code Quality Review — [YYYYMMDD]
 
 **Scope**: [file/module/feature analyzed]
 **Top findings**: [3-5 key issues identified]

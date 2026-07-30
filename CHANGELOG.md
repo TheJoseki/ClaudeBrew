@@ -18,6 +18,7 @@ Single-layer pivot: collapsed the imported two-layer orchestrator→role-agent e
 
 ### Changed
 - **Merged knowledge clusters** — UI (`ui-styling` + `ui-ux-pro-max` → `design-system`) and technical-design (`api-patterns` + `database-design` → `architecture`), each one lean SKILL.md + references. `retro` reworked to run solo. `create-pr` folded into `implement-feature`.
+- **Further knowledge consolidation** — `lint-and-validate` + `run-tests` → `validate-and-test`; `testing-patterns` + `tdd-workflow` → `testing-strategy`; `clean-code` + `code-review-checklist` → `code-quality`; `systematic-debugging` folded into `fix-bug/references/`. Net skills: 40 → 25.
 
 ## [0.2.0] — 2026-07-30
 

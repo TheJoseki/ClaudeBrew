@@ -1,24 +1,11 @@
----
-name: systematic-debugging
-description: "4-phase systematic debugging methodology. Trigger: complex bugs, hard-to-reproduce issues, production incidents, or when fix-bug skill alone is insufficient."
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
-context: fork
-argument-hint: "[symptom + context]"
-metadata:
-  version: "3.1"
-  category: core-sdlc
----
-
 # Systematic Debugging — 4-Phase Evidence-Based Methodology
 
-$ARGUMENTS
+Load this reference when the direct fix path in `SKILL.md` is not enough: intermittent
+issue, production incident, unknown root cause, a fix that was attempted but the bug
+recurs, or a complex multi-layer issue. For a known bug with a clear location and a
+quick fix, stay on the main `SKILL.md` steps — do not load this.
 
----
-
-## When to Use This Skill vs. fix-bug
-
-- **fix-bug skill**: Known bug with clear location, quick fix, test report references
-- **systematic-debugging skill**: Intermittent issue, production incident, unknown root cause, fix attempted but bug recurs, complex multi-layer issue
+Work the four phases in order. Do not skip ahead.
 
 ---
 
@@ -176,14 +163,13 @@ Apply the minimal fix, then verify thoroughly.
 
 ---
 
-## Skill Connections
+## Returning to the main workflow
 
-| Direction | Skill | When |
-|-----------|-------|------|
-| Called from | `fix-bug` | Bug is complex, intermittent, or direct fix failed after 2 rounds |
-| After Phase 3 | `fix-bug` | Root cause identified — hand off for minimal fix implementation |
-| After Phase 4 | `run-tests` | Verify fix with full regression suite |
-| Pairs with | `vulnerability-scanner` | When root cause is a security vulnerability |
+| After | Do |
+|-------|-----|
+| Phase 3 (root cause identified) | Return to `SKILL.md` Step 4 and implement the minimal fix |
+| Phase 4 (fix verified) | Run `validate-and-test` for the full regression suite, then write the bug report in `SKILL.md` Step 6 |
+| Root cause is a security vulnerability | Pair with `vulnerability-scanner` before closing |
 
 ---
 

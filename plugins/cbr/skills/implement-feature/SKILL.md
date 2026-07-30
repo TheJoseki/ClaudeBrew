@@ -120,7 +120,7 @@ If errors exist → FIX before continuing.
 
 ## Step 5: Create Work Log (MANDATORY — DO NOT SKIP)
 
-> **Next steps after work log**: `/lint-and-validate` → `/review-code` (mandatory quality gate before PR)
+> **Next steps after work log**: `/validate-and-test` → `/review-code` (mandatory quality gate before PR)
 
 Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
 
@@ -195,7 +195,7 @@ migrations are reversible, i18n complete, role-based access verified.
 |-----------|-------|------|
 | Before this | `design-function` | TECH spec does not exist yet — design first |
 | Before this | `design-screen` | SCREEN spec does not exist yet (if frontend work needed) |
-| After this | `lint-and-validate` | Always — run type check + lint immediately after implementation |
+| After this | `validate-and-test` | Always — run type check + lint immediately after implementation |
 | After this | `review-code` | Always — mandatory quality gate before creating a PR |
 | Parallel | `unit-test` | Mode A — write UTC document at same time as implementation (Phase 4b) |
 | Parallel | `integration-test` | Mode A — write ITC document at same time as implementation (Phase 4c) |

@@ -1,9 +1,0 @@
-{
-  "skill_name": "systematic-debugging",
-  "notes": "Fires for intermittent/hard-to-reproduce bugs, production incidents, or recurring bugs where a quick fix failed; runs the 4-phase reproduce/isolate/root-cause/fix+verify method. Boundary routes known-location quick fixes to fix-bug (per SKILL.md 'When to Use' split, lines 18-21).",
-  "evals": [
-    {"id": 1, "prompt": "We have an intermittent 403 error in production that we can't reproduce reliably, and a quick patch didn't stop it. Help me debug this properly.", "expected_output": "Runs the 4-phase methodology: establishes a reproduction record, isolates layer-by-layer (auth guard/validation/ORM/token), does 5-Whys root-cause analysis, applies a minimal fix with verification plus a regression test, and emits a Debug Summary (symptom/root cause/fix/prevention).", "files": []},
-    {"id": 2, "prompt": "This bug keeps coming back after every fix — the order total is occasionally wrong for some users. I need the actual root cause, not another band-aid.", "expected_output": "Recognizes a recurring multi-layer issue, refuses to fix before reproducing, isolates the smallest trigger, drives 5-Whys to a root-cause statement, then fixes and verifies, and documents a bug report under docs/bug-reports/.", "files": []},
-    {"id": 3, "prompt": "There's a typo in this function — the variable is spelled `usr` instead of `user` on line 12. Fix it.", "expected_output": "Should route to fix-bug / not fire, because the bug has a known location and an obvious quick fix — systematic-debugging is for intermittent, unknown-root-cause, or recurring bugs, not trivial known fixes.", "files": []}
-  ]
-}

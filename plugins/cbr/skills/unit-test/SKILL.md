@@ -167,7 +167,7 @@ skill for R[n+1].
 **Skill does NOT trigger for:**
 - "Write integration tests for the order API workflow" (use integration-test)
 - "Review the order service code" (use review-code)
-- "Run all tests" (use run-tests)
+- "Run all tests" (use validate-and-test)
 
 **Expected outputs:**
 - Artifact (Mode A): `docs/test-cases/UTC-[feature].md`
@@ -185,6 +185,6 @@ skill for R[n+1].
 |-----------|-------|------|
 | Parallel with | `implement-feature` | Mode A — write UTC alongside implementation (Phase 4b) |
 | Parallel with | `integration-test` | Mode A — both test types created in same phase concurrently |
-| After Mode A | `run-tests` | Mode B — execute the UTC document just created |
+| After Mode A | `validate-and-test` | Mode B — execute the UTC document just created |
 | On FAIL (Mode B) | `fix-bug` | Fix failing tests found during execution round |
-| Related | `tdd-workflow` | For strict TDD — write tests *before* implementation |
+| Related | `testing-strategy` | For strict TDD — write tests *before* implementation |
