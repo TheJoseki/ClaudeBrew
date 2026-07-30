@@ -2,7 +2,7 @@
 description: DAR (Decision Analysis and Resolution) protocol — structured evaluation for decisions with uncertainty. Produces DECISION-LEDGER entries. Always loaded alongside sdlc-conventions.md.
 ---
 
-# DAR Evaluation Protocol — ClaudeKit
+# DAR Evaluation Protocol — ClaudeBrew
 
 > Structured process for evaluating alternatives BEFORE making a decision. DECISION-LEDGER records WHAT was decided; DAR defines HOW to evaluate alternatives.
 

@@ -2,7 +2,7 @@
 description: Universal agent best practices — ACI tool priority, Think Before Acting, subtask instructions, context management, escalation triggers. Always loaded alongside coding-standards.md and sdlc-conventions.md.
 ---
 
-# Agent Best Practices — ClaudeKit
+# Agent Best Practices — ClaudeBrew
 
 > Applies to ALL agents in every session. These rules operationalize Anthropic's ACI (Agent-Computer Interface) and multi-agent orchestration principles.
 

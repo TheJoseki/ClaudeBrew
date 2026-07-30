@@ -1,3 +1,7 @@
 # Claude Code worktrees — isolated working trees created by the `worktree` skill.
 # Each worktree has its own working files that must not be tracked by the parent.
 .claude/worktrees/
+
+# Python coverage artifacts
+.coverage
+**/.coverage

@@ -3,7 +3,7 @@ description: Agent communication protocol — file-based mailbox for inter-agent
              Read this when writing to or reading from docs/agent-comms/ in any project.
 ---
 
-# Agent Communication Protocol — ClaudeKit
+# Agent Communication Protocol — ClaudeBrew
 
 ## Purpose
 

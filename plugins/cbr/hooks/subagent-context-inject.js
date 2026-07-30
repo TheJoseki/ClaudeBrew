@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // subagent-context-inject.js — SubagentStart hook
-// Auto-injects CAO (Context-Aware Orchestration) context into ClaudeKit agents.
+// Auto-injects CAO (Context-Aware Orchestration) context into ClaudeBrew agents.
 // Ported from .claude/skills/context-inject/SKILL.md with scoring + token budget.
 //
 // Event: SubagentStart (matcher: .*-agent)

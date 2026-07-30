@@ -2,7 +2,7 @@
 description: Proactive risk management and corrective action (CAR) for materialized issues. Complements FLAG system (reactive blockers) with forward-looking risk identification.
 ---
 
-# Risk & Issue Management — ClaudeKit
+# Risk & Issue Management — ClaudeBrew
 
 > Proactive risk identification + structured corrective action when issues materialize. FLAG system handles urgent blockers; this rule handles systematic risk tracking and root-cause resolution.
 

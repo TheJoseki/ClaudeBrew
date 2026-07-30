@@ -55,7 +55,7 @@ HTML structure (desktop example — apply same pattern for mobile with 390px wid
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1920, initial-scale=1.0">
-  <title>[Feature] Desktop — ClaudeKit Prototype</title>
+  <title>[Feature] Desktop — ClaudeBrew Prototype</title>
   <style>
     :root {
       --color-primary: [hex from Step 5];
@@ -487,9 +487,9 @@ For each generated screen:
 
 3. Call `get_screen_metadata(projectId, screenId)` → verify screen title, dimensions, creation date.
 
-### Phase 5: Map Design DNA to ClaudeKit Design Tokens
+### Phase 5: Map Design DNA to ClaudeBrew Design Tokens
 
-After all screens are generated, map Stitch's Design DNA to the ClaudeKit 3-layer token format:
+After all screens are generated, map Stitch's Design DNA to the ClaudeBrew 3-layer token format:
 
 **Primitive layer** — from Design DNA raw values:
 ```

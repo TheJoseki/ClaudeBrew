@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ClaudeKit — Detect project tech stack and output lint + type-check commands
+# ClaudeBrew — Detect project tech stack and output lint + type-check commands
 # Sprint 3: eliminates Claude guessing wrong linting commands from file extensions.
 #
 # Usage:

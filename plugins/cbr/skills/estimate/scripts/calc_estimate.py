@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ClaudeKit WBS Estimate Calculator — Sprint 3 script
+ClaudeBrew WBS Estimate Calculator — Sprint 3 script
 Deterministic MD/MM calculation. Code is more reliable than language instructions for math.
 
 Usage:
@@ -27,7 +27,7 @@ def calculate_buffer(total_points: int) -> tuple[float, str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="ClaudeKit WBS estimate calculator — converts story points to MD/MM"
+        description="ClaudeBrew WBS estimate calculator — converts story points to MD/MM"
     )
     parser.add_argument(
         "--points", nargs="+", type=int, required=True,
@@ -57,7 +57,7 @@ def main() -> None:
     calendar_weeks = calendar_days / 5
 
     print("=" * 55)
-    print("  ClaudeKit WBS Estimate Result")
+    print("  ClaudeBrew WBS Estimate Result")
     print("=" * 55)
     print(f"  Tasks analyzed       : {len(args.points)}")
     print(f"  Story points (total) : {total_points}")

@@ -2,7 +2,7 @@
 description: SDLC quality gates, artifact paths, and agent conventions. Always loaded alongside CLAUDE.md.
 ---
 
-# SDLC Conventions — ClaudeKit
+# SDLC Conventions — ClaudeBrew
 
 > Governs how agents behave, where artifacts go, and what quality gates must pass.
 

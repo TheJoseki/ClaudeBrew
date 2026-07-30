@@ -12,8 +12,8 @@ brainstorming → (worktree) → requirement → UI/tech design → implement �
 
 Two bodies of work sit side by side in the tree — know which one you're touching:
 
-- **The committed core (reference implementation).** `brainstorming` (Stage 1) and `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) are the only *committed* skills and set the house style every sibling is meant to imitate. See "Worktree isolation" below.
-- **An imported SDLC engine (uncommitted, partially adapted).** The working tree also carries ~40 skills, 10 role **agents** (`plugins/cbr/agents/*-agent.md`), and 16 **rules** (`plugins/cbr/rules/*.md`) that together form an orchestrated multi-agent pipeline (`full-sdlc`, `orchestrate`). This suite was imported from a sibling project — its files are still titled **"ClaudeKit"** — and is **not yet reconciled** to ClaudeBrew's plugin layout or conventions. Treat it as work-in-progress, not settled design: see "The SDLC engine" and "Reconciliation gaps" below. `git status` shows the entire suite as untracked.
+- **The reference core.** `brainstorming` (Stage 1) and `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) set the house style every sibling is meant to imitate — read them first. See "Worktree isolation" below.
+- **An imported SDLC engine (now reconciled).** The tree also carries ~40 skills, 10 role **agents** (`plugins/cbr/agents/*-agent.md`), and 16 **rules** (`plugins/cbr/rules/*.md`) that together form an orchestrated multi-agent pipeline (`full-sdlc`, `orchestrate`). This suite was imported from a sibling project and has since been adapted to ClaudeBrew's plugin layout — renamed from **"ClaudeKit"**, frontmatter fixed, hooks ported to Python, so `claude plugin validate ./plugins/cbr` now passes. A few conventions are still being unified: see "The SDLC engine", "Reconciliation status" below, and `docs/BACKLOG-REGISTRY.md`.
 
 This is not a conventional application: there is no build system, dependency manifest, or test runner — don't hunt for `package.json` or a lint command. The "source" is the skills under `plugins/cbr/skills/`, authored in Markdown (plus small Python helpers). "Testing" a skill means evaluating how well Claude follows it, not running unit tests.
 
@@ -27,10 +27,10 @@ ClaudeBrew/                          # repo root = marketplace catalog + dev wor
 ├── .claude/settings.json            # DEV-ONLY harness settings (dogfooding; not shipped)
 ├── plugins/cbr/                      # ── THE SHIPPED UNIT (copied to users' plugin cache) ──
 │   ├── .claude-plugin/plugin.json    # name "cbr", displayName "ClaudeBrew", version (source of truth)
-│   ├── skills/<name>/SKILL.md        # ~40 skills: committed brainstorming+worktree, setup, + imported suite
-│   ├── agents/<role>-agent.md        # 10 role subagents spawned by the orchestrator skills (uncommitted)
-│   ├── rules/*.md                    # 16 always-loaded convention files (gates, artifact paths, standards; uncommitted)
-│   └── hooks/{hooks.json, *.sh, *.js, enforce-worktree.py}  # expanded hook set — see "The SDLC engine"
+│   ├── skills/<name>/SKILL.md        # ~40 skills: brainstorming+worktree (reference), setup, + imported SDLC suite
+│   ├── agents/<role>-agent.md        # 10 role subagents spawned by the orchestrator skills
+│   ├── rules/*.md                    # 16 always-loaded convention files (gates, artifact paths, standards)
+│   └── hooks/{hooks.json, *.py, *.js, *.sh}  # Python guards+gate, JS/bash context hooks — see "The SDLC engine"
 ├── evals/                            # DEV-ONLY trigger/behavioral evals + the hook unit test
 └── examples/                         # sample artifacts (e.g. a brainstorm output)
 ```
@@ -73,22 +73,27 @@ The imported half turns the flat skill list into a **two-layer, artifact-driven 
 - **State lives in project-level registries** the orchestrators create in the user's repo: `docs/plans/PLAN-REGISTRY.md`, `DECISION-LEDGER.md`, `BACKLOG-REGISTRY.md`, `docs/memory/PROJECT-MEMORY.md` — plus a 4-tier memory convention (core rules → project registries → per-agent `.claude/agent-memory/` → session work-logs).
 - **Skill categories** (buckets, not an exhaustive list — the 40 names rot fast): *orchestrators* (full-sdlc, orchestrate, intelligent-routing, retro…), *stage executors* (analyze-requirement, design-screen/function, implement-feature, review-code, unit/integration-test, fix-bug, create-pr…), *knowledge/reference* (architecture, clean-code, database-design, testing-patterns, ui-ux-pro-max, vulnerability-scanner…), and *infrastructure* (setup, lint-and-validate, run-tests; `context-inject` self-marked DEPRECATED).
 
-Its **hooks** (`hooks.json`, currently tracked-but-modified) go well beyond the committed gate: `SubagentStart`/`SubagentStop` (matcher `.*-agent`) run context-inject / quality-gate scripts; `PreToolUse` runs `protect-files.sh` (Edit|Write|Read), `guard-bash.sh`, `guard-webfetch.sh`; `PreCompact`/`PostCompact`/`SessionStart:compact` persist and re-inject context; `Stop` runs `post-edit-reminder.sh`.
+Its **hooks** (`hooks.json`) go well beyond the committed gate. The security/gate hooks are **Python**, reading the tool payload from stdin JSON: `SubagentStop` (matcher `.*-agent`) runs `subagent-quality-gate.py`; `PreToolUse` runs `protect-files.py` (on `Edit|Write`, and on `Read` with a `read` arg — a secrets/lock-file guard), `guard-bash.py` (`Bash`), and `guard-webfetch.py` (`WebFetch`); `PreCompact` runs `compact-context-saver.py`. Context re-injection stays in JS/bash: `SubagentStart` (matcher `.*-agent`) runs `subagent-context-inject.js`; `PostCompact`/`SessionStart:compact` re-inject via `post-compact-reinject.sh`/`re-inject-context.sh`; `Stop` runs `post-edit-reminder.sh`. (The earlier `.sh` guards read a non-existent `$CLAUDE_TOOL_INPUT` and never fired — they were deleted; the dead `pixel-status-update.js` calls are gone.)
 
-### Reconciliation gaps (imported suite — verify before relying on it)
+### Reconciliation status (imported suite)
 
-The imported suite is mid-adaptation. Known gaps at time of writing, all in the **uncommitted** tree — confirm current state before trusting any of it:
+The imported suite has been reconciled to ClaudeBrew's layout — `claude plugin validate ./plugins/cbr` passes with 0 errors. Resolved:
 
-- **"ClaudeKit" naming unfinished.** Under `plugins/cbr/`, 16 files (rules, hook scripts, skill scripts) still say "ClaudeKit"; only 4 say "ClaudeBrew".
-- **Wrong agent/rule paths.** 10 references send agents to `.claude/agents/*.md` and `.claude/rules/*.md` (e.g. `orchestrate/SKILL.md`, `full-sdlc/references/spawn-templates.md`, `parallel-agents/SKILL.md`), but the files live at `plugins/cbr/agents/` and `plugins/cbr/rules/`. Some skills correctly use `${CLAUDE_PLUGIN_ROOT}/...`; the mix confirms partial adaptation.
-- **Dangling hook.** `hooks.json` invokes `pixel-status-update.js` in 5 places, but that file was never copied into `hooks/`. The calls are `async`, so they fail silently — but the reference is dead.
-- **Two artifact-path conventions coexist.** `brainstorming` writes `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`; the imported suite writes `docs/specs/requirements/SRS-<feature>.md` etc. Not yet unified.
-- **Shipped worktree gate absent.** The shipped `hooks.json` dropped `enforce-worktree.py`; its `Edit|Write` replacement (`protect-files.sh`) is a secrets guard, not a branch gate — so installed users get no base-branch denial (intent unresolved). See "Worktree isolation" below.
-- **`plugin.json` version still `0.1.0`** despite the expansion — not yet bumped.
+- **"ClaudeKit" fully renamed to "ClaudeBrew"** — 0 remaining references under `plugins/cbr/`.
+- **Agent/rule paths fixed** to `${CLAUDE_PLUGIN_ROOT}/...`. The two `.claude/` references at `rules/sdlc-conventions.md:241,248` are intentional and correct — they describe the *user's own* `.claude/` dir (their rules/agent files), not this plugin's tree.
+- **Frontmatter parses.** 33 skills/agents had an unquoted `description:` whose `TRIGGER:`/`NOT FOR:` text carried a `: ` that broke YAML; the `description` scalar is now double-quoted. Keeping it quoted is load-bearing — unquoting reintroduces the 33 parse failures.
+- **Hooks ported to Python** (see the hooks paragraph above); the dead `pixel-status-update.js` calls were removed.
+- **`plugin.json` bumped `0.1.0` → `0.2.0`**; stray `.coverage` cruft removed.
+
+Remaining gaps (tracked in `docs/BACKLOG-REGISTRY.md`):
+
+- **Two artifact-path conventions still coexist.** `brainstorming` writes `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`, `clean-code` writes `docs/decisions/`, and the imported suite writes `docs/specs/requirements/SRS-<feature>.md` etc. Not yet unified.
+- **Most skills lack evals.** Only `brainstorming` and `worktree` ship `evals/evals.json`; ~38 skills don't, so their trigger reliability is unverified.
+- **`TRIGGER:`/`NOT FOR:` guards pending** on overlapping knowledge skills (must keep the `description` scalar double-quoted).
 
 ### Conventions inherited across the suite
 
-ClaudeBrew's house style, set by `brainstorming` (the reference implementation). Reconciled skills should follow these; the **imported suite diverges from several** — artifact paths especially (see "Reconciliation gaps"):
+ClaudeBrew's house style, set by `brainstorming` (the reference implementation). Reconciled skills should follow these; the **imported suite still diverges on a few** — artifact paths especially (see "Reconciliation status" and `docs/BACKLOG-REGISTRY.md`):
 
 - **Plain stage names** (`brainstorming`, not `sdlc-brainstorming`); once installed they namespace to `/cbr:<stage>`.
 - **Handoff artifacts** at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md` (in the *user's* repo, not this one). Each stage's artifact is the contract the next stage consumes — completeness there is the entire point of the stage.
@@ -99,15 +104,16 @@ ClaudeBrew's house style, set by `brainstorming` (the reference implementation).
 
 ### Worktree isolation (hard-mandatory, Stage 1.5)
 
-Once a brainstorm is approved, **development of that approach is hard-mandatory in an isolated git worktree on a feature branch** — never on the base branch (`main`/`master`). The `worktree` skill performs the move; a `PreToolUse` hook makes it non-negotiable.
+Once a brainstorm is approved, the `worktree` skill mandates **development of that approach in an isolated git worktree on a feature branch** — never on the base branch (`main`/`master`). Deterministic *enforcement* of that mandate is an **opt-in** `PreToolUse` hook.
 
-- **The gate (deterministic, not probabilistic).** A markdown rule is probabilistic — the model may forget; a harness-run `PreToolUse` hook is deterministic — on a base branch it **denies** edits to feature code. `enforce-worktree.py`'s exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`. See `worktree/references/enforcement.md`. **⚠ Two registrations currently differ, and the divergence is unresolved — verify against the actual files before relying on the gate:**
-  - *This repo (dogfooding):* `.claude/settings.json` registers `enforce-worktree.py` on `Edit|Write|NotebookEdit` via `${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py`. So the gate **is live for contributors here**, even without `--plugin-dir`.
-  - *The shipped plugin:* `plugins/cbr/hooks/hooks.json` **no longer registers `enforce-worktree.py`** (the file still exists, unwired). Its `Edit|Write` slot now runs `protect-files.sh`, which is a **secrets/lock-file guard, not a branch gate** — it blocks writes to `.env*`/keys/lock files and has no worktree logic. Net effect: **installed users currently get no base-branch denial**; the gate `enforcement.md` describes is absent from the shipped plugin. Whether that drop was intentional (vs. collateral from importing the new hook set) is the **unresolved** question — the behavioral gap itself is not in doubt.
-  - *Test coverage:* `evals/test_hook.py` still validates `enforce-worktree.py` (throwaway repo on `main` + a feature branch), so it passes — but it now covers the dev-`settings.json` registration only, nothing the plugin ships.
+- **The gate (opt-in, deterministic).** A markdown rule is probabilistic — the model may forget; a harness-run `PreToolUse` hook is deterministic — on a base branch it **denies** edits to feature code. `enforce-worktree.py`'s exempt paths (not "feature code"): `docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`. See `worktree/references/enforcement.md`. **The gate is opt-in by design — this is resolved, not a gap:**
+  - *Not in the shipped plugin.* `plugins/cbr/hooks/hooks.json` does **not** register `enforce-worktree.py` (the file ships, unwired). The plugin's `Edit|Write` slot runs `protect-files.py`, a **secrets/lock-file guard, not a branch gate**. So a fresh install has **no base-branch denial** until the user opts in — the accepted default.
+  - *Opted in via `/cbr:setup`.* Setup registers `enforce-worktree.py` into the *user's* `.claude/settings.json` (merged by `settings_merge.py`) on `Edit|Write|NotebookEdit`. A plugin can't ship harness `settings.json`, so the gate travels through setup, not the package.
+  - *This repo (dogfooding).* Contributors' `.claude/settings.json` already registers the gate via `${CLAUDE_PROJECT_DIR}/plugins/cbr/hooks/enforce-worktree.py`, so it is live here even without `--plugin-dir`.
+  - *Test coverage.* `evals/test_hook.py` validates `enforce-worktree.py` against a throwaway repo on `main` plus a feature branch.
 - **`EnterWorktree` authorization travels in the skill, not in CLAUDE.md.** The native `EnterWorktree` tool may only be used when the user or project instructions (CLAUDE.md/memory) call for worktree use. An installed plugin runs in repos with no ClaudeBrew CLAUDE.md, so the `worktree` skill body carries its own authorization — invoking that skill *is* the instruction. `/cbr:setup` can also persist the policy into the user's CLAUDE.md/memory for the always-on case. `EnterWorktree` is the only mechanism that switches the live session's CWD into the worktree (a script cannot).
 - **`worktree.baseRef: head`** so worktrees branch from local HEAD (capturing the just-committed approved spec, which may be unpushed); the default `fresh` would branch from `origin/<default>` and miss it. Applied to users by `/cbr:setup` (it cannot ship inside the plugin).
-- **No opt-out.** There is no "stay on main" path for feature code; the only runtime choice the skill offers is the branch name.
+- **Skill-level mandate, opt-in enforcement.** The `worktree` skill itself offers no "stay on main" path for feature code — the only runtime choice it surfaces is the branch name. The *deterministic* hook that would block base-branch edits is opt-in (above); without `/cbr:setup` the mandate rests on the skill instruction alone.
 
 ### Agent-team ("teammate") mode
 

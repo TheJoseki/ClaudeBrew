@@ -2,7 +2,7 @@
 description: Standards for WBS decomposition, estimation methodology, and sprint planning. Governs WHEN and HOW to estimate. /estimate skill handles execution; this rule defines the process.
 ---
 
-# Project Planning & Estimation — ClaudeKit
+# Project Planning & Estimation — ClaudeBrew
 
 > Work decomposition standards, estimation rules, and planning conventions. The `/estimate` skill executes estimation; this rule defines when, how, and what standards govern the process.
 
