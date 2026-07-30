@@ -35,9 +35,18 @@ Reconcile ClaudeBrew from "documented ideal" → "shipping reality." Audit found
 
 | # | Phase | Tier | Status |
 |---|-------|------|--------|
-| 1 | [Phase 1: Real gates + Python hooks](./phase-01-start.md) | P0 | Pending |
-| 2 | [Phase 2: Suite executable](./phase-02-suite-executable.md) | P1 | Pending |
-| 3 | [Phase 3: Consistency and polish](./phase-03-consistency-and-polish.md) | P2 | Pending |
+| 1 | [Phase 1: Real gates + Python hooks](./phase-01-start.md) | P0 | ✅ Done |
+| 2 | [Phase 2: Suite executable](./phase-02-suite-executable.md) | P1 | ✅ Done |
+| 3 | [Phase 3: Consistency and polish](./phase-03-consistency-and-polish.md) | P2 | ◑ Done except deferred → `docs/BACKLOG-REGISTRY.md` |
+
+## Implementation Outcome (2026-07-30, branch `feat/reconcile-hard-gates`)
+
+Executed via `/cook --tdd`. 7 commits (baseline + 6). **`claude plugin validate` passes; 56 test cases across 4 suites pass.**
+- **P0**: 3 guards + quality-gate + compact-saver ported bash→Python (stdin JSON, no bash/jq); hooks.json rewired; 4 dead pixel-status calls removed; worktree gate opt-in via `/cbr:setup` (`settings_merge.py`); worktree docs/evals rewritten to opt-in; `enforce-worktree.py` cross-drive + out-of-repo fail-open fixed.
+- **P1**: orchestrator-agent dead paths repointed; context7-prefetch removed; orchestrate security phase added; retro tools/fork fixed; security-tester-agent added to rosters; 8 `.claude/` paths → `${CLAUDE_PLUGIN_ROOT}`; context-inject demandated.
+- **P2**: **33 frontmatter parse failures fixed** (discovered at cook via `claude plugin validate` — unquoted `TRIGGER:`/`NOT FOR:` descriptions); ClaudeKit→ClaudeBrew (0 left); `plugin.json` 0.1.0→0.2.0 + CHANGELOG; `.coverage` removed; CLAUDE.md refreshed.
+- **Deferred (P2, in BACKLOG-REGISTRY)**: artifact-path unification; evals for ~38 skills; TRIGGER/NOT FOR guards.
+- **Code review** (post-impl) found 1 High + 2 Medium (namespaced-agent gate no-op; shortener false-positives; `.env` template denies) — all fixed + regression-tested.
 
 Tier = audit priority (P0 correctness/security → P1 executability → P2 consistency). Phases are sequential to keep shared-file edits (`hooks.json`, `sdlc-conventions.md`) conflict-free.
 
