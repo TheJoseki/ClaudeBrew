@@ -63,7 +63,7 @@ Based on those findings, invoke the developer-agent to implement it.
 
 ---
 
-## Available Agents in `.claude/agents/`
+## Available Agents in `${CLAUDE_PLUGIN_ROOT}/agents/`
 
 | Agent | Role | Trigger |
 |-------|------|---------|
@@ -76,6 +76,7 @@ Based on those findings, invoke the developer-agent to implement it.
 | `bug-fix-agent` | Bug fixes | "bug", "error", "broken" |
 | `unit-test-agent` | Unit tests (detect runner from PROJECT.md) | "unit test", "UT", "coverage" |
 | `integration-test-agent` | API + E2E integration tests | "integration test", "IT", "e2e" |
+| `security-tester-agent` | Security testing, vulnerability scan | "security", "vulnerability", "OWASP", "audit" |
 
 ---
 

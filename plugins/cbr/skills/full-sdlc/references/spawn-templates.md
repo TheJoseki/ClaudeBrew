@@ -1,16 +1,7 @@
-## MANDATORY: Context Injection Before Every Spawn
-
-BEFORE every Agent tool call below, orchestrator MUST:
-1. Invoke context-inject skill with: AGENT_ROLE, FEATURE, PHASE, DOMAIN_TAGS
-2. Prepend returned context block to the agent's spawn prompt
-3. If context-inject returns empty → note "First execution, no accumulated context"
-
-FAILURE TO INJECT CONTEXT = agent runs blind. This is the #1 cause of context loss.
-
----
-
 # Full SDLC Spawn Templates
 > Referenced by full-sdlc/SKILL.md. Each section contains the complete prompt for the corresponding agent spawn call.
+
+> Context injection is automatic: the `SubagentStart` hook injects CAO context into every `*-agent` spawn. No manual action needed.
 
 ---
 
@@ -19,7 +10,7 @@ FAILURE TO INJECT CONTEXT = agent runs blind. This is the #1 cause of context lo
 ### ba-agent council spawn
 
 ```
-Role instructions: Read `.claude/agents/ba-agent.md` for your full role definition.
+Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/ba-agent.md` for your full role definition.
 CONTEXT: AGENT_TEAMS
 MODE: PLANNING
 FEATURE ID: [feature-name]
@@ -36,7 +27,7 @@ TASK BOUNDARIES:
 ### architect-agent council spawn
 
 ```
-Role instructions: Read `.claude/agents/architect-agent.md` for your full role definition.
+Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/architect-agent.md` for your full role definition.
 CONTEXT: AGENT_TEAMS
 MODE: PLANNING
 FEATURE ID: [feature-name]

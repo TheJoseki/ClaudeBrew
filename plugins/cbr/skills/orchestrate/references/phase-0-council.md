@@ -22,7 +22,7 @@ Send both spawn prompts in the **same message**:
 **Teammate 1 — ba-agent:**
 
 ```
-Role instructions: Read `.claude/agents/ba-agent.md` for your full role definition.
+Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/ba-agent.md` for your full role definition.
 CONTEXT: AGENT_TEAMS
 MODE: PLANNING
 FEATURE ID: [feature-name]
@@ -41,7 +41,7 @@ TASK BOUNDARIES:
 **Teammate 2 — architect-agent:**
 
 ```
-Role instructions: Read `.claude/agents/architect-agent.md` for your full role definition.
+Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/architect-agent.md` for your full role definition.
 CONTEXT: AGENT_TEAMS
 MODE: PLANNING
 FEATURE ID: [feature-name]
@@ -112,20 +112,6 @@ TeamDelete: "council-[feature]-[YYYYMMDD]"
 
 ---
 
-## Context Injection Pre-Spawn (MANDATORY — before every Agent tool call)
+## Context Injection Pre-Spawn (automatic)
 
-Before every `Agent tool call`, invoke context-inject internally:
-
-1. Read `docs/plans/PLAN-REGISTRY.md` — active/suspended plans
-2. Read `docs/plans/DECISION-LEDGER.md` — filter by domain tags
-3. Read `docs/plans/BACKLOG-REGISTRY.md` — filter by agent role
-4. Read `docs/memory/PROJECT-MEMORY.md` — filter by relevance
-5. Read `.claude/agent-memory/<agent-name>/MEMORY.md` — role-specific memory (auto-loaded by Claude Code native)
-6. Assemble ≤2000 token context block, prepend to spawn prompt:
-
-```
-## Injected Context
-[assembled context from registries + memory]
----
-OBJECTIVE: ...
-```
+The `SubagentStart` hook auto-injects CAO context (≤1500 tokens) into every `*-agent` spawn. No manual action needed.

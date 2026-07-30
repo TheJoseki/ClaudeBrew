@@ -54,10 +54,10 @@ After classification, if complexity = `Medium | Large | Complex | Critical`:
 1. **TeamCreate**: "council-[feature]-[YYYYMMDD]"
 2. **Spawn teammates concurrently** (both in same message):
    - ba-agent: `CONTEXT: AGENT_TEAMS`, `MODE: PLANNING` → `docs/plans/COUNCIL-[feature]-BA.md`
-     Role instructions: Read `.claude/agents/ba-agent.md` for full role definition.
+     Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/ba-agent.md` for full role definition.
      TEAMMATE NAME: "architect" (use SendMessage for cross-agent questions)
    - architect-agent: `CONTEXT: AGENT_TEAMS`, `MODE: PLANNING` → `docs/plans/COUNCIL-[feature]-ARCH.md`
-     Role instructions: Read `.claude/agents/architect-agent.md` for full role definition.
+     Role instructions: Read `${CLAUDE_PLUGIN_ROOT}/agents/architect-agent.md` for full role definition.
      TEAMMATE NAME: "ba" (check conversation for messages from ba-agent)
 3. **Wait** for both teammates idle (TeammateIdle notification)
 4. **Read** both COUNCIL artifacts → incorporate domain risks + refined sizing into PLAN (include Contradiction Resolutions if councils diverge)
@@ -85,16 +85,8 @@ After reading PLAN-REGISTRY:
 
 **Update Plan Registry:** Append new plan to `docs/plans/PLAN-REGISTRY.md` (create if not exists).
 
-**Context Injection (before every agent spawn):**
-Before each Agent tool call below, invoke the `context-inject` skill internally:
-```
-AGENT_ROLE: [agent being spawned]
-FEATURE: [feature name]
-PHASE: [current phase]
-DOMAIN_TAGS: [relevant domain tags from PLAN]
-PLAN_FILE: docs/plans/PLAN-[feature]-[YYYYMMDD].md
-```
-Prepend the returned context block to the agent's spawn prompt. This ensures every agent starts with awareness of active plans, relevant decisions, backlog items, and accumulated memory.
+**Context Injection (automatic):**
+The `SubagentStart` hook auto-injects CAO context (active plans, relevant decisions, backlog items, accumulated memory) into every `*-agent` spawn. No manual action needed.
 
 **Choose workflow:**
 
@@ -172,6 +164,18 @@ Agent tool:
     OUTPUT: docs/reviews/REVIEW-[f]-[date].md
 ```
 → PASS: proceed | FAIL: developer-agent fix → re-review
+
+### Step 5.5: security-tester-agent (Security Scan — after all batches + review PASS)
+```
+Agent tool:
+  subagent_type: "security-tester-agent"
+  prompt: |
+    FEATURE ID: [feature] | MODE: Mode A (Feature Scan)
+    INPUT: docs/reviews/REVIEW-[f]-[date].md, docs/specs/detail-design/TECH-[f].md
+    OUTPUT: docs/security/SEC-[f]-[date].md
+    Scan: source code, API endpoints, database models, config files.
+```
+→ PASS (no Critical/High): proceed to Step 6 | FAIL: developer-agent fix → re-scan
 
 ### Step 6: unit-test-agent (EXECUTE R1→R5)
 ```
@@ -285,6 +289,7 @@ Step 8: update walkthrough DONE + update PLAN-REGISTRY status → COMPLETED + ag
 |------|---------------|----------------|
 | Phase 1-3 | User approval | Revise → re-spawn |
 | Phase 5 | REVIEW = PASS | dev fix → re-review |
+| Phase 5.5 | Security scan 0 Critical/High | dev fix → re-scan |
 | Phase 6 | UTR 100% | bug-fix → R[n+1], max R5 |
 | Phase 7 | ITR 100% | bug-fix → R[n+1], max R5 |
 

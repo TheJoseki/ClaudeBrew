@@ -64,6 +64,7 @@ Before responding to any request, silently perform:
 | Code review | "review", "audit", "check code", "PR review" | `review-code` skill or `code-review-agent` |
 | Unit tests | "unit test", "UT", "coverage" | `run-tests` / `unit-test` skill or `unit-test-agent` |
 | Integration tests | "integration test", "IT", "e2e", "API test" | `integration-test` skill or `integration-test-agent` |
+| Security testing | "security", "vulnerability", "OWASP", "pen test", "scan" | `vulnerability-scanner` skill or `security-tester-agent` |
 | Pull request | "PR", "pull request", "merge", "create PR" | `create-pr` skill |
 | Full SDLC | "full feature", "end-to-end", "from scratch" | `full-sdlc` skill or `orchestrator` |
 

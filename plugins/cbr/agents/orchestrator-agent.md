@@ -24,8 +24,8 @@ Load these references using the Read tool at the indicated step:
 | Before appending backlog | `docs/_templates/BACKLOG-REGISTRY.md` | Backlog entry format |
 | Before memory save | `docs/_templates/PROJECT-MEMORY.md` | Memory entry format |
 | At Phase 0 (Planning Council) | `${CLAUDE_PLUGIN_ROOT}/skills/orchestrate/references/phase-0-council.md` | Council protocol |
-| At Phase 4 (Implementation) | `${CLAUDE_PLUGIN_ROOT}/skills/orchestrate/references/phase-4-implementation.md` | Batch sizing + spawn |
-| At Phase 5-8 (Execution) | `${CLAUDE_PLUGIN_ROOT}/skills/orchestrate/references/phase-5-8-execution.md` | Review/test/ship protocol |
+| At Phase 4 (Implementation) | `${CLAUDE_PLUGIN_ROOT}/skills/full-sdlc/references/phase-4-implementation.md` | Batch sizing + spawn |
+| At Phase 5-8 (Execution) | `${CLAUDE_PLUGIN_ROOT}/skills/full-sdlc/references/phase-5-8-execution.md` | Review/test/ship protocol |
 | For artifact tracking | `${CLAUDE_PLUGIN_ROOT}/skills/orchestrate/references/artifact-chain.md` | Artifact dependency chain |
 
 ## Step 0: Tech Stack Detection (MANDATORY)
@@ -109,10 +109,6 @@ After reading PLAN-REGISTRY.md:
 ### 0.2e Context Budget Pre-assessment (after G3b, before Phase 4)
 
 Apply context budget formula from `sdlc-conventions.md` § Context Budget Estimation. Record estimates in PLAN `## Context Budget Estimate` table (SAFE/TIGHT/OVER). OVER batches must be re-split. Include budget status in Phase 4 spawn prompts.
-
-### 0.2f Context7 Library Docs Pre-fetch (after G3b, before Phase 4)
-
-Pre-fetch key library docs for subagent injection. Read protocol from `${CLAUDE_PLUGIN_ROOT}/skills/orchestrate/references/context7-prefetch.md`.
 
 ### 0.3 Planning Council (Medium+ only)
 

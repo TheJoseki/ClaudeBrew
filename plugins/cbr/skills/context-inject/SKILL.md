@@ -3,7 +3,7 @@ name: context-inject
 description: "DEPRECATED — replaced by SubagentStart hook (.claude/hooks/subagent-context-inject.js). Hook fires automatically on every agent spawn with scoring + token budget. This skill is kept for backward compatibility only."
 allowed-tools: Read, Grep, Glob
 user-invocable: false
-disable-model-invocation: false
+disable-model-invocation: true
 metadata:
   version: "1.1"
   category: orchestration

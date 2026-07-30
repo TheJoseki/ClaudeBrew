@@ -75,13 +75,13 @@ After reading SRS, calculate sizing from deliverable count:
 | Modules | ≤3 | 4–8 | 9+ |
 | API Endpoints | ≤10 | 11–25 | 26+ |
 
-**Dev batch plan based on sizing:**
+**Dev batch + test-agent plan based on sizing** (agent counts follow `${CLAUDE_PLUGIN_ROOT}/rules/sdlc-conventions.md` § Spawn Sizing — authoritative):
 
-| Sizing | Dev Batches | Background Agents (pre-Phase 4) |
-|--------|-------------|--------------------------------|
-| **Small** | 1 batch (all modules) | 1 UTC + 1 ITC (background) |
-| **Medium** | 2 batches (BE / FE split) | 1 UTC + 1 ITC (background) |
-| **Large** | 3 batches (domain splits) | 1 UTC + 1 ITC (background) |
+| Sizing | Dev Batches | Unit-test agents | Integration-test agents |
+|--------|-------------|------------------|-------------------------|
+| **Small** | 1 batch (all modules) | 1 | 1 |
+| **Medium** | 2 batches (BE / FE split) | 2 | 1 |
+| **Large** | 3 batches (domain splits) | 3 | 2 |
 
 Record sizing decision in PLAN file.
 
@@ -108,15 +108,7 @@ After reading PLAN-REGISTRY (Step 0.2c):
 
 ### Context Injection Protocol (applies to ALL phases below)
 
-Before EVERY Agent tool call in Phases 1-7, invoke `context-inject` internally:
-```
-AGENT_ROLE: [agent being spawned]
-FEATURE: [feature name]
-PHASE: [current phase number]
-DOMAIN_TAGS: [relevant domain tags from PLAN]
-PLAN_FILE: docs/plans/PLAN-[feature]-[YYYYMMDD].md
-```
-Prepend the returned context block to the agent's spawn prompt. This ensures every agent starts with awareness of active plans, relevant decisions, backlog items, and accumulated memory.
+Context injection is automatic: the `SubagentStart` hook injects CAO context (active plans, relevant decisions, backlog items, accumulated memory) into every `*-agent` spawn. No manual action needed.
 
 ---
 
@@ -194,7 +186,7 @@ Spawn **architect-agent** (MODE: DETAIL_DESIGN) → full prompt at `references/s
 
 ### Phase 4 Pre: Spawn UTC + ITC agents in background (simultaneously)
 
-Spawn BOTH in the **same message** with `run_in_background: true`
+Spawn the unit-test and integration-test agents per the sizing table above, all in the **same message** with `run_in_background: true`
 → Full prompts at `references/spawn-templates.md` §Phase 4 Pre
 
 ### Phase 4 Main: For each batch (sequential — Small=1, Medium=2, Large=3)

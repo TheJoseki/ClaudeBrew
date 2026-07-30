@@ -134,7 +134,7 @@ After completing all review dimensions, classify each finding:
 
 **ASK** — Design choice, security implication, or ambiguous intent:
 - Batch ALL ASK items into 1 AskUserQuestion (never ask one-by-one)
-- Follow the 4-part format from `.claude/rules/ask-user-format.md` (re-ground, simplify, recommend, options)
+- Follow the 4-part format from `${CLAUDE_PLUGIN_ROOT}/rules/ask-user-format.md` (re-ground, simplify, recommend, options)
 - Examples: architectural changes, API contract modifications, security trade-offs, performance vs readability
 
 **Order**: Complete all AUTO-FIX items first (show summary in review report), then present ASK batch (single question).
