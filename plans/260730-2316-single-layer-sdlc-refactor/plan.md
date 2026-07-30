@@ -1,7 +1,7 @@
 # Plan — Collapse ClaudeBrew to a Single-Layer Gated Skill Toolkit
 
 **Slug:** single-layer-sdlc-refactor · **Created:** 2026-07-30 · **Branch target:** feature worktree (per `worktree` skill)
-**Status:** ✅ COMPLETE (P1–P3) — executed & verified 2026-07-31 on branch `worktree-single-layer-refactor`; all success criteria met (plugin+marketplace validate pass, all evals pass, verdict-gate 98% coverage). Phase 4 remains optional/not run.
+**Status:** ✅ COMPLETE (P1–P4) — executed & verified 2026-07-31 on branch `worktree-single-layer-refactor`; all success criteria met (plugin+marketplace validate pass, all evals pass, verdict-gate 98% coverage). Phase 4 knowledge merges also done (40→25 skills); the 3 new skills created via skill-creator `init_skill.py` + reviewed via `quick_validate`.
 **Source audit:** `plans/reports/audit-260730-2316-skills-redundancy-merge.md`
 
 ---
@@ -68,7 +68,7 @@ Studied the upstream ClaudeKit-engineer toolkit; full analysis in `reports/xia-*
 5. **Gate verdicts → (B1) fresh sub-context.** G4 review / G5a security / G6–G7 test verdicts are produced by a freshly-spawned pool agent (`reviewer`/`tester`), never self-graded inline. So `review-code`, `unit-test`, `integration-test`, `vulnerability-scanner` carry `Task`/`Agent` and spawn the pool agent, write the verdict artifact, then **stop** for the user gate.
 6. **Artifact-gate → (C1) BUILD now.** One shared verdict-artifact JSON schema + one Python validator script, invoked by skill instruction via `Bash` (schema-shape + secret-scan + policy: hard gates require `decision === PASS` + passing verification). `AskUserQuestion` on block. Makes Decision 1's "verdict + user gate" deterministic and unfakeable. Registered nowhere as an auto-hook (no matcher) — pure skill-invoked, per ClaudeKit's `workflow-artifact-gate` shape.
 
-> **Status: ✅ EXECUTED (P1–P3) & verified 2026-07-31.** All forks resolved and implemented on branch `worktree-single-layer-refactor`. Phase 4 (optional knowledge merges) not run — available on request.
+> **Status: ✅ EXECUTED (P1–P4) & verified 2026-07-31.** All forks resolved and implemented on branch `worktree-single-layer-refactor`. Phase 4 knowledge merges completed (40→25 skills).
 
 ## Success criteria
 
