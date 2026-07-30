@@ -31,11 +31,14 @@ carried across (committed to base branch / copied via `.worktreeinclude`).
 - **Entered via:** EnterWorktree (name) | EnterWorktree (existing path)
 
 ## 3. Enforcement status
-- **Gate installed:** yes | no — PreToolUse hook in .claude/settings.json
-- **Effect:** feature-code edits on the base branch are denied; edits inside this
-  worktree are allowed.
-- If "no": state explicitly that isolation is currently advisory until the hook
-  is installed, and what the user must do.
+- **Gate installed:** yes | no — OPT-IN `PreToolUse` hook (`enforce-worktree.py`)
+  in a `.claude/settings.json`, registered by `/cbr:setup`. Default is **no**: the
+  plugin does not ship it active.
+- **Effect (if yes):** feature-code edits on the base branch are denied; edits
+  inside this worktree are allowed.
+- **If "no" (the default):** isolation is **advisory** — the move is done but no
+  harness-level denial is in effect. State this explicitly and note that running
+  `/cbr:setup` installs the gate to make it deterministic.
 
 ## 4. Scope carried forward
 The approach being implemented (1–2 lines from the brainstorm's recommended

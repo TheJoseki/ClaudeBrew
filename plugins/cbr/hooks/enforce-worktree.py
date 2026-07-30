@@ -79,8 +79,10 @@ def main():
     repo_root = git(["rev-parse", "--show-toplevel"], cwd) or cwd
     try:
         rel = os.path.relpath(file_path, repo_root)
-    except Exception:
-        rel = file_path
+    except ValueError:
+        # file on a different drive than the repo (Windows) -> outside the repo,
+        # so it is not this repo's feature code -> fail open (allow), never deny.
+        sys.exit(0)
     rel = rel.replace("\\", "/")
     if rel.startswith("./"):
         rel = rel[2:]
