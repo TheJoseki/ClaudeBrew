@@ -1,0 +1,24 @@
+{
+  "skill_name": "api-patterns",
+  "notes": "api-patterns is a knowledge/decision skill for API style selection and endpoint-convention review. It overlaps with design-function (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're building a public API for third-party developers. Should we go REST or GraphQL, and how should we handle versioning and rate limiting?",
+      "expected_output": "Reads only the relevant references (api-style.md, versioning.md, rate-limiting.md, auth.md), works through the decision checklist (consumers, style, auth, versioning, volume, pagination, errors), recommends an approach with rationale, and optionally records docs/specs/decisions/ADR-api-patterns-[YYYYMMDD].md.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our list endpoints — are the pagination, error format, and HTTP status codes following good conventions?",
+      "expected_output": "Uses the anti-patterns table plus response.md/rest.md to flag issues such as returning 200 for errors, unpaginated list endpoints, verbs in URLs, and inconsistent casing, and proposes conforming alternatives.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write the technical design — endpoints, DTOs, and service methods — for the payments module.",
+      "expected_output": "Should route to design-function (produces docs/specs/detail-design/TECH-payments.md), not api-patterns — api-patterns gives style and convention guidance, not the concrete per-feature tech-spec artifact.",
+      "files": []
+    }
+  ]
+}

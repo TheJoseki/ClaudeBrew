@@ -1,0 +1,24 @@
+{
+  "skill_name": "browser-devtools",
+  "notes": "browser-devtools is a model-invocable DOM/browser debugging skill over chrome-devtools-mcp. Positives are drawn from the skill body's own 'triggers correctly when' list; each eval verifies the low-token capture sequence (list_pages() -> take_snapshot() -> list_console_messages()), evidence via take_screenshot()/list_network_requests(), and a Browser Diagnostic Report with the findings table + root-cause hypothesis + routed next action. NOT FOR server-side or non-browser errors.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The login button isn't working — debug it in the browser.",
+      "expected_output": "Confirms a page is open with list_pages() (opens one if none), captures the accessibility tree with take_snapshot(), pulls console errors via list_console_messages(types=[\"error\",\"warning\"]), inspects the form inputs' validity, checks list_network_requests() for a failed auth call, saves a screenshot as evidence, and produces the Browser Diagnostic Report (findings table, root-cause hypothesis, recommended next action).",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Inspect the DOM of the dashboard page and tell me what the browser is actually showing.",
+      "expected_output": "Runs list_pages() to identify the active page, take_snapshot() for roles/names/UIDs, scans for alert/status roles and error-state elements (.error, [aria-invalid]), and reports page state (title/URL, form and nav structure) in the structured diagnosis block, routing onward (systematic-debugging / bug-fix-agent) if root cause is unclear.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Why is the backend returning 500 on POST /api/orders?",
+      "expected_output": "Should route to systematic-debugging / not fire, because browser-devtools' NOT FOR excludes server-side bugs and non-browser errors — a 500 from an API endpoint is a backend fault with no DOM/browser evidence to inspect.",
+      "files": []
+    }
+  ]
+}

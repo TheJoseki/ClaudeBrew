@@ -1,17 +1,26 @@
 # Enforcement — the deterministic gate
 
-This is the layer that makes worktree isolation a **certainty** rather than a
-hope. The skill body (`SKILL.md`) is read by the model and *usually* obeyed; this
-hook is run by the Claude Code harness and *always* runs. When you need a rule to
-hold 100% of the time, you move it out of the model's attention and into the
-harness's control flow.
+This is the layer that can make worktree isolation a **certainty** rather than a
+hope — **once it is opted in**. The skill body (`SKILL.md`) is read by the model
+and *usually* obeyed; this hook, when registered, is run by the Claude Code
+harness before every write. When you need a rule to hold every time, you move it
+out of the model's attention and into the harness's control flow.
+
+The catch a plugin cannot escape: **the gate is not shipped active.** A plugin
+cannot register harness hooks, and an always-on base-branch gate would deny edits
+in every repo the user installs `cbr` into. So the gate is **opt-in** —
+`/cbr:setup` registers `enforce-worktree.py` in the user's `.claude/settings.json`
+(via `hooks/settings_merge.py`). **By default — the user never runs `/cbr:setup`,
+e.g. headless `claude -p` or CI — there is no harness gate**, and isolation rests
+on the skill alone. That default is an accepted posture, not a bug; this document
+describes what the gate does *when opted in*.
 
 ## Table of contents
 
 1. How the hook blocks (mechanism)
 2. What it blocks vs. exempts (scope)
 3. The doctor (precondition checks)
-4. Installing the hook
+4. Registering the hook (opt-in, via `/cbr:setup`)
 5. Windows execution notes
 6. Honest residual limitations
 
@@ -77,20 +86,34 @@ Run these in Phase 0 before claiming isolation is enforced:
 1. **Git repo?** `git rev-parse --show-toplevel` succeeds.
 2. **Already in a worktree?** `git rev-parse --abbrev-ref HEAD` is not a base
    branch and the path is under `.claude/worktrees/` → the move is already done.
-3. **Gate active?** The `cbr` plugin auto-registers the `PreToolUse` hook via its
-   `hooks/hooks.json`, so the gate is live whenever the plugin is enabled. If the
-   plugin is disabled (`/plugin`), the guarantee is not real.
+3. **Gate registered? (opt-in — off by default)** The gate only denies once
+   `/cbr:setup` has registered `enforce-worktree.py`. Check **all three** settings
+   files the harness merges — `~/.claude/settings.json` (user),
+   `.claude/settings.json` (project), `.claude/settings.local.json`
+   (project-local) — for a `PreToolUse` entry whose command contains
+   `enforce-worktree`. Absent from all three → the gate is off (the default), and
+   the guarantee is not real. Registration is necessary but not sufficient: also
+   confirm the registered absolute path exists and `python`/`py -3` resolves, or
+   the harness treats the erroring hook as non-blocking. Only claim enforcement
+   when all three checks pass.
 4. **Base ref correct?** Set `worktree.baseRef: head` so the worktree branches
    from local HEAD — which includes the just-committed approved spec. The default
    `fresh` branches from `origin/<default-branch>`, so it requires a remote *and*
    would miss local-only commits (the approved spec, if not yet pushed).
 
-## 4. How the hook is registered (the plugin mechanism)
+## 4. How the hook is registered (opt-in, via `/cbr:setup`)
 
-The gate only enforces if the harness is told to run it. As a plugin component,
-that registration is **automatic**: the `cbr` plugin ships `hooks/hooks.json`,
-and Claude Code loads it whenever the plugin is enabled — no edit to the user's
-`settings.json` is required.
+The gate only enforces if the harness is told to run it — and **a plugin cannot
+tell it to.** A plugin's own `settings.json` only honors `agent`/
+`subagentStatusLine`, so a plugin cannot register a `PreToolUse` hook. The
+plugin's shipped `hooks/hooks.json` therefore does **not** register
+`enforce-worktree.py` at all. (It registers unrelated hooks — e.g. a
+`protect-files.py` secrets guard on `Edit|Write` — but nothing that gates the base
+branch.) An always-on gate would also be the wrong default: it would deny
+base-branch edits in *every* repo the user installs `cbr` into.
+
+So registration is **opt-in**. `/cbr:setup` merges an entry into the **user's**
+`.claude/settings.json` (via `hooks/settings_merge.py`, which is idempotent):
 
 ```json
 {
@@ -101,9 +124,7 @@ and Claude Code loads it whenever the plugin is enabled — no edit to the user'
         "hooks": [
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py"],
-            "timeout": 10
+            "command": "python \"C:/Users/<you>/.claude/cbr/hooks/enforce-worktree.py\""
           }
         ]
       }
@@ -112,43 +133,39 @@ and Claude Code loads it whenever the plugin is enabled — no edit to the user'
 }
 ```
 
-`${CLAUDE_PLUGIN_ROOT}` resolves to the plugin's installed location in the cache
-(`~/.claude/plugins/cache/...`). It is required because an installed plugin runs
-from that copy, not from the repo — a `${CLAUDE_PROJECT_DIR}` path would not
-resolve in a user's project. Everything the hook touches must therefore live
-**inside the plugin directory**; `enforce-worktree.py` is self-contained (it only
-reads stdin and shells out to `git`), so it ships cleanly.
+Two things to note about this entry:
 
-`worktree.baseRef: head` is *not* in this file — a plugin's own `settings.json`
-only honors `agent`/`subagentStatusLine`, so harness-level keys cannot ride along
-in the package. `/cbr:setup` applies `baseRef` (plus the agent-teams env var and
-`teammateMode`) to the user's `settings.json` instead.
+- **The path is absolute, and must be.** Inside a *user* `settings.json`, neither
+  `${CLAUDE_PLUGIN_ROOT}` nor `${CLAUDE_PROJECT_DIR}` resolves — those expand only
+  in a plugin/hook context, not in the user's settings. `/cbr:setup` therefore
+  resolves a concrete absolute path. It **copies** `enforce-worktree.py` to a
+  stable location it controls (`~/.claude/cbr/hooks/enforce-worktree.py`) and
+  registers that, rather than baking in the glob-resolved plugin cache path
+  (`~/.claude/plugins/cache/<marketplace>/cbr/hooks/...`). The trade-off: the
+  stable copy is a real, documentable path that survives cache moves, but it can
+  drift from the shipped hook — re-running `/cbr:setup` after a plugin update
+  refreshes it. (The hook is self-contained — it only reads stdin and shells out
+  to `git` — so a copy runs identically to the original.)
+- **It is a separate registration from the shipped `protect-files.py`.** The
+  shipped `hooks.json` already has a `PreToolUse` entry with matcher `Edit|Write`;
+  this opt-in entry uses matcher `Edit|Write|NotebookEdit`. Different matcher
+  strings, so they are two independent registrations, and on an `Edit`/`Write`
+  **both** hooks run. The gate neither replaces nor rides inside the shipped
+  entry.
 
-### Lifecycle: the gate is bound to the plugin
-
-Because the registration lives in the plugin's `hooks/hooks.json`, the gate's
-lifecycle *is* the plugin's lifecycle: enabled plugin → gate live; disabled
-plugin → gate gone (along with the skills). This is a deliberate, coherent
-coupling — there is no separate `settings.json` registration to drift out of
-sync, and no orphaned script path to fail open. The one thing to be honest about:
-"disable the `cbr` plugin" now also means "disable the worktree gate", which is
-why the skill's doctor confirms the plugin is enabled before claiming enforcement.
-
-> Historical note: when ClaudeBrew was standalone `.claude/` config, the script
-> lived in canonical `.claude/hooks/` and was registered in `.claude/settings.json`
-> so the gate survived even if the skill folder was removed. Packaging as a plugin
-> supersedes that reasoning — the plugin is the unit of both distribution and
-> enablement, so bundling the hook in `hooks/hooks.json` is simpler *and* the only
-> mechanism that travels with the package and auto-registers on enable.
+`worktree.baseRef: head` is applied the same way — `/cbr:setup` writes it (plus
+the agent-teams env var and `teammateMode`) into the user's `settings.json`,
+because those harness-level keys cannot ride inside the plugin package either.
 
 ## 5. Windows execution notes
 
-The handler uses the **exec form** (`command: "python"` + `args: [...]`) rather
-than a shell string. This sidesteps PowerShell/Git-Bash quoting entirely — the
-script is spawned directly with `python` (which must be on `PATH`, as it is for
-this repo's other helpers). The docs also expose a `shell: "powershell"` handler
-option if a `.ps1` is ever preferred, but Python keeps the gate cross-platform
-and matches the repo's existing helper convention.
+`settings_merge.py` registers the hook as the command string `python "<abs
+path>"` — the interpreter `python` must be on `PATH`. This is why `/cbr:setup`
+runs a `python`/`py -3` availability doctor before registering and warns if
+neither resolves: a registration whose interpreter is missing makes the harness
+treat the hook as non-blocking, so the gate would be silently off. The quoted
+absolute path tolerates spaces (e.g. `C:\Users\...`). Python keeps the gate
+cross-platform and matches the repo's existing helper convention.
 
 Source: https://code.claude.com/docs/en/hooks.md , https://code.claude.com/docs/en/settings.md
 
@@ -156,6 +173,11 @@ Source: https://code.claude.com/docs/en/hooks.md , https://code.claude.com/docs/
 
 A safety gate should be honest about its edges:
 
+- **Opt-in by default — no gate unless `/cbr:setup` ran.** The plugin does not
+  ship the gate active (a plugin cannot register harness hooks). If the user never
+  opts in — the common case for headless `claude -p` and CI — there is no
+  harness-level denial at all, and isolation rests entirely on the skill (a
+  probabilistic constraint). This is the accepted default posture, not a defect.
 - **`Bash` write bypass.** Because the matcher excludes `Bash`, a determined
   agent could still write a file via shell redirection (`echo > file`). This is
   accepted: guarding `Bash` would block legitimate tooling on the base branch,

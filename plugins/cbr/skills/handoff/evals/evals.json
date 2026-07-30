@@ -1,0 +1,24 @@
+{
+  "skill_name": "handoff",
+  "notes": "handoff builds a session-continuity document: collect the feature's artifacts and CAO registries, assess the current SDLC phase/last gate, capture open issues and key decisions, and write docs/handoffs/HANDOFF-[feature]-[date].md with exact resume instructions. Evaluate whether it reads artifacts first (not from memory) and captures open items plus the precise next action.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Session's ending — create a handoff for the payment-integration feature so the next session can continue.",
+      "expected_output": "Collects artifacts (PLAN, SRS, TECH, work logs, reviews, UTC/ITC) and registries (PLAN-REGISTRY, DECISION-LEDGER, BACKLOG-REGISTRY), assesses the active phase and last completed gate, captures open issues, and writes docs/handoffs/HANDOFF-payment-integration-[date].md with a state summary and exact resume instructions.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm transferring this work to another developer — summarize what's done, what's still pending, and the key decisions so far.",
+      "expected_output": "Writes a handoff document with a State Summary (done/pending/blocked), Current Phase + next required action, Artifacts Status table, Open Issues, Key Decisions, and Resume Instructions aimed at the specific next action for the recipient. Reads the artifacts rather than writing from memory.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The feature is shipped — run a full retrospective with root-cause analysis and lessons learned.",
+      "expected_output": "Should route to retro (the formal post-delivery multi-agent review), not handoff; handoff is for in-progress transfer/continuity, not completed-feature analysis (matches handoff's NOT FOR clause and its Skill Connections note).",
+      "files": []
+    }
+  ]
+}

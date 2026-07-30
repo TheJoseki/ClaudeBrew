@@ -1,0 +1,24 @@
+{
+  "skill_name": "run-tests",
+  "notes": "Fires to execute an existing suite and report results. Boundary case tests that a request to author test cases routes to unit-test/integration-test, not run-tests.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run the full test suite and tell me whether everything passes.",
+      "expected_output": "Detects test commands from PROJECT.md, runs backend and frontend suites with coverage (type check first), emits the Test Run Result table (totals/passed/failed/coverage/status), checks the quality gates, and on failure routes to fix-bug (clear cause) or systematic-debugging (flaky/unclear). Does not author new tests.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Run just the payment module tests and show me the results.",
+      "expected_output": "Runs the scoped module test command from PROJECT.md, reports pass/fail counts and coverage in the quick-report format, and flags any failed tests with error and file.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write test cases for the payment module.",
+      "expected_output": "Should route to unit-test (or integration-test), not fire, because run-tests only executes an existing suite — authoring test cases is NOT FOR run-tests.",
+      "files": []
+    }
+  ]
+}

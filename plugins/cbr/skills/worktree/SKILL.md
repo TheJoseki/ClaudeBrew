@@ -6,9 +6,11 @@ description: >-
   development must move OFF the base branch (main/master) into an isolated git
   worktree on a feature branch; this skill performs that move and hands the
   session to the downstream stages (requirement, design, coding) running inside
-  the worktree. Isolation here is HARD-MANDATORY and enforced deterministically
-  by a PreToolUse hook, not merely requested in prose — feature code cannot be
-  written on the base branch. Use this skill proactively whenever a brainstorm
+  the worktree. The move is the skill's unconditional stance — it never offers a
+  stay-on-main path for feature code. A PreToolUse gate can make that denial
+  deterministic at the harness level, but the gate is OPT-IN: `/cbr:setup`
+  registers it in your settings.json, and by default no harness gate is active.
+  Use this skill proactively whenever a brainstorm
   has just been approved, or whenever the user says "let's build it", "start
   implementing", "begin coding this", "create/start a worktree", "branch this
   approach", "spin up a feature branch", "set up isolation", or otherwise signals
@@ -24,35 +26,43 @@ feature branch**, so each approach is developed without touching the base branch
 or other in-flight work. This is the standard pattern for agentic development —
 isolation, easy throwaway, and parallel-safe — and here it is not optional.
 
-## Two layers: a deterministic gate + an ergonomic move
+## Two layers: an always-on move + an opt-in deterministic gate
 
-Isolation is guaranteed by **two cooperating layers**. Understanding the split is
-the key to using this skill well:
+Isolation rests on **two layers**. Understanding the split is the key to using
+this skill well — one always runs, the other is opt-in:
 
-1. **The gate (100%, harness-enforced).** A `PreToolUse` hook
-   (`${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py`, auto-registered by the
-   `cbr` plugin's `hooks/hooks.json`) runs before every
-   `Edit`/`Write`/`NotebookEdit`. On the base branch it **denies** edits to
-   feature code. This is deterministic — the harness runs it, so it does not
-   depend on you remembering anything. A markdown rule is a probability; a hook
-   is a certainty. The gate is active **whenever the `cbr` plugin is enabled** —
-   disabling the plugin removes the skill and its gate together. See
-   `references/enforcement.md`.
+1. **The move (this skill) — always.** This skill derives the branch name,
+   carries the approved spec across, and uses the native **`EnterWorktree`** tool
+   to switch the live session into the worktree. It never offers a stay-on-main
+   path for feature code. This layer always operates when the skill runs, but it
+   is *probabilistic* — it holds because the model follows the skill.
 
-2. **The move (this skill).** The gate makes the base branch a dead end for
-   feature code; this skill is the smooth path forward — it derives the branch
-   name, carries the approved spec across, and uses the native **`EnterWorktree`**
-   tool to switch the live session into the worktree.
+2. **The gate (deterministic) — opt-in.** A `PreToolUse` hook
+   (`enforce-worktree.py`) runs before every `Edit`/`Write`/`NotebookEdit`; on the
+   base branch it **denies** edits to feature code. This is deterministic — the
+   harness runs it, so it does not depend on the model remembering anything. But
+   the `cbr` plugin **does not ship it active**: a plugin cannot register harness
+   hooks, and an always-on gate would deny base-branch edits in *every* repo you
+   install `cbr` into. It is instead **opt-in** — `/cbr:setup` registers it in
+   your `.claude/settings.json`. **By default (setup not run — e.g. headless
+   `claude -p` or CI) there is no harness gate**, and isolation rests on Layer 1
+   alone. This is an accepted posture. See `references/enforcement.md`.
 
-The two compose into a funnel: you *cannot* write feature code on the base
-branch, so you are *forced* into a worktree; this skill makes that painless.
+When the gate is installed the two compose into a funnel: you *cannot* write
+feature code on the base branch, so you are *forced* into a worktree, and this
+skill makes that painless. Without it, the skill still performs the move — it just
+isn't backed by a harness-level denial.
 
 ## Core stance: hard-mandatory, no opt-out
 
 There is **no "stay on main" option** for implementing an approved approach. The
 only runtime question this skill ever asks is the **branch name**, never
 *whether* to branch. Do not offer to skip the worktree, and do not look for a
-bypass — the gate has none by design.
+bypass. Keep two things distinct: **the skill's behavior is unconditional** (it
+always performs the move and never offers a stay-on-main path for feature code),
+while **the harness-level denial is opt-in** (the `enforce-worktree.py` gate only
+denies once `/cbr:setup` has registered it). Both are true at once — the stance
+never bends; only the deterministic enforcement behind it is opt-in.
 
 The one nuance: the gate exempts **SDLC artifacts and harness config**
 (`docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`). These
@@ -81,13 +91,13 @@ into the project's CLAUDE.md/memory and is also what configures
 ## Workflow
 
 ```
-0. Preconditions (doctor)   → verify: git repo + worktree support; hook registered; worktree.baseRef set; not already in a worktree
+0. Preconditions (doctor)   → verify: git repo + worktree support; gate registration checked (opt-in — absent by default); worktree.baseRef set; not already in a worktree
 1. Confirm input artifact   → verify: an APPROVED docs/specs/...-brainstorm.md exists
 2. Derive the branch name    → verify: slug from the spec's topic; valid charset; confirmed with the user (name only)
 3. Carry the spec across     → verify: the approved spec is reachable from the new branch (committed, or .worktreeinclude)
 4. Enter the worktree        → verify: EnterWorktree succeeded; session CWD is under .claude/worktrees/<name>; branch != base
 5. Write the handoff artifact → verify: docs/specs/...-worktree.md exists inside the worktree
-6. Confirm enforcement       → verify: a feature-code edit on the base branch would now be denied; tell the user where they are
+6. Confirm enforcement       → verify: report the REAL gate state (registered → harness denies base-branch feature edits; not registered → advisory only, point to /cbr:setup); tell the user where they are
 7. Handoff                   → verify: state worktree path + branch; next stage = requirement; then STOP
 ```
 
@@ -99,10 +109,18 @@ checks in `references/enforcement.md` (§Doctor):
 - **Is this a git repo with worktree support?** `git rev-parse --show-toplevel`.
 - **Already inside a worktree?** If the session is already on a feature branch in
   `.claude/worktrees/`, the move is done — skip to confirming and handing off.
-- **Is the gate actually active?** The `cbr` plugin provides the `PreToolUse`
-  hook via its `hooks/hooks.json`, so the gate is live whenever the plugin is
-  enabled. Confirm `cbr` is enabled (`/plugin`). If it is disabled, the guarantee
-  is not real — do not claim enforcement is active when it is not.
+- **Is the opt-in gate actually registered?** The gate is NOT shipped active —
+  it only denies once `/cbr:setup` has registered `enforce-worktree.py` in a
+  settings file. Check **all three** the harness merges — `~/.claude/settings.json`
+  (user), `.claude/settings.json` (project), `.claude/settings.local.json`
+  (project-local) — for a `PreToolUse` entry whose command contains
+  `enforce-worktree`. Absent from all three → **no harness gate** (the default;
+  fine for headless `claude -p`/CI). Registration alone is not enforcement:
+  confirm the registered absolute path exists and `python` (or `py -3`) resolves,
+  since a stale path or missing interpreter makes the harness treat the hook as
+  non-blocking. Only claim enforcement when all three hold; otherwise say the gate
+  is off and offer `/cbr:setup`. Either way, proceed with the move — it isolates
+  regardless.
 - **Base ref set?** The worktree must branch from local HEAD so it captures the
   just-committed approved spec. `worktree.baseRef: head` is applied by
   `/cbr:setup`; if it is unset (the default `fresh` branches from
@@ -115,7 +133,7 @@ proceeding to a half-isolated state.
 ### Phase 1 — Confirm the input artifact
 
 This skill consumes the approved brainstorm. Locate the most recent
-`docs/specs/YYYY-MM-DD-<topic>-brainstorm.md` and confirm its `Status: approved`.
+`docs/specs/brainstorms/BRAINSTORM-<topic>.md` and confirm its `Status: approved`.
 If there is no approved brainstorm, you are being invoked too early — say so and
 point back to the `brainstorming` stage rather than inventing scope here.
 
@@ -148,17 +166,20 @@ enter it with `EnterWorktree`'s `path` argument instead.)
 
 ### Phase 5 — Write the handoff artifact
 
-Inside the worktree, write `docs/specs/YYYY-MM-DD-<topic>-worktree.md` following
+Inside the worktree, write `docs/specs/worktrees/WORKTREE-<topic>.md` following
 `references/artifact-template.md`. It records the branch, worktree path, base
 ref, the source brainstorm spec, and the enforcement status — so the
 `requirement` stage can start from this file alone.
 
 ### Phase 6 — Confirm enforcement
 
-State plainly that the gate is now active: feature-code edits on the base branch
-are denied, and the session is in the worktree where edits are allowed. If the
-doctor in Phase 0 found the `cbr` plugin disabled, say so explicitly — the user
-must know the guarantee is soft until the plugin is re-enabled.
+Report the **real** gate state from the Phase 0 doctor, never a hoped-for one.
+If the opt-in gate is registered (and its path + `python` check out): state that
+feature-code edits on the base branch are denied and the session is in the
+worktree where edits are allowed. If it is **not** registered (the default):
+say plainly that the move is done but isolation is **advisory** — no harness-level
+denial is in effect — and that running `/cbr:setup` installs the gate to make it
+deterministic. Do not claim enforcement when the registration is absent.
 
 ### Phase 7 — Handoff
 
@@ -173,9 +194,10 @@ gate the pipeline depends on.
 - **Already in a worktree.** Don't nest. Confirm the current branch/path, write
   (or update) the handoff artifact, and hand off.
 - **No approved brainstorm.** You're early. Point back to `brainstorming`.
-- **Gate not active (cbr plugin disabled).** The guarantee is not real. Ask the
-  user to re-enable the `cbr` plugin (`/plugin`); do not pretend isolation is
-  enforced.
+- **Gate not registered (opt-in not run).** The harness-level denial is off (the
+  default). Do the move anyway and report isolation as advisory; offer `/cbr:setup`
+  to register `enforce-worktree.py` and make it deterministic. Do not pretend the
+  harness enforces isolation when it does not.
 - **No remote.** Set `worktree.baseRef: head` so branching works offline.
 - **`EnterWorktree` unavailable (you are inside a subagent/teammate).**
   `EnterWorktree` refuses when the session has a cwd override, because it would
@@ -185,15 +207,17 @@ gate the pipeline depends on.
   artifact, but **report clearly that the session was not switched** — a
   top-level session must still enter it (`EnterWorktree(path: …)`) before coding.
   Do not claim the move is complete when only the worktree exists on disk.
-- **User insists on staying on main.** The stance is hard-mandatory; the gate
-  will deny feature edits regardless. Explain the gate rather than fighting it,
-  and note that SDLC artifacts/config remain editable on the base branch.
+- **User insists on staying on main.** The stance is hard-mandatory: this skill
+  will not help write feature code on the base branch. If the opt-in gate is
+  installed, the harness denies those edits as well. Explain the stance rather
+  than fighting it, and note that SDLC artifacts/config remain editable on the
+  base branch.
 
 ## Reference files
 
-- `references/enforcement.md` — the deterministic gate: hook mechanics, the
-  exemption scope, the doctor/precondition checks, install procedure, and the
-  honest residual limitations.
+- `references/enforcement.md` — the opt-in deterministic gate: hook mechanics, the
+  exemption scope, the doctor/precondition checks, the opt-in registration
+  procedure, and the honest residual limitations (including opt-in-by-default).
 - `references/worktree-mechanics.md` — git worktree best practices, `EnterWorktree`
   usage, `baseRef`, naming, carrying the spec across, bootstrap, and cleanup.
 - `references/artifact-template.md` — the exact handoff artifact schema.

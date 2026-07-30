@@ -159,8 +159,8 @@ own brainstorm.
 
 ### Phase 6 — Write the artifact
 
-Write to `docs/specs/YYYY-MM-DD-<topic>-brainstorm.md` (date = today; `<topic>` =
-short kebab-case slug). Follow `references/artifact-template.md` exactly — its
+Write to `docs/specs/brainstorms/BRAINSTORM-<topic>.md` (`<topic>` = short
+kebab-case slug). Follow `references/artifact-template.md` exactly — its
 field list is the **contract** the requirement stage reads, so every section
 matters.
 
