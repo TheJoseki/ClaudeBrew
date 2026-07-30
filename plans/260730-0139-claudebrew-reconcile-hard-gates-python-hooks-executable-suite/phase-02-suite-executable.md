@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Suite executable"
-status: pending
+status: completed
 priority: P1
 effort: "1-2d"
 dependencies: [1]
@@ -39,11 +39,11 @@ Two-layer pipeline: orchestrator skills (`orchestrate`, `full-sdlc`) spawn role 
 7. Add registry template files + repoint the "create from template" instructions.
 
 ## Success Criteria
-- [ ] The 8 genuine plugin-path refs use `${CLAUDE_PLUGIN_ROOT}`; the 2 legitimate user-dir refs (`sdlc-conventions.md:241,248`) are intentionally preserved (spot-checked, not blind-grepped to 0).
-- [ ] No orchestrator/agent reference points to a non-existent file (`context7-prefetch.md`, wrong-subdir phase files resolved).
-- [ ] `retro` frontmatter grants Agent/Write/Edit; retrospective phase is runnable.
-- [ ] `orchestrate` executes a security phase; `security-tester-agent` is reachable from routing.
-- [ ] `context-inject` is invoked once (hook only); no manual mandate remains.
+- [x] The 8 genuine plugin-path refs use `${CLAUDE_PLUGIN_ROOT}`; the 2 legitimate user-dir refs (`sdlc-conventions.md:241,248`) are intentionally preserved (spot-checked, not blind-grepped to 0).
+- [x] No orchestrator/agent reference points to a non-existent file (`context7-prefetch.md`, wrong-subdir phase files resolved).
+- [x] `retro` frontmatter grants Agent/Write/Edit; retrospective phase is runnable.
+- [x] `orchestrate` executes a security phase; `security-tester-agent` is reachable from routing.
+- [x] `context-inject` is invoked once (hook only); no manual mandate remains.
 
 ## Risk Assessment
 - **Shared file `sdlc-conventions.md`** is edited here and in Phase 3 (artifact paths) — sequential phases avoid conflict; do Phase 2 edits first.

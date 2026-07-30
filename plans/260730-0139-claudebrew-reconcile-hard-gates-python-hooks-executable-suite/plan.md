@@ -1,7 +1,7 @@
 ---
 title: "ClaudeBrew reconcile - hard gates, python hooks, executable suite"
 description: "Wire the hard gates that don't ship, port PreToolUse hooks to Python, make the imported SDLC suite executable, unify conventions."
-status: pending
+status: completed
 priority: P1
 effort: "3-5d"
 tags: [reconcile, hooks, sdlc, plugin]
@@ -52,11 +52,11 @@ Tier = audit priority (P0 correctness/security → P1 executability → P2 consi
 
 ## Success Criteria
 
-- [ ] The 3 PreToolUse guards block on a real stdin payload (proven by test, incl. mixed-case names); zero bash/jq dependency across guards + `subagent-quality-gate` + `compact-context-saver`. Cross-OS launcher resolved; real-harness firing is acknowledged as not mechanically testable here (Phase 1 [RT-M1]).
-- [ ] worktree docs (SKILL.md, enforcement.md, artifact-template.md, **README.md**) describe the gate as opt-in; `/cbr:setup` writes a *resolvable absolute* cache path (not `${CLAUDE_PROJECT_DIR}`); `settings_merge.py` is unit-tested for idempotent registration (the runnable wiring proxy — no claim a subprocess invokes the skill). **Default-without-setup = no gate is an accepted, documented posture** (locked decision #2).
-- [ ] Imported pipeline runs end-to-end: `retro` can spawn+write; no dead file references in `orchestrator-agent.md`; security phase executes and its "PASS" claim is real; `context-inject` no longer double-invoked.
-- [ ] Single artifact-path scheme across all skills; zero "ClaudeKit" occurrences; `plugin.json` version bumped; no dev cruft (`.coverage`) shipped.
-- [ ] `claude plugin validate ./plugins/cbr` and `claude plugin validate .` pass.
+- [x] The 3 PreToolUse guards block on a real stdin payload (proven by test, incl. mixed-case names); zero bash/jq dependency across guards + `subagent-quality-gate` + `compact-context-saver`. Cross-OS launcher resolved; real-harness firing is acknowledged as not mechanically testable here (Phase 1 [RT-M1]).
+- [x] worktree docs (SKILL.md, enforcement.md, artifact-template.md, **README.md**) describe the gate as opt-in; `/cbr:setup` writes a *resolvable absolute* cache path (not `${CLAUDE_PROJECT_DIR}`); `settings_merge.py` is unit-tested for idempotent registration (the runnable wiring proxy — no claim a subprocess invokes the skill). **Default-without-setup = no gate is an accepted, documented posture** (locked decision #2).
+- [x] Imported pipeline runs end-to-end: `retro` can spawn+write; no dead file references in `orchestrator-agent.md`; security phase executes and its "PASS" claim is real; `context-inject` no longer double-invoked.
+- [x] Single artifact-path scheme across all skills; zero "ClaudeKit" occurrences; `plugin.json` version bumped; no dev cruft (`.coverage`) shipped.
+- [x] `claude plugin validate ./plugins/cbr` and `claude plugin validate .` pass.
 
 ## Constraints / Environment
 
