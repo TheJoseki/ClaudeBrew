@@ -1,0 +1,9 @@
+{
+  "skill_name": "lint-and-validate",
+  "notes": "Fires after code changes to run linting, type-checking, and light static analysis until clean. Boundary routes deep code-level security audits to vulnerability-scanner (lint only runs a light dependency audit like npm audit).",
+  "evals": [
+    {"id": 1, "prompt": "I just finished my code changes. Run lint and type checks and make sure everything's clean before I call it done.", "expected_output": "Auto-detects the stack (detect_stack.sh), runs the lint/fix and type-check commands (e.g. eslint --fix + tsc --noEmit), analyzes the report, and loops fixing issues until all checks pass before reporting done.", "files": []},
+    {"id": 2, "prompt": "Set up and run linting and static analysis on this TypeScript project.", "expected_output": "Detects the package manager and TS config, runs eslint + tsc --noEmit (plus npm audit), and if no linter is configured checks for config files and suggests creating one.", "files": []},
+    {"id": 3, "prompt": "Do a full OWASP Top 10 security audit of the codebase and map the attack surface.", "expected_output": "Should route to vulnerability-scanner / not fire, because deep code-level vulnerability analysis (OWASP, injection, secrets, attack surface) is out of scope — lint-and-validate only runs a light dependency audit (npm audit) alongside lint/type checks.", "files": []}
+  ]
+}

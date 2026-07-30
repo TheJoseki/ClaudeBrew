@@ -1,0 +1,24 @@
+{
+  "skill_name": "full-sdlc",
+  "notes": "full-sdlc runs the complete 8-phase SDLC pipeline (requirement -> UI -> basic/detail design -> implement -> review -> security -> unit/integration test -> delivery -> retro) by spawning one role agent per phase and verifying each artifact, never doing the work itself. Frontmatter has disable-model-invocation:true, so a natural-language prompt CANNOT auto-fire it; the positive prompts are behavioral evals (invoke /cbr:full-sdlc explicitly, then judge the phased pipeline), not trigger evals.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build the whole team-leave-request feature for our HR app end to end — from requirements all the way through design, implementation, review, and tested, delivered code.",
+      "expected_output": "Runs Phase 0 (detect stack from CLAUDE.md/PROJECT.md, init registries, triage type+complexity, sizing) then drives the phased pipeline via Agent spawns: ba-agent -> ui-designer-agent -> architect-agent (basic+detail) -> developer/review batches -> security-tester -> unit/integration test, pausing at G1-G8 human-approval gates. Produces artifacts under docs/ (SRS-*, TECH-*, reviews, test-reports) and a Delivery Report, then auto-runs /retro. Orchestrator does not implement code itself.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have a brand-new feature idea and want to take it through the complete lifecycle — requirement analysis, UI and technical design, implementation, code review, security, and testing to delivery.",
+      "expected_output": "Triggers the full 8-phase pipeline: initializes PLAN-REGISTRY/DECISION-LEDGER/BACKLOG-REGISTRY if absent, creates docs/plans/PLAN-[feature]-[date].md, spawns each role agent per phase and verifies its artifact, pausing for user approval at each gate. Ends with the Phase 8 Delivery Report and Phase 8.5 retrospective.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "There's a null-pointer bug in payment.service.ts crashing checkout — can you fix it?",
+      "expected_output": "Should route to fix-bug / the bug-fix workflow, not full-sdlc, because it is a targeted defect fix on existing code, not an end-to-end build of a new feature (matches full-sdlc's NOT FOR clause).",
+      "files": []
+    }
+  ]
+}

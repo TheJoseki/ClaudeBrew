@@ -1,0 +1,24 @@
+{
+  "skill_name": "create-pr",
+  "notes": "create-pr carries disable-model-invocation: true, so a natural-language request cannot auto-trigger it; it runs only on explicit invocation (/cbr:create-pr). The prompts below are what a user says when invoking the command, and the evals verify post-invocation behavior — reviewing the diff, assembling a PR description (summary, changes, test results) from CLAUDE.md/PROJECT.md context, and running gh pr create — not description-based triggering.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cbr:create-pr Open a pull request for my current feature branch against main.",
+      "expected_output": "Reads CLAUDE.md/PROJECT.md for project + test commands, runs git status and git diff --stat against the merge-base, drafts a PR description (summary, changes, test results) and runs `gh pr create`. Walks the checklist (tests pass, type check, no hardcoded secrets, safe migrations) and reports the PR URL. Does not commit new code or perform the review itself.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/cbr:create-pr Push this branch up for review — summarize the commits and test results in the description.",
+      "expected_output": "Collects the commits since the base branch (git log merge-base..HEAD), synthesizes them into the PR summary/changes sections, records the test results from the project's test commands, and opens the PR via gh. Returns the PR link.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Review the changes on this PR before we merge and flag any problems.",
+      "expected_output": "Should route to review-code / not fire, because create-pr's NOT FOR explicitly excludes code review itself — this request is a review pass on existing changes, not PR creation.",
+      "files": []
+    }
+  ]
+}

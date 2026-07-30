@@ -1,0 +1,18 @@
+{
+  "skill_name": "context-inject",
+  "notes": "DEPRECATED skill, retained only for backward compatibility. Its frontmatter sets disable-model-invocation: true AND user-invocable: false, so it is unreachable by both the model and a direct slash command — nothing should invoke it. It is auto-replaced by the SubagentStart hook at plugins/cbr/hooks/subagent-context-inject.js (matcher .*-agent), which fires on every role-agent spawn with the same domain_match*0.4 + recency*0.3 + importance*0.3 scoring and <=1500 token budget. (The SKILL.md's replaced_by still points at the stale .claude/hooks/... path — a known path-reconciliation gap; the live file is under plugins/cbr/hooks/.) Evals document non-invocation, not behavior.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "(orchestrator is about to spawn the developer-agent for the auth feature and needs cross-agent context assembled)",
+      "expected_output": "context-inject must NOT be invoked — it is deprecated and disable-model-invocation is true. The SubagentStart hook (plugins/cbr/hooks/subagent-context-inject.js, matcher .*-agent) fires automatically on the developer-agent spawn and injects the scored, budgeted context block; no orchestrator call to this skill occurs.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/cbr:context-inject assemble the decision-ledger context for the code-review agent",
+      "expected_output": "Not user-invocable (user-invocable: false), so this direct invocation must not run the skill. Correct behavior is to treat it as deprecated and rely on the SubagentStart context-inject hook instead.",
+      "files": []
+    }
+  ]
+}

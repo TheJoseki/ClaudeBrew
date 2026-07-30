@@ -1,0 +1,24 @@
+{
+  "skill_name": "design-system",
+  "notes": "Design-token architecture skill: three-layer tokens (primitive -> semantic -> component), CSS variables, Tailwind theme, component state specs, dark mode. Evaluate by checking it produces the layered token system and theming infra; positives should fire, the palette/style-selection boundary should route to ui-ux-pro-max (design intelligence, not token architecture).",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up a three-layer design token system with CSS variables and a Tailwind theme for our app.",
+      "expected_output": "Produces primitive -> semantic -> component token layers as CSS variables (no raw hex in components), an 8pt spacing scale and typography scale, a tailwind.config mapping tokens, and light/dark theming via [data-theme] overrides. Avoids inverting colors for dark mode.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Define the component state specs and dark-mode tokens for our button and input components.",
+      "expected_output": "Specifies per-component state tokens (default/hover/active/focus/disabled/error/success) for button and input, focus-ring spec, and purpose-mapped dark-mode overrides tested for 4.5:1 contrast in both themes. References component-tokens.md / states-and-variants.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "What color palette and font pairing should I choose for our new healthcare dashboard?",
+      "expected_output": "Should route to ui-ux-pro-max / not fire, because this is design-intelligence style/color/typography selection, not token-architecture or CSS-variable work.",
+      "files": []
+    }
+  ]
+}

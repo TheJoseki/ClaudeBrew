@@ -1,0 +1,24 @@
+{
+  "skill_name": "architecture",
+  "notes": "Architecture is a decision-framework / knowledge skill for system-level structural choices and ADRs. It overlaps with design-function (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're adding a background job system to our monolith. Should this be a new module, a separate service, or middleware? Walk me through the trade-offs before we commit.",
+      "expected_output": "Applies the decision tree, biases toward the simplest option that satisfies current needs, weighs the new-dependency cost explicitly, respects existing module boundaries, and records an ADR at docs/specs/decisions/ADR-architecture-[YYYYMMDD].md capturing decision, alternatives, and consequences.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Write an ADR documenting our decision to stay a single deployable monolith instead of splitting into microservices right now.",
+      "expected_output": "Produces an ADR in the skill's ADR format (Context / Decision / Alternatives Considered table / Consequences), written to docs/specs/decisions/ADR-architecture-[YYYYMMDD].md, with a re-check trigger for when to revisit.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Design the API endpoints and ORM schema for the new orders feature.",
+      "expected_output": "Should route to design-function (produces docs/specs/detail-design/TECH-orders.md), not architecture — this is a per-feature endpoint/schema tech spec, whereas architecture is for system-level structural decisions and ADRs.",
+      "files": []
+    }
+  ]
+}

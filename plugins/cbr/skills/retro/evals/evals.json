@@ -1,0 +1,24 @@
+{
+  "skill_name": "retro",
+  "notes": "retro runs a multi-agent retrospective ceremony: detect mode (feature/phase/sprint), spawn the relevant contributing role agents concurrently for phase-specific perspectives, then synthesize a 5-Why root-cause analysis, Lessons Learned per category, git velocity metrics, and prioritized Action Items into docs/retros/. Evaluate correct mode detection, concurrent agent spawn, and the synthesized report (Action Items presented to user).",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Now that the user-auth feature is delivered, run a retrospective on it.",
+      "expected_output": "Feature mode: spawns developer + code-review + unit-test + integration-test + ba agents concurrently (single message, background), synthesizes 5-Why on the top issues, Lessons Learned (Process/Design/Testing/Security), git metrics, and an Action Items table, writing docs/retros/RETRO-feature-user-auth-[date].md and presenting only the Action Items table.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Do a sprint retrospective covering the last two weeks, 2026-07-15 to 2026-07-29.",
+      "expected_output": "Sprint mode over the given date range: spawns developer + code-review + unit-test + integration-test agents (skips ba-agent), collects git velocity/quality metrics for the range, and writes docs/retros/RETRO-sprint-[date].md with 5-Why, Lessons Learned, and prioritized Action Items.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I'm stopping for the day mid-implementation — capture where we are so the next session can pick up.",
+      "expected_output": "Should route to handoff (a session-continuity document), not retro; retro is for a completed feature/phase/sprint review, and running it on in-progress work is an explicit anti-pattern.",
+      "files": []
+    }
+  ]
+}

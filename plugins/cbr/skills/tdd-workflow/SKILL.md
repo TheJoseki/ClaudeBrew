@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: "Test-Driven Development workflow with RED-GREEN-REFACTOR cycle. Trigger when writing new functionality with tests first, practicing TDD, or establishing test-first development. Includes Three Laws, AAA pattern, and multi-agent TDD."
+description: "Test-Driven Development workflow with RED-GREEN-REFACTOR cycle. Trigger when writing new functionality with tests first, practicing TDD, or establishing test-first development. Includes Three Laws, AAA pattern, and multi-agent TDD. TRIGGER: user wants a tests-first (red-green-refactor) workflow. NOT FOR: running an existing suite (run-tests) or writing tests for done code (unit-test)."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 metadata:
   version: "3.1"

@@ -1,6 +1,6 @@
 ---
 name: code-review-checklist
-description: "Provides comprehensive code review checklists covering correctness, security, performance, code quality, and testing. Use when reviewing code, preparing for PR review, or establishing review standards."
+description: "Provides comprehensive code review checklists covering correctness, security, performance, code quality, and testing. Use when preparing for PR review or establishing review standards. TRIGGER: user wants a code-review checklist or review criteria to apply. NOT FOR: actively reviewing a specific diff or PR and producing findings/verdict (review-code)."
 allowed-tools: Read, Grep, Glob
 metadata:
   version: "3.1"

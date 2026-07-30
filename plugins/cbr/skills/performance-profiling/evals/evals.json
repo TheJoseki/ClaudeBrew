@@ -1,0 +1,24 @@
+{
+  "skill_name": "performance-profiling",
+  "notes": "performance-profiling is a measure-first optimization skill. Boundary distinguishes it from fix-bug / systematic-debugging, which handle correctness defects rather than measured performance bottlenecks.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our page load feels sluggish and the Lighthouse score just dropped. Help me figure out what's slow and what to fix first.",
+      "expected_output": "Runs the baseline -> identify -> fix -> validate workflow, measures against Core Web Vitals targets (LCP, INP, CLS), selects the right tool (Lighthouse, bundle analyzer, DevTools), and orders fixes by the quick-win priority table instead of guessing.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "The app's memory keeps growing over time until it crashes. Profile it and tell me where the leak is.",
+      "expected_output": "Uses the runtime/memory indicators (growing heap, detached DOM nodes, retained references) and the DevTools Memory tab, references the common-bottleneck table, and proposes a targeted fix validated against a new measurement.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "There's a bug where the checkout total is calculated wrong for orders with a discount code.",
+      "expected_output": "Should route to fix-bug / systematic-debugging, not performance-profiling — this is a correctness defect to root-cause, not a measured performance bottleneck to profile and optimize.",
+      "files": []
+    }
+  ]
+}

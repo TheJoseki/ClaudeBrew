@@ -1,0 +1,24 @@
+{
+  "skill_name": "implement-feature",
+  "notes": "Fires only when a TECH spec already exists (precondition gate). Boundary case tests the no-spec path routing to full-sdlc; bug reports route to fix-bug.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The technical design for the order-export feature is finished at docs/specs/detail-design/TECH-order-export.md. Go ahead and implement it.",
+      "expected_output": "Detects tech stack from CLAUDE.md/PROJECT.md, verifies the TECH spec exists, reads it plus CODING_RULES/CODING_CONVENTION, implements backend then frontend in framework order, runs the self-check (type/lint/tests), and writes docs/work-logs/DEV-order-export-[date].md. Stops after the work log; does not auto-start review or tests.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Implement the user-profile feature — the tech design is already written and approved.",
+      "expected_output": "Runs the precondition check for docs/specs/detail-design/TECH-user-profile.md, reads it as source of truth, implements per detected stack with guards/validation/i18n/soft-delete conventions, passes self-check, and produces the DEV work-log artifact.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Add a dark-mode toggle to the settings page.",
+      "expected_output": "Should route to full-sdlc / not fire, because there is no existing TECH spec — implement-feature's precondition gate stops when docs/specs/detail-design/TECH-*.md is not found and directs the user to design-function/full-sdlc first.",
+      "files": []
+    }
+  ]
+}

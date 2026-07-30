@@ -1,0 +1,24 @@
+{
+  "skill_name": "fix-bug",
+  "notes": "Fires on a reported defect, error, or failing test. Boundary case tests that a new-feature request routes to implement-feature, not fix-bug.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An admin gets a 403 when deleting an order that was already soft-deleted. Steps: log in as admin, DELETE /orders/42. Here's the stack trace pointing at the role guard.",
+      "expected_output": "Detects stack, reproduces the failing case with the project's test/type commands, does root-cause analysis (auth guard / soft-delete filter layer), applies a minimal fix without refactoring, verifies the affected test plus a regression run, and writes docs/bug-reports/BUG-[date]-nn.md with root cause and verification.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "The payment unit test test_refund_partial started failing after last night's merge. Can you fix it?",
+      "expected_output": "Reproduces the failing test, traces the code flow to the true root cause, applies a minimal fix, re-runs the affected test and full suite for regressions, and creates the BUG report artifact. Escalates to systematic-debugging if the fix fails 2 rounds.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Add a CSV export button to the reports page.",
+      "expected_output": "Should route to implement-feature / full-sdlc, not fire, because this is net-new functionality, not a reported bug — fix-bug is NOT FOR new features, refactoring, or performance work.",
+      "files": []
+    }
+  ]
+}

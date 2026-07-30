@@ -1,0 +1,9 @@
+{
+  "skill_name": "code-review-checklist",
+  "notes": "Fires when the user wants the reusable review checklist or review standards to apply, not an active review of specific code. Boundary routes concrete diff/PR reviews to review-code.",
+  "evals": [
+    {"id": 1, "prompt": "What should I check before approving a PR? Give me a comprehensive code review checklist.", "expected_output": "Returns the checklist reference — correctness/security/performance/code-quality/testing/documentation items, the anti-patterns-to-flag table, review comment conventions (BLOCKING/SUGGESTION/NIT/QUESTION), and PASS/NEEDS WORK/BLOCKED verdict criteria.", "files": []},
+    {"id": 2, "prompt": "We're establishing code review standards for the team. What should our review checklist cover?", "expected_output": "Provides the standardized checklist categories and review conventions as reusable review criteria, without reviewing any particular codebase or producing a REVIEW artifact.", "files": []},
+    {"id": 3, "prompt": "Review my auth service code and tell me exactly what's wrong before merge.", "expected_output": "Should route to review-code / not fire, because the user names specific code to actively review and wants concrete findings plus a verdict — that is an active review (review-code), not a request for the checklist reference.", "files": []}
+  ]
+}

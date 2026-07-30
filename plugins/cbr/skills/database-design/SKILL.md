@@ -1,6 +1,6 @@
 ---
 name: database-design
-description: "Database design principles and decision framework. Trigger when designing schemas, choosing database type, optimizing queries, planning migrations, or reviewing data models. Asks user for preferences before making technology choices."
+description: "Database design principles and decision framework, asking the user for preferences before making technology choices. TRIGGER: choosing a database type, designing schemas/indexes, optimizing queries, planning migrations, or reviewing data models. NOT FOR: the per-feature endpoint/ORM tech-spec artifact (use design-function), API style or contract design (use api-patterns), or system structure (use architecture)."
 allowed-tools: Read, Grep
 metadata:
   version: "3.1"

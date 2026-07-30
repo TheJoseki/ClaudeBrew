@@ -1,0 +1,24 @@
+{
+  "skill_name": "behavioral-modes",
+  "notes": "behavioral-modes sets Claude's operational interaction style (brainstorm/implement/debug/review/teach/ship/orchestrate); it is user-invocable: false and fires on explicit mode-switch intent. Boundary distinguishes a mode switch from a concrete task that should go to an executor skill.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Switch to brainstorm mode — I want to explore options for our notification system before we write any code.",
+      "expected_output": "Activates BRAINSTORM mode: asks clarifying questions first, offers at least 3 distinct alternatives with pros/cons, stays code-free, and announces the mode using the brainstorm output style.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Treat the rest of this session as a review — go into review mode for the auth module.",
+      "expected_output": "Activates REVIEW mode: findings categorized by severity (Critical/High/Medium/Low), each with the why and a fix, and acknowledges what is done well — following the review output style.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Implement the user profile endpoint.",
+      "expected_output": "IMPLEMENT-mode style applies (the word 'implement' is on Mode 2's auto-activate list), but behavioral-modes only sets interaction style — it must not perform the work. The build itself routes to the implement-feature executor.",
+      "files": []
+    }
+  ]
+}

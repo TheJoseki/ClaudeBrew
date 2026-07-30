@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: "Applies clean code principles to any codebase. Trigger when reviewing code quality, refactoring, or establishing coding standards. Covers SRP, DRY, KISS, YAGNI, naming, function rules, and AI-specific coding style."
+description: "Applies clean code principles to any codebase. Trigger when refactoring or establishing coding standards. Covers SRP, DRY, KISS, YAGNI, naming, function rules, and AI-specific coding style. TRIGGER: user wants clean-code principles / refactor guidance. NOT FOR: actively reviewing a specific diff or PR (review-code)."
 allowed-tools: Read, Grep
 metadata:
   version: "3.1"

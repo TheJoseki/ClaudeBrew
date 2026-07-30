@@ -1,0 +1,24 @@
+{
+  "skill_name": "documentation-templates",
+  "notes": "documentation-templates is a model-invocable knowledge/reference skill that supplies structure — README sections, per-endpoint API doc shape, Keep-a-Changelog format, the ADR template, and the llms.txt skeleton. Its allowed-tools are Read, Grep, Glob only (no Write/Edit): it hands over the template and conventions, it does not author or generate the doc from a codebase scan. Evals verify it returns the right template and structuring guidance.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm setting up a README for this project — what sections should it have and in what order?",
+      "expected_output": "Returns the README section table (Title + one-liner, Quick Start <5 min, Features, Configuration, API Reference, Contributing, License) with each section's purpose, and applies the scannable / examples-first / progressive-detail principles. Guidance only — does not write the README file.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We just decided to use PostgreSQL over MongoDB. How should I record that decision, and how should I structure our changelog?",
+      "expected_output": "Provides the ADR template (Status / Context / Decision / Consequences) filled to frame the Postgres-vs-Mongo trade-off, plus the Keep-a-Changelog structure ([Unreleased] with Added/Changed/Fixed/Removed and dated versions). Supplies the templates; does not create the files.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Analyze my whole codebase and write complete, up-to-date project documentation for it.",
+      "expected_output": "Should not fire, because documentation-templates is a read-only (Read/Grep/Glob) template reference — it provides doc structure, not codebase analysis or doc authoring; generating docs from a full codebase scan is a separate docs-authoring task.",
+      "files": []
+    }
+  ]
+}
