@@ -23,6 +23,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 MODEL = "claude-opus-4-7"
 TIMEOUT = 90
 THRESHOLD = 0.5
+# Which skill's triggering to detect (substring; matches the plain and `cbr:`-namespaced
+# forms). Override to eval a different skill, e.g. CBR_TRIGGER_SKILL=design-system.
+SKILL = os.environ.get("CBR_TRIGGER_SKILL", "brainstorming")
+# When set, load the plugin into each headless probe so its skills are actually
+# available to trigger (without this, `claude -p` runs with the plugin unloaded and
+# every should-trigger query reads as a miss).
+PLUGIN_DIR = os.environ.get("CBR_PLUGIN_DIR", "")
 
 
 def _decide_from_stream(stdout, result_box):
@@ -53,18 +60,25 @@ def _decide_from_stream(stdout, result_box):
                     if name in ("Skill", "Read"):
                         pending, acc = name, ""
                     else:
-                        result_box[0] = "no"   # model used a different tool first
+                        # LIMITATION: bails on the FIRST non-Skill/Read tool. Conversational
+                        # skills (brainstorming) surface the Skill tool immediately, so this
+                        # is reliable for them. TASK skills (design-system, architecture, …)
+                        # often Glob/Read project files first, and plugin auto-activation may
+                        # not emit a `Skill` tool_use at all — so this UNDER-detects them.
+                        # Treat recall for task skills as a floor, not a verdict (verified:
+                        # design-system does fire, but is recorded "no" when it Globs first).
+                        result_box[0] = "no"
                         return
             elif st == "content_block_delta" and pending:
                 d = se.get("delta", {})
                 if d.get("type") == "input_json_delta":
                     acc += d.get("partial_json", "")
-                    if "brainstorming" in acc:
+                    if SKILL in acc:
                         result_box[0] = "yes"
                         return
             elif st in ("content_block_stop", "message_stop"):
                 if pending:
-                    result_box[0] = "yes" if "brainstorming" in acc else "no"
+                    result_box[0] = "yes" if SKILL in acc else "no"
                     return
                 if st == "message_stop":
                     result_box[0] = "no"
@@ -75,11 +89,11 @@ def _decide_from_stream(stdout, result_box):
                     continue
                 name = c.get("name", "")
                 inp = c.get("input", {}) or {}
-                if name == "Skill" and "brainstorming" in str(inp.get("skill", "")):
+                if name == "Skill" and SKILL in str(inp.get("skill", "")):
                     result_box[0] = "yes"
                     return
                 fp = str(inp.get("file_path", ""))
-                if name == "Read" and "brainstorming" in fp and "SKILL.md" in fp:
+                if name == "Read" and SKILL in fp and "SKILL.md" in fp:
                     result_box[0] = "yes"
                     return
                 result_box[0] = "no"
@@ -94,9 +108,10 @@ def run_once(query: str) -> str:
     """Run one claude -p probe; return 'yes'/'no'/'timeout'/'error'."""
     env = dict(os.environ)
     env["BSQ"] = query
+    plugin = f" --plugin-dir '{PLUGIN_DIR}'" if PLUGIN_DIR else ""
     ps_cmd = (
         "claude -p $env:BSQ --output-format stream-json --verbose "
-        f"--include-partial-messages --model {MODEL}"
+        f"--include-partial-messages --model {MODEL}{plugin}"
     )
     try:
         proc = subprocess.Popen(
