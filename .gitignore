@@ -7,3 +7,6 @@
 .claude/worktrees/
 .coverage
 __pycache__/
+
+# Local planning artifacts (plans + reports) — kept on disk, not committed
+/plans/
