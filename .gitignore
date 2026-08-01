@@ -5,3 +5,6 @@
 # Python coverage artifacts
 .coverage
 **/.coverage
+
+# Local planning artifacts (plans + reports) — kept on disk, not committed
+/plans/
