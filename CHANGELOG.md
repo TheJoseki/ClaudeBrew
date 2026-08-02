@@ -2,6 +2,21 @@
 
 All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- **Session + subagent lifecycle context hooks** — two general hooks giving the single-layer suite ClaudeKit-parity lifecycle behavior with no orchestrator and no `.*-agent` matcher:
+  - `session-init.py` (`SessionStart: startup|resume|clear`) reconstructs a gate-aware SDLC summary from committed `docs/` artifacts (the automatic form of `/cbr:handoff`), injects it as plain stdout, and builds a `.claude/sdlc-index.json` cache.
+  - `subagent-context.py` (`SubagentStart`, no matcher — fires for every spawn) injects the active feature + gate + verdict path/schema + section pointers to pool agents, reading the cache with a glob fallback (cache is convenience; glob-on-canonical-path stays authority).
+  - Shared `hooks/lib/sdlc_state.py` (state reconstruction). **100% test coverage** (`evals/test_sdlc_state.py`, `evals/test_lifecycle_hooks.py`; 39 cases). P1 firing empirically validated in a `--plugin-dir` session.
+- Cross-session memory now **self-reconstructs from `docs/`** — no separate durable state file; the cache is an ephemeral per-session convenience.
+
+### Changed
+- Corrected the skill count in `CLAUDE.md` (~29 → 25) after the P4 knowledge merges.
+
+### Fixed
+- **Post-compaction context reinjection now actually reaches the model.** The rich reinject was wired to `PostCompact`, whose stdout is **log-only** (docs-verified) — so it never reached Claude. Compaction reinjection is folded into `session-init.py` on the injection-capable `SessionStart` (`…|compact`) path: PreCompact checkpoint + SDLC gate-state + PROJECT.md sections + an AskUserQuestion approval-gate reminder (the ClaudeKit mitigation). Removed the dead `post-compact-reinject.sh` and the now-redundant `re-inject-context.sh` (which also still read the removed `DECISION-LEDGER.md`). One `SessionStart` hook now handles new sessions and compaction alike.
+
 ## [0.3.0] — 2026-07-31
 
 Single-layer pivot: collapsed the imported two-layer orchestrator→role-agent engine into one layer of self-sufficient, gated stage skills over a small pool of general capability agents. Refactor plan + ClaudeKit study under `plans/260730-2316-single-layer-sdlc-refactor/`.
