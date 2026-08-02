@@ -48,6 +48,7 @@ Glob and Read the following (skip if not found — note as missing):
 
 | Artifact | Path | Status |
 |----------|------|--------|
+| Stream manifest | `docs/streams/[feature]-*/STREAM.md` (if present: use for membership + task board) | |
 | PLAN file | `docs/plans/PLAN-[feature]-*.md` | |
 | SRS | `docs/specs/requirements/SRS-[feature].md` | |
 | BASIC spec | `docs/specs/basic-design/BASIC-[feature].md` | |
@@ -70,6 +71,8 @@ Glob and Read the following (skip if not found — note as missing):
 | Agent memory | `.claude/agent-memory/*/MEMORY.md` | |
 
 Read each if it exists. Extract:
+- From `STREAM.md` (if present): the stream's artifact membership + task-board status. Treat its Gate
+  Status zone as a derived snapshot only — re-derive gate state from the globbed artifacts/verdicts below.
 - The active plan's open phases and their done conditions
 - SUPERSEDED or unresolved decisions from the ADRs
 - OPEN HIGH/CRITICAL risks from the risk register

@@ -110,6 +110,12 @@ Each feature's SDLC artifacts belong to one **work-stream**. `brainstorming` dec
   `docs/_templates/`: `PROJECT.md`, `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`,
   `API_DESIGN.md`, `TEST_VIEWPOINT.md`, `CODING-CHECKLIST.md`, `CODE-REVIEW-CHECKLIST.md`.
 
+**Upkeep protocol (MANDATORY, every stage skill).** When a stage skill writes its output artifact it must:
+(1) stamp `stream: [id]` in that artifact's frontmatter; (2) append/update the artifact's row in the
+stream's `STREAM.md` membership table; (3) update the task-board status for its phase. `brainstorming`
+creates `STREAM.md` from `docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
+Status zone — `handoff` / `session-init` regenerate it.
+
 ## Artifact Lifecycle
 
 Every **stage** artifact has a defined lifecycle: created once, updated by named stages, consumed by

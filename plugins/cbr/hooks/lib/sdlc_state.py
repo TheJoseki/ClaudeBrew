@@ -28,6 +28,7 @@ REVIEWS_DIR = os.path.join("docs", "reviews")
 SECURITY_DIR = os.path.join("docs", "security")
 TESTREPORTS_DIR = os.path.join("docs", "test-reports")
 HANDOFFS_DIR = os.path.join("docs", "handoffs")
+STREAMS_DIR = os.path.join("docs", "streams")
 
 # Gate -> the stage skill that advances it (drives next_action).
 GATE_SKILL = {
@@ -216,6 +217,22 @@ def extract_sections(path):
 def find_latest_handoff(project_dir, slug):
     """Return the newest docs/handoffs/HANDOFF-[slug]-*.md as a /-path, or None."""
     hits = glob.glob(os.path.join(project_dir, HANDOFFS_DIR, f"HANDOFF-{slug}-*.md"))
+    if not hits:
+        return None
+    newest = max(hits, key=os.path.getmtime)
+    return os.path.relpath(newest, project_dir).replace("\\", "/")
+
+
+def find_stream_manifest(project_dir, slug):
+    """Return the newest docs/streams/<slug>-*/STREAM.md as a /-path, or None.
+
+    The stream folder is `<slug>-<YYYYMMDD>`; a feature may have more than one over
+    time, so pick the most-recently-modified. Additive: no existing caller depends
+    on this (Phase-1 leaves the type-first globs untouched).
+    """
+    if not slug:
+        return None
+    hits = glob.glob(os.path.join(project_dir, STREAMS_DIR, f"{slug}-*", "STREAM.md"))
     if not hits:
         return None
     newest = max(hits, key=os.path.getmtime)
