@@ -183,6 +183,17 @@ def test_find_latest_handoff():
         check("\\" not in got, "forward slashes only")
 
 
+def test_find_stream_manifest():
+    with tempfile.TemporaryDirectory() as d:
+        check(S.find_stream_manifest(d, "payment") is None, "no manifest -> None")
+        check(S.find_stream_manifest(d, None) is None, "no slug -> None")
+        write(d, "docs/streams/payment-20260801/STREAM.md", "x", mtime=1_000_000)
+        write(d, "docs/streams/payment-20260803/STREAM.md", "x", mtime=2_000_000)
+        got = S.find_stream_manifest(d, "payment")
+        check(got == "docs/streams/payment-20260803/STREAM.md", f"newest -> {got!r}")
+        check("\\" not in got, "forward slashes only")
+
+
 def test_build_index_no_slug():
     with tempfile.TemporaryDirectory() as d:
         idx = S.build_index(d, None)

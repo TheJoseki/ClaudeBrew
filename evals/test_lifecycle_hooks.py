@@ -102,6 +102,20 @@ def test_si_render_no_next_no_handoff():
     check("Next:" not in out and "Full state:" not in out, out)
 
 
+def test_si_render_with_stream():
+    out = SI.render("payment", [], {"gate_line": "GL", "next_action": None}, None,
+                    stream="docs/streams/payment-20260801/STREAM.md")
+    check("Stream board:" in out and "STREAM.md" in out, out)
+
+
+def test_si_main_includes_stream():
+    with tempfile.TemporaryDirectory() as d:
+        active_plan_tree(d)
+        write(d, "docs/streams/payment-20260801/STREAM.md", "# Stream\n")
+        out = run_main(SI, "{}", d)
+        check("Stream board:" in out and "STREAM.md" in out, f"stdout={out!r}")
+
+
 # --- session-init main + cache --------------------------------------------- #
 def test_si_main_writes_cache_and_prints():
     with tempfile.TemporaryDirectory() as d:

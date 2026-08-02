@@ -27,7 +27,7 @@ import sdlc_state  # noqa: E402
 _PROJECT_SECTIONS = ("## Tech Stack", "## Build Commands", "## Domain Model")
 
 
-def render(slug, ambiguity, progress, handoff):
+def render(slug, ambiguity, progress, handoff, stream=None):
     """Compose the plain-stdout injection text. '' when there is nothing to say."""
     if ambiguity:
         return (
@@ -39,6 +39,8 @@ def render(slug, ambiguity, progress, handoff):
     lines = [f"cbr SDLC state — {progress['gate_line']}"]
     if progress["next_action"]:
         lines.append(f"Next: {progress['next_action']}")
+    if stream:
+        lines.append(f"Stream board: {stream}")
     if handoff:
         lines.append(f"Full state: {handoff}")
     return "\n".join(lines)
@@ -71,10 +73,10 @@ def read_project_sections(project_dir):
     return "\n".join(out).strip()
 
 
-def render_compact(project_dir, slug, ambiguity, progress, handoff):
+def render_compact(project_dir, slug, ambiguity, progress, handoff, stream=None):
     """Rich post-compaction reinjection (SessionStart:compact is injection-capable)."""
     parts = []
-    summary = render(slug, ambiguity, progress, handoff)
+    summary = render(slug, ambiguity, progress, handoff, stream)
     if summary:
         parts.append(summary)
     checkpoint = read_checkpoint(project_dir)
@@ -118,12 +120,13 @@ def main():
         slug, ambiguity = sdlc_state.resolve_active_feature(project_dir)
         progress = sdlc_state.infer_gate_progress(project_dir, slug) if slug else None
         handoff = sdlc_state.find_latest_handoff(project_dir, slug) if slug else None
+        stream = sdlc_state.find_stream_manifest(project_dir, slug) if slug else None
         now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         write_cache(project_dir, sdlc_state.build_index(project_dir, slug, now=now))
         if source == "compact":
-            text = render_compact(project_dir, slug, ambiguity, progress, handoff)
+            text = render_compact(project_dir, slug, ambiguity, progress, handoff, stream)
         else:
-            text = render(slug, ambiguity, progress, handoff)
+            text = render(slug, ambiguity, progress, handoff, stream)
         if text:
             print(text)
     except Exception as exc:  # fail-open: never break a session
