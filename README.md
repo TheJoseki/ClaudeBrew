@@ -1,16 +1,18 @@
 # ClaudeBrew
 
+<!-- release: 0.4.0 -->
+
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
 ClaudeBrew (`cbr`) turns a raw idea into shipped software through one skill per SDLC stage, each handing a structured, reviewed artifact to the next:
 
 ```
-brainstorming → worktree → requirement → design → coding → testing → ship
+brainstorming → worktree → requirement → design → implement → review → test → security → delivery → retro
 ```
 
 Every stage **never guesses** (uncertainty is surfaced, not assumed), is **evidence-backed** (library docs via Context7, prior art via web search, every source cited), and **stops at a hard gate** — it writes its artifact, waits for your approval, and never silently cascades into the next stage.
 
-> **Status:** `brainstorming` (Stage 1) and `worktree` (Stage 1.5) are built. The remaining stages are in progress.
+> **Status:** the full single-layer SDLC suite ships — 25 stage/knowledge skills over a 4-agent capability pool (`researcher`/`developer`/`reviewer`/`tester`), each stage writing a gated artifact. `brainstorming` (Stage 1) and `worktree` (Stage 1.5) are the reference implementations every sibling matches.
 
 ## Install
 
@@ -31,7 +33,7 @@ Start the pipeline by describing something you want to build:
 - **`/cbr:brainstorming`** — turn an idea into a validated, evidence-backed brainstorm artifact. (It also triggers automatically when you say things like "I have an idea…", "help me scope X", or "where do I start?")
 - **`/cbr:worktree`** — once a brainstorm is approved, move development into an isolated git worktree on a feature branch. This is **hard-mandatory**: a `PreToolUse` hook denies feature-code edits on `main`/`master`, so building always happens in isolation. The gate is active whenever the `cbr` plugin is enabled.
 
-Handoff artifacts land in your repo at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md`.
+Each stage writes its artifact into your repo under `docs/` (canonical paths live in `sdlc-conventions.md`), and a per-work-stream manifest at `docs/streams/<slug>-<date>/STREAM.md` links every artifact of one feature with a kanban-style task board — so a stream's brainstorm, spec, plan, reviews and tests read as one unit instead of scattering.
 
 ## What makes it different
 
@@ -39,6 +41,8 @@ Handoff artifacts land in your repo at `docs/specs/YYYY-MM-DD-<topic>-<stage>.md
 - **Deterministic isolation** — worktree discipline is enforced by a harness hook, not merely requested in prose.
 - **DAR** (Decision Analysis & Resolution) on hard-to-reverse trade-offs — weighted criteria, a scoring matrix, a recorded decision.
 - **Agent teams** — complex brainstorms can spin up a team of specialist sub-agents that challenge each other.
+- **One work-stream, one tree** — every feature's artifacts are linked from a `STREAM.md` manifest with a task board and a derived gate-status snapshot; an **Artifact Lifecycle** table records who creates/updates/closes each artifact, so nothing is generated-and-forgotten.
+- **Agent-consumable templates** — the shipped `docs/_templates/` set is written to be *filled by an agent*, not read like a manual (one grep-able placeholder syntax; framework specifics come from your `PROJECT.md`).
 
 ## Develop / contribute
 
@@ -49,6 +53,7 @@ claude --plugin-dir ./plugins/cbr     # load the plugin in place; /reload-plugin
 claude plugin validate ./plugins/cbr  # validate the plugin
 claude plugin validate .              # validate the marketplace
 python evals/test_hook.py             # unit-test the worktree gate
+python evals/test_release_docs.py     # release-docs gate: version <-> CHANGELOG + doc anchors
 ```
 
 See [CLAUDE.md](CLAUDE.md) for the full architecture, conventions, ship process, and Windows caveats.
