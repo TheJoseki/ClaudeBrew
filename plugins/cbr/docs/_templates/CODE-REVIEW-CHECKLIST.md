@@ -1,7 +1,6 @@
 # Code Review Checklist — Two-Pass Methodology
 
-> Reference document for code-review-agent.
-> Loaded via `## Required Reading` section in agent definition.
+> Run by `review-code` and the fresh `cbr:reviewer` gate agent (two-pass methodology).
 
 ## Pass 1: CRITICAL (must fix before merge)
 

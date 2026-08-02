@@ -1,14 +1,14 @@
 # Coding Checklist — [PROJECT_NAME]
 
-> Project-specific checklist created by architect-agent (Step D1).
-> Used by: developer-agent (self-review before work-log) and code-review-agent (audit).
-> Customize ALL [PROJECT_SPECIFIC] placeholders with actual values from PROJECT.md.
+> Project-specific checklist created by `design-function` (Step D1).
+> Used by `implement-feature` (self-review before work-log) and `review-code` + a fresh `cbr:reviewer` verdict (audit).
+> Fill every `[… — e.g. …]` placeholder with actual values from PROJECT.md.
 
 ---
 
 ## 1. Security
 
-- [ ] Auth guards on all protected endpoints — framework: [PROJECT_SPECIFIC: auth framework]
+- [ ] Auth guards on all protected endpoints — framework: [auth framework — e.g. JWT middleware]
 - [ ] Role-based access control matches permission matrix from SRS
 - [ ] Input validation via DTOs/schemas on all API endpoints
 - [ ] No hardcoded secrets, API keys, or credentials in code
@@ -25,7 +25,7 @@
 - [ ] Foreign key constraints match entity relationships
 - [ ] Index definitions for frequently queried columns
 - [ ] Seed data for development/testing (if applicable)
-- [ ] Database: [PROJECT_SPECIFIC: database engine + ORM]
+- [ ] Database: [database + ORM — e.g. Postgres + Prisma]
 
 ## 3. API Layer
 
@@ -34,7 +34,7 @@
 - [ ] HTTP status codes: 200/201 success, 400 validation, 401 unauth, 403 forbidden, 404 not found
 - [ ] Pagination on list endpoints (page, limit, total count)
 - [ ] Error response format is consistent across all endpoints
-- [ ] API versioning follows project convention: [PROJECT_SPECIFIC: versioning strategy]
+- [ ] API versioning follows project convention: [versioning — e.g. URL prefix /api/v1]
 
 ## 4. Frontend
 
@@ -44,7 +44,7 @@
 - [ ] Form validation matches backend DTO constraints
 - [ ] i18n: no hardcoded user-facing strings (if project uses i18n)
 - [ ] Responsive breakpoints tested (if applicable)
-- [ ] Framework: [PROJECT_SPECIFIC: frontend framework]
+- [ ] Framework: [frontend framework — e.g. React]
 
 ## 5. Code Quality
 
@@ -61,5 +61,5 @@
 - [ ] Negative test cases: auth failure, validation failure, not found
 - [ ] Test isolation: no shared mutable state between tests
 - [ ] Test naming: `test_[action]_[scenario]_[expected]`
-- [ ] Coverage meets project minimum: BE ≥[PROJECT_SPECIFIC]%, FE ≥[PROJECT_SPECIFIC]%
-- [ ] Test runner: [PROJECT_SPECIFIC: test framework]
+- [ ] Coverage meets project minimum: BE ≥[NN — e.g. 80]%, FE ≥[NN — e.g. 80]%
+- [ ] Test runner: [test framework — e.g. Vitest]

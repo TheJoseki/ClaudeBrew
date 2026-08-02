@@ -1,6 +1,6 @@
 # PROJECT.md — [PROJECT_NAME]
 
-> Copy file này vào root project và điền vào các placeholder. Agents sẽ đọc file này để detect tech stack.
+> Copy this file to the project root and fill in the placeholders. Agents read it to detect the tech stack.
 
 ## Project Context
 
