@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-<!-- release: 0.4.0 -->
+<!-- release: 0.4.1 -->
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
