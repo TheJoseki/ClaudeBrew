@@ -60,8 +60,8 @@ Each artifact is written by the skill that owns it. Never deviate without explic
 | `worktree` | Worktree handoff | `docs/specs/worktrees/WORKTREE-[topic].md` |
 | `analyze-requirement` | SRS | `docs/specs/requirements/SRS-[feature].md` |
 | `design-screen` | Screen Design | `docs/specs/requirements/SCREEN-[feature].md` |
-| `design-function` | Basic Design (BD書) | `docs/specs/basic-design/BASIC-[feature].md` |
-| `design-function` | Detail Design (DD書) | `docs/specs/detail-design/TECH-[feature].md` |
+| `design-function` | Basic Design (BD) | `docs/specs/basic-design/BASIC-[feature].md` |
+| `design-function` | Detail Design (DD) | `docs/specs/detail-design/TECH-[feature].md` |
 | `architecture` | Decision record (ADR) | `docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md` |
 | `design-function` | Coding Checklist | `docs/CODING-CHECKLIST.md` (project-level, created once per project) |
 | `implement-feature` | Work Log | `docs/work-logs/DEV-[feature]-[YYYYMMDD].md` |

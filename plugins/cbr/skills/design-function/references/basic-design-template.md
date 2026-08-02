@@ -1,6 +1,6 @@
 # BASIC_DESIGN Output Template
 
-> Reference for `design-function`. Loaded on-demand when producing the Basic Design (BD書) — module structure, DB table list, API endpoint list.
+> Reference for `design-function`. Loaded on-demand when producing the Basic Design (BD) — module structure, DB table list, API endpoint list.
 
 ## Template
 
@@ -14,7 +14,7 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **Status**: DRAFT
 
-## 1. System Architecture (システムアーキテクチャ)
+## 1. System Architecture
 [Where this feature fits. Mermaid diagram or draw.io preferred.]
 
 ## 2. Module / Subsystem Breakdown
@@ -48,7 +48,7 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 | Screen | User Action | API Called | Notes |
 |--------|-------------|------------|-------|
 
-## 6.5 Business Flow Scenarios (ビジネスフローシナリオ)
+## 6.5 Business Flow Scenarios
 
 > Input for ITC generation. Each SRS user journey → 1+ business flow scenario. Described at **business step** level (user actions that change system state), NOT API call level.
 
@@ -85,7 +85,7 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 ## 9. Non-Functional Considerations
 [Performance, security, scalability — high level]
 
-## 10. UI Screen Previews (画面プレビュー)
+## 10. UI Screen Previews
 > From docs/specs/requirements/SCREEN-[feature].md. Default state only.
 > Use Pencil MCP `get_screenshot(frameId)` → save to docs/specs/pencil/exports/
 

@@ -1,6 +1,6 @@
 # DETAIL_DESIGN Output Template
 
-> Reference for `design-function`. Loaded on-demand when producing the Detail Design (DD書 / TECH spec) — ORM schema, service methods, DTOs.
+> Reference for `design-function`. Loaded on-demand when producing the Detail Design (DD / TECH spec) — ORM schema, service methods, DTOs.
 
 ## Architecture Patterns
 

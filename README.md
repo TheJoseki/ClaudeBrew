@@ -1,6 +1,6 @@
 # ClaudeBrew
 
-<!-- release: 0.4.0 -->
+<!-- release: 0.4.1 -->
 
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
@@ -54,6 +54,7 @@ claude plugin validate ./plugins/cbr  # validate the plugin
 claude plugin validate .              # validate the marketplace
 python evals/test_hook.py             # unit-test the worktree gate
 python evals/test_release_docs.py     # release-docs gate: version <-> CHANGELOG + doc anchors
+python evals/test_english_docs.py     # English-only gate: no CJK in shipped skill prose
 ```
 
 See [CLAUDE.md](CLAUDE.md) for the full architecture, conventions, ship process, and Windows caveats.

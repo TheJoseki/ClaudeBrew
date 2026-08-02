@@ -4,6 +4,17 @@ All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This p
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-08-03
+
+### Changed
+- **Language unified to English** across shipped skill prose — stripped Japanese SDLC terms (`BD書`, `DD書`, `基本設計書`, `背景・目的`, `業務フロー`, …) from `srs-template`, `basic-design-template`, `tech-spec-template`, and `sdlc-conventions.md`; translated the Chinese icon-fallback rule and Bauhaus gloss in two `design-system/data` CSVs.
+
+### Removed
+- Two dead, unreferenced non-English design-system data files (`design.csv`, `draft.csv`, ~216 KB) — not in the live corpus (`ux-intelligence.md`), and `draft.csv` self-declared "not read by the CLI".
+
+### Added
+- **English-only gate** (`evals/test_english_docs.py`, ported from clawform's `english-docs` test) — fails if CJK (Han/Hiragana/Katakana) reappears in any shipped `plugins/cbr/**/*.md` (skill prose, references, rules, templates; data CSVs intentionally excluded). Makes the EN unification stick.
+
 ## [0.4.0] — 2026-08-03
 
 Doc-template curation + work-stream information architecture (Phase 1), folding in the previously-unreleased lifecycle context hooks.

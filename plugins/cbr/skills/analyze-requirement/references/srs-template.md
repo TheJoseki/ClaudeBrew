@@ -13,13 +13,13 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 **Author**: analyze-requirement
 **Status**: DRAFT
 
-## 1. Project Background (背景・目的)
+## 1. Project Background
 
-**Background**: [なぜ必要か — What business problem or need prompted this feature?]
+**Background**: [What business problem or need prompted this feature?]
 
-**Objective**: [何を達成するか — What outcome must this feature achieve?]
+**Objective**: [What outcome must this feature achieve?]
 
-**Scope**: [何が含まれるか — What is in scope for this feature? What is explicitly excluded?]
+**Scope**: [What is in scope for this feature? What is explicitly excluded?]
 
 ## 2. Stakeholders & Actors
 
@@ -52,7 +52,7 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 | BR ID | Rule | Source |
 |-------|------|--------|
 
-## 6. Business Process Flow (業務フロー)
+## 6. Business Process Flow
 
 ### Main Flow
 
@@ -90,7 +90,7 @@ flowchart TD
 |-----------|------------|-----------------|
 
 ## 9. System Interface Overview
-> Note: Detailed API endpoint specifications belong in Basic Design (基本設計書).
+> Note: Detailed API endpoint specifications belong in Basic Design (BD).
 > This section lists which subsystems/modules this feature must interact with.
 
 | Interface | Direction | Purpose |
