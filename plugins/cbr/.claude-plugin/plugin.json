@@ -2,7 +2,7 @@
   "name": "cbr",
   "displayName": "ClaudeBrew",
   "description": "A full software-development lifecycle as a suite of Claude Code skills, one per stage, each handing a structured artifact to the next.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "TheJoseki"
   },
