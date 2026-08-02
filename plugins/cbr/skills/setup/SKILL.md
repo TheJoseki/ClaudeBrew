@@ -54,7 +54,8 @@ Also configured on **opt-in** (offer, don't force — see Step 5):
 4. Apply (idempotent)  → verify: keys merged; pre-existing values not duplicated or clobbered
 5. Install worktree gate (opt-in) → verify: offer; if accepted — python doctor passes, hook copied to a stable path, settings_merge.py registered it
 6. Persist policy      → verify: offer (recommended) to persist worktree-isolation instruction to CLAUDE.md/memory
-7. Confirm             → verify: re-read settings; report what changed and what was already correct; note a restart may be needed for env vars
+7. Ignore hook artifacts → verify: project .gitignore lists the ephemeral lifecycle-hook caches (idempotent; create if missing)
+8. Confirm             → verify: re-read settings; report what changed and what was already correct; note a restart may be needed for env vars
 ```
 
 ### 1 — Choose scope
@@ -158,7 +159,25 @@ belt-and-suspenders that guarantees `EnterWorktree` authorization even where the
 skill body alone might be treated as insufficient. Only skip it if the user
 declines.
 
-### 7 — Confirm
+### 7 — Ignore ephemeral hook artifacts
+
+The lifecycle context hooks write **derived, per-session** files into the project's
+`.claude/`: `sdlc-index.json` (the `session-init.py` SDLC-state cache) and
+`compact-checkpoint.md` (the pre-compact checkpoint). They are rebuilt every session
+and must never be committed. Idempotently ensure the **project** `.gitignore` lists
+them (create `.gitignore` if missing; skip any line already present; never remove
+existing entries):
+
+```gitignore
+# ClaudeBrew ephemeral hook caches (derived, not source)
+.claude/sdlc-index.json
+.claude/compact-checkpoint.md
+```
+
+This is project-scoped hygiene — do it regardless of the settings scope chosen in
+Step 1, since the caches are written into whatever repo the hooks run in.
+
+### 8 — Confirm
 
 Re-read the file and report exactly what changed vs. what was already correct.
 If the gate was installed, confirm the registration is present, the copied hook
@@ -171,7 +190,8 @@ Code session** (the agent-teams flag in particular), and point them to
 
 - **Idempotent by design** — safe to run repeatedly; it only writes deltas
   (`settings_merge.py` adds the gate registration only if absent).
-- **Surgical** — touches only the keys in the table plus, on opt-in, the single
-  worktree-gate `PreToolUse` registration; everything else is left alone.
+- **Surgical** — touches only the keys in the table, on opt-in the single
+  worktree-gate `PreToolUse` registration, and the project `.gitignore` cache
+  entries (append-only); everything else is left alone.
 - **Honest** — if a key is already set to a *different* value the user clearly
   chose on purpose, surface the conflict and ask rather than overwriting.

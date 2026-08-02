@@ -48,23 +48,23 @@
         ]
       }
     ],
-    "PostCompact": [
+    "SessionStart": [
       {
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-compact-reinject.sh\""
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/session-init.py\""
           }
         ]
       }
     ],
-    "SessionStart": [
+    "SubagentStart": [
       {
-        "matcher": "compact",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/re-inject-context.sh\""
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/subagent-context.py\""
           }
         ]
       }

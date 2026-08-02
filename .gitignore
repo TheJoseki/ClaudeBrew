@@ -10,3 +10,8 @@ __pycache__/
 
 # Local planning artifacts (plans + reports) — kept on disk, not committed
 /plans/
+
+# Ephemeral runtime artifacts written by the lifecycle hooks (derived, not source)
+.claude/sdlc-index.json
+.claude/compact-checkpoint.md
+.claude/.smoke-*

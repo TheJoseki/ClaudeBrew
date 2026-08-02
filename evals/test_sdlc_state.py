@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""Durable tests for hooks/lib/sdlc_state.py — run: python evals/test_sdlc_state.py
+
+Pure-function tests over throwaway docs/ trees in a tempdir. mtimes are set
+explicitly so "most-recently-modified" resolution is deterministic. Exit non-zero
+if any case fails.
+"""
+import os
+import sys
+import tempfile
+
+_LIB = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "plugins", "cbr", "hooks", "lib",
+)
+sys.path.insert(0, _LIB)
+import sdlc_state as S  # noqa: E402
+
+_FAILURES = []
+
+
+def check(cond, msg):
+    if not cond:
+        _FAILURES.append(msg)
+
+
+def write(root, relpath, content="", mtime=None):
+    """Create root/relpath with content; optionally pin its mtime (epoch seconds)."""
+    full = os.path.join(root, relpath.replace("/", os.sep))
+    os.makedirs(os.path.dirname(full), exist_ok=True)
+    with open(full, "w", encoding="utf-8") as fh:
+        fh.write(content)
+    if mtime is not None:
+        os.utime(full, (mtime, mtime))
+    return full
+
+
+# --------------------------------------------------------------------------- #
+def test_slug_from_filename():
+    cases = {
+        "SRS-payment.md": "payment",
+        "TECH-user-auth.md": "user-auth",
+        "PLAN-user-auth-20260801.md": "user-auth",
+        "VERDICT-payment-G4.json": "payment",
+        "VERDICT-payment-B2-G4.json": "payment",
+        "VERDICT-user-auth-B2-G4.json": "user-auth",
+        "DEV-payment-B2.md": "payment",
+        "UTR-payment-R3.md": "payment",
+        "SRS-oauth2.md": "oauth2",
+        "docs/reviews/VERDICT-checkout-G5a.json": "checkout",
+        "README.md": None,        # no hyphen
+        "CHANGELOG.md": None,     # no hyphen
+        "foo-bar.md": None,       # prefix not uppercase
+    }
+    for name, want in cases.items():
+        got = S.slug_from_filename(name)
+        check(got == want, f"slug_from_filename({name!r}) = {got!r}, want {want!r}")
+
+
+def test_resolve_active_single():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/plans/PLAN-payment-20260801.md", "---\nstatus: ACTIVE\n---\n")
+        slug, amb = S.resolve_active_feature(d)
+        check(slug == "payment" and amb == [], f"single active -> {slug!r},{amb!r}")
+
+
+def test_resolve_active_multiple():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/plans/PLAN-payment-20260801.md", "status: ACTIVE\n")
+        write(d, "docs/plans/PLAN-search-20260801.md", "status: ACTIVE\n")
+        slug, amb = S.resolve_active_feature(d)
+        check(slug is None and set(amb) == {"payment", "search"},
+              f"multi active -> {slug!r},{amb!r}")
+
+
+def test_resolve_no_plan_uses_newest():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/specs/requirements/SRS-old.md", "x", mtime=1_000_000)
+        write(d, "docs/specs/detail-design/TECH-fresh.md", "x", mtime=2_000_000)
+        slug, amb = S.resolve_active_feature(d)
+        check(slug == "fresh" and amb == [], f"newest-artifact -> {slug!r},{amb!r}")
+
+
+def test_resolve_empty():
+    with tempfile.TemporaryDirectory() as d:
+        slug, amb = S.resolve_active_feature(d)
+        check(slug is None and amb == [], f"empty -> {slug!r},{amb!r}")
+
+
+def test_resolve_inactive_plan_falls_through():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/plans/PLAN-payment-20260801.md", "status: DRAFT\n")
+        write(d, "docs/specs/requirements/SRS-login.md", "x", mtime=1_500_000)
+        slug, amb = S.resolve_active_feature(d)
+        check(slug == "login", f"inactive plan falls through -> {slug!r}")
+
+
+def test_infer_gates_empty():
+    with tempfile.TemporaryDirectory() as d:
+        p = S.infer_gate_progress(d, "payment")
+        check(all(v == "pending" for v in p["gates"].values()), f"all pending: {p['gates']}")
+        check(p["next_action"] == "/cbr:analyze-requirement payment", p["next_action"])
+        check("G1 pending" in p["gate_line"], p["gate_line"])
+
+
+def test_infer_gates_srs_tech():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/specs/requirements/SRS-payment.md", "x")
+        write(d, "docs/specs/detail-design/TECH-payment.md", "x")
+        p = S.infer_gate_progress(d, "payment")
+        check(p["gates"]["G1"] == "pass" and p["gates"]["G3"] == "pass", str(p["gates"]))
+        check(p["next_action"] == "/cbr:review-code payment", p["next_action"])
+
+
+def test_infer_gates_verdict_pass():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/specs/requirements/SRS-payment.md", "x")
+        write(d, "docs/specs/detail-design/TECH-payment.md", "x")
+        write(d, "docs/reviews/VERDICT-payment-G4.json", '{"decision":"PASS"}')
+        p = S.infer_gate_progress(d, "payment")
+        check(p["gates"]["G4"] == "pass", str(p["gates"]))
+        check(p["next_action"] == "/cbr:vulnerability-scanner payment", p["next_action"])
+
+
+def test_infer_gates_verdict_fail_routes_fixbug():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/specs/requirements/SRS-payment.md", "x")
+        write(d, "docs/specs/detail-design/TECH-payment.md", "x")
+        write(d, "docs/reviews/VERDICT-payment-G4.json", '{"decision":"FAIL"}')
+        p = S.infer_gate_progress(d, "payment")
+        check(p["gates"]["G4"] == "fail", str(p["gates"]))
+        check(p["next_action"] == "/cbr:fix-bug payment", p["next_action"])
+
+
+def test_gate_verdict_partial_and_batch():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/reviews/VERDICT-payment-B1-G4.json", '{"decision":"PASS"}')
+        write(d, "docs/reviews/VERDICT-payment-B2-G4.json", '{"decision":"pending"}')
+        got = S._gate_verdict(d, "payment", "G4")
+        check(got == "partial", f"partial -> {got!r}")
+
+
+def test_verdict_decision_edges():
+    with tempfile.TemporaryDirectory() as d:
+        bad = write(d, "docs/reviews/VERDICT-x-G4.json", "{not json")
+        check(S._verdict_decision(bad) is None, "malformed json -> None")
+        nodec = write(d, "docs/reviews/VERDICT-y-G4.json", '{"foo":1}')
+        check(S._verdict_decision(nodec) is None, "missing decision -> None")
+        check(S._verdict_decision(os.path.join(d, "nope.json")) is None, "missing file -> None")
+
+
+def test_read_head_oserror():
+    with tempfile.TemporaryDirectory() as d:
+        # opening a directory as a file raises OSError -> _read_head returns ''
+        check(S._read_head(d) == "", "_read_head on a dir -> ''")
+
+
+def test_extract_sections():
+    body = "# Title\nintro\n## A\nline\nline\n### A.1\nx\n## B\ny\n"
+    with tempfile.TemporaryDirectory() as d:
+        p = write(d, "docs/specs/detail-design/TECH-payment.md", body)
+        secs = S.extract_sections(p)
+        titles = [s["title"] for s in secs]
+        check(titles == ["A", "A.1", "B"], f"titles={titles}")
+        check(secs[0]["lines"] == "3-5", f"A lines={secs[0]['lines']}")
+        check(secs[-1]["lines"].endswith(str(body.count(chr(10)))), f"B lines={secs[-1]['lines']}")
+
+
+def test_extract_sections_none():
+    with tempfile.TemporaryDirectory() as d:
+        p = write(d, "docs/x.md", "no headers here\njust text\n")
+        check(S.extract_sections(p) == [], "no headers -> []")
+        check(S.extract_sections(os.path.join(d, "missing.md")) == [], "missing -> []")
+
+
+def test_find_latest_handoff():
+    with tempfile.TemporaryDirectory() as d:
+        check(S.find_latest_handoff(d, "payment") is None, "no handoff -> None")
+        write(d, "docs/handoffs/HANDOFF-payment-20260801.md", "x", mtime=1_000_000)
+        newest = write(d, "docs/handoffs/HANDOFF-payment-20260802.md", "x", mtime=2_000_000)
+        got = S.find_latest_handoff(d, "payment")
+        check(got == "docs/handoffs/HANDOFF-payment-20260802.md", f"newest -> {got!r}")
+        check("\\" not in got, "forward slashes only")
+
+
+def test_build_index_no_slug():
+    with tempfile.TemporaryDirectory() as d:
+        idx = S.build_index(d, None)
+        check(idx["activeFeature"] is None and idx["features"] == {}, str(idx))
+
+
+def test_build_index_with_feature():
+    with tempfile.TemporaryDirectory() as d:
+        write(d, "docs/specs/requirements/SRS-payment.md", "# S\n## Scope\nx\n")
+        write(d, "docs/specs/detail-design/TECH-payment.md", "# T\n## Methods\nx\n## DTO\ny\n")
+        write(d, "docs/reviews/VERDICT-payment-G4.json", '{"decision":"pass"}')
+        idx = S.build_index(d, "payment", now="2026-08-02T00:00:00Z")
+        feat = idx["features"]["payment"]
+        check(idx["generatedAt"] == "2026-08-02T00:00:00Z", "now stamped")
+        check(feat["gates"]["G4"] == "pass", str(feat["gates"]))
+        types = {a["type"] for a in feat["artifacts"]}
+        check({"SRS", "TECH", "VERDICT-G4"} <= types, f"types={types}")
+        tech = next(a for a in feat["artifacts"] if a["type"] == "TECH")
+        check(len(tech["sections"]) == 2, f"TECH sections={tech['sections']}")
+        verdict = next(a for a in feat["artifacts"] if a["type"] == "VERDICT-G4")
+        check(verdict["decision"] == "pass", str(verdict))
+
+
+def main():
+    tests = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
+    for t in tests:
+        try:
+            t()
+        except Exception as exc:  # a test crashing is a failure
+            _FAILURES.append(f"{t.__name__} raised {exc!r}")
+    if _FAILURES:
+        print(f"FAIL ({len(_FAILURES)}):")
+        for f in _FAILURES:
+            print("  -", f)
+        sys.exit(1)
+    print(f"OK — {len(tests)} sdlc_state tests passed")
+
+
+if __name__ == "__main__":
+    main()
