@@ -1,7 +1,7 @@
 # AskUserQuestion Standard Format
 
-> All agents and skills MUST follow this format when asking users questions.
-> Adapted from gstack's standardized question format for ClaudeBrew's orchestrated workflow.
+> All skills and pool agents MUST follow this format when asking users questions.
+> Adapted from gstack's standardized question format for ClaudeBrew's gated workflow.
 
 ## 4-Part Format (Mandatory)
 

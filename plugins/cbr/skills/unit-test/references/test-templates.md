@@ -1,6 +1,6 @@
 # Unit Test Document Templates
 
-> Reference for unit-test-agent. Loaded on-demand when creating UTC/UTR documents.
+> Reference for unit-test. Loaded on-demand when creating UTC/UTR documents.
 
 ## UTC Document Template (Mode A Output)
 
@@ -10,7 +10,7 @@ File: `docs/test-cases/UTC-[feature-name].md`
 # Unit Test Cases: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: unit-test-agent
+**Author**: unit-test
 **Input TECH**: docs/specs/detail-design/TECH-[feature].md
 **Techniques**: EP, BVA, Decision Table, Error Guessing (ISTQB CTFL 4.0)
 **Test Runner**: [detected from PROJECT.md]
@@ -69,7 +69,7 @@ File: `docs/test-reports/UTR-[feature]-R[n].md`
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
-**Author**: unit-test-agent
+**Author**: unit-test
 **UTC Document**: docs/test-cases/UTC-[feature].md
 
 ## Summary
@@ -93,7 +93,7 @@ File: `docs/test-reports/UTR-[feature]-R[n].md`
 | TC ID | Component | Error Message | Severity |
 |-------|-----------|--------------|---------|
 
-## Bug Reports (for bug-fix-agent)
+## Bug Reports (for fix-bug)
 | Bug ID | TC ID | Description | Steps to Reproduce | Expected | Actual | Severity |
 |--------|-------|-------------|-------------------|---------|--------|---------|
 
@@ -101,8 +101,8 @@ File: `docs/test-reports/UTR-[feature]-R[n].md`
 [Paste actual coverage output from test runner]
 
 ## Next Action
-- FAIL → bug-fix-agent fixes bugs listed above → re-run R[n+1]
-- R5 PASS (100% + coverage gates) → Notify orchestrator-agent: Unit Tests GATE PASSED
+- FAIL → fix-bug fixes bugs listed above → re-run R[n+1]
+- R5 PASS (100% + coverage gates) → report to the user with the verdict artifact: Unit Tests ready for G6 (the user decides)
 ```
 
 ---

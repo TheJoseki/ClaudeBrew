@@ -1,6 +1,6 @@
 ---
 name: fix-bug
-description: "Bug Fix agent debugs and fixes issues for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user reports a bug, error, test failure, or unexpected behavior. NOT FOR: new features, refactoring, or performance optimization."
+description: "Bug Fix agent debugs and fixes issues for any project, from a direct known-location fix up to a 4-phase systematic methodology (reproduce, isolate, root cause, fix and verify) for hard cases. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: user reports a bug, error, test failure, or unexpected behavior, including intermittent or hard-to-reproduce issues, production incidents, and bugs that recur after a previous fix. NOT FOR: new features, refactoring, or performance optimization."
 disable-model-invocation: false
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
 argument-hint: "[error message + steps to reproduce]"
@@ -20,6 +20,10 @@ $ARGUMENTS
 Read `CLAUDE.md` (auto-loaded) or `PROJECT.md` to detect tech stack before taking action.
 Do NOT hardcode framework assumptions when reproducing or fixing bugs.
 
+The steps below handle a bug with a clear location and a direct fix. For a complex,
+intermittent, or hard-to-reproduce bug — or one that recurs after a fix — load
+`references/systematic-debugging.md` and work its 4-phase methodology instead.
+
 ## Step 1: Receive Bug Input
 
 Read input from:
@@ -31,8 +35,7 @@ Required reading:
 - `docs/CODING_RULES.md` — verify fix does not violate rules
 - `docs/CODING_CONVENTION.md` — follow patterns when fixing
 - `docs/specs/detail-design/TECH-[feature].md` — design source of truth; verify fix aligns with architecture
-- `docs/plans/DECISION-LEDGER.md` — check CONTESTED decisions (may explain root cause)
-- `.claude/agent-memory/bug-fix-agent/MEMORY.md` — Common Pitfalls section (avoid known patterns)
+- `docs/specs/decisions/ADR-*.md` — a recorded decision may explain the root cause
 
 ## Step 2: Reproduce Bug
 
@@ -76,8 +79,8 @@ cd frontend && [frontend test command]
 ```
 
 > **Auto-escalation rule**: If fix still FAILS after **2 rounds**, stop patching symptoms.
-> Invoke the `systematic-debugging` skill using the Skill tool to find the true root cause:
-> `Skill(skill: "systematic-debugging", args: "[bug symptoms + what was tried + why it failed]")`
+> Load `references/systematic-debugging.md` and work its 4 phases (reproduce → isolate →
+> root cause → fix and verify) to find the true root cause before touching code again.
 
 ## Step 6: Create Bug Report (MANDATORY — DO NOT SKIP)
 
@@ -132,8 +135,7 @@ File: `docs/bug-reports/BUG-[YYYYMMDD]-[nn].md`
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Escalate to | `systematic-debugging` | Bug is intermittent, fix failed 2+ rounds, or root cause still unclear |
-| After this | `run-tests` | Always — full regression suite to confirm fix |
+| Escalate to | `references/systematic-debugging.md` | Bug is intermittent, fix failed 2+ rounds, or root cause still unclear |
+| After this | `validate-and-test` | Always — full regression suite to confirm fix |
 | Pairs with | `vulnerability-scanner` | Bug is security-related (auth bypass, injection, data exposure) |
-| Called from | `full-sdlc` | Phase 6–7 bug-fix loop — invoked automatically by orchestrator |
-| Called from | `run-tests` | When test FAIL has a clear, known root cause |
+| Called from | `validate-and-test` | When test FAIL has a clear, known root cause |

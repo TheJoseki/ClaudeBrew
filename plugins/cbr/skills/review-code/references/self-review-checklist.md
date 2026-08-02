@@ -64,4 +64,4 @@ Add this block at the end of the work log before submitting for review:
 **Overall**: READY FOR REVIEW / NEEDS MORE WORK
 ```
 
-> If any category is PARTIAL or NEEDS MORE WORK, fix it before proceeding to code-review-agent.
+> If any category is PARTIAL or NEEDS MORE WORK, fix it before proceeding to review-code.

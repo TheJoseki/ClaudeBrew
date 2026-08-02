@@ -1,6 +1,6 @@
-# SCREEN Spec Output Template — UI Designer Agent
+# SCREEN Spec Output Template
 
-> Reference for ui-designer-agent. Loaded on-demand when creating SCREEN spec.
+> Reference for design-screen. Loaded on-demand when creating SCREEN spec.
 
 ## Template
 
@@ -10,7 +10,7 @@ File: `docs/specs/requirements/SCREEN-[feature-name].md`
 # Screen Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: ui-designer-agent
+**Author**: design-screen
 **Input SRS**: docs/specs/requirements/SRS-[feature].md
 **UI Library**: [detected from PROJECT.md]
 **Design Style**: [selected style from Step 1]

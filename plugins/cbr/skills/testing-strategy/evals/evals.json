@@ -1,0 +1,24 @@
+{
+  "skill_name": "testing-strategy",
+  "notes": "Merged from the two former testing knowledge skills (patterns/strategy and the test-first cycle). Knowledge/strategy skill covering what to test (pyramid, type selection, mocking, test data, anti-patterns) and when to write it (tests-first red-green-refactor). It overlaps the executors unit-test / integration-test / validate-and-test; the description keeps executing a suite routed to validate-and-test, and the boundary eval covers the nearest-neighbor confusion: authoring the concrete tests for a named function.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How should I structure the test suite for a new payments service — what mix of unit, integration, and E2E tests?",
+      "expected_output": "Applies the testing pyramid and the test-type selection table (unit for logic, integration for data access, one E2E per critical path), plus mock-at-the-boundary and test-data-strategy guidance, without writing the actual tests.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm about to build the loyalty-points calculator. Let's do it test-first with TDD.",
+      "expected_output": "Applies the Three Laws and the RED-GREEN-REFACTOR cycle: writes a failing test first and confirms it fails for the right reason, adds the minimum code to pass (GREEN), then refactors while staying green, using the AAA pattern with one behavior per test. Optionally records an ADR decision log.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write the unit tests for the applyDiscount function.",
+      "expected_output": "Should route to unit-test (which authors the concrete tests), not fire, because testing-strategy is strategy and quality guidance — it decides what to test and when to write it, not the test-authoring executor.",
+      "files": []
+    }
+  ]
+}

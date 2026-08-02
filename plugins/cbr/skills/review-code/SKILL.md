@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: "Code Review agent reviews code quality, security, and performance for any project. Standards detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to review code, check quality/security/performance of written code. NOT FOR: writing new code, fixing bugs, or creating test cases."
-allowed-tools: Read, Grep, Glob, Write, Edit, Skill
+allowed-tools: Read, Grep, Glob, Bash, Task, Agent, AskUserQuestion
 argument-hint: "[feature name (optional)]"
 metadata:
   version: "3.1"
@@ -25,9 +25,8 @@ Do NOT hardcode framework pattern expectations.
 | --- | --- |
 | Step 0 | Always — detect tech stack first |
 | Step 1: Read Input | Always — mandatory |
-| Step 2: Review Dimensions | Always — core review work |
-| Step 3: Review File | Always — mandatory output artifact |
-| Decision Rules | Always — determines PASS/FAIL verdict |
+| Step 2: Assemble the G4 checklist | Always — the criteria this skill owns |
+| Step 3: Verdict (fresh eyes) | Always — spawn, validate, stop |
 
 ## Precondition Check (MANDATORY — stop if not met)
 
@@ -50,9 +49,17 @@ If implementation code **NOT FOUND**:
 - Input DEV log: `docs/work-logs/DEV-[feature]-*.md` (see implemented files)
 - Input TECH spec: `docs/specs/detail-design/TECH-[feature].md` (verify implementation matches design)
 
-## Step 2: Review by Dimension
+## Step 2: Assemble the G4 checklist (this skill owns the criteria)
 
-### Security (CRITICAL — blocks PASS if violated)
+This skill decides **what** is judged. A freshly spawned `cbr:reviewer` decides
+**whether it passes**. Do not evaluate the code yourself here — assemble the
+checklist, then hand it over in Step 3.
+
+The checklist is the dimensions below **plus** the full tech-lead list at
+`${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-checklist.md`.
+Pass both to the reviewer by path; do not paste them into the prompt.
+
+### Security (CRITICAL — any finding blocks the gate)
 - Auth guards on all protected routes (middleware/guards per PROJECT.md pattern)
 - Role-based access control applied correctly per permission matrix
 - All user input validated via DTO/schema/serializer (no raw unvalidated input)
@@ -79,13 +86,8 @@ If implementation code **NOT FOUND**:
 - Correct [UI_LIBRARY] API usage — no deprecated or wrong-version components
 - No `any`, no `@ts-ignore`
 
-## Step 3: Create Review File (MANDATORY — DO NOT SKIP)
+### Verdict rubric (hand to the reviewer verbatim)
 
-File: `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
-
-> **Template**: See [`references/template.md`](references/template.md) for the full output document template.
-
-## Decision Rules
 | Condition | Verdict |
 |-----------|---------|
 | Any Critical finding | FAIL |
@@ -93,13 +95,64 @@ File: `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
 | 1-2 Major findings | PASS (fix before merge) |
 | Only Minor | PASS |
 
+The validator enforces only the hard floor — `decision` must be `PASS` and there
+must be zero Critical findings. It does **not** count Majors, so the "3+ Major →
+FAIL" rule lives entirely in the reviewer's judgment. That is why it must be
+stated in the spawn prompt.
+
+## Step 3: Verdict (fresh eyes) — MANDATORY
+
+**This skill never writes its own verdict.** It holds no `Write` tool: grading
+your own review is the failure mode this step exists to prevent.
+
+**3.1 — Spawn one `cbr:reviewer`** (single `Agent` call). The prompt must carry:
+
+- **Scope**: the exact files to review (from the DEV work log; in batch mode,
+  that batch's files only — not previous batches).
+- **Inputs**: the TECH spec + coding-rules paths from Step 1.
+- **Checklist**: the Step 2 dimensions + the `leader-review-checklist.md` path.
+- **Rubric**: the verdict table above, verbatim.
+- **Outputs**, both mandatory:
+  - Findings report → `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
+    (template: [`references/template.md`](references/template.md))
+  - Verdict artifact → `docs/reviews/VERDICT-[feature]-G4.json`, conforming to
+    `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
+    `gate: "G4"` and `producedBy: "cbr:reviewer"`. A reviewer runs no build or
+    test commands, so `verification` stays `[]`.
+- **Posture**: assume the code was AI-written; look for what breaks, not for
+  reasons to approve. Every finding cites `file:line`.
+
+**3.2 — Validate the verdict** (never trust it unchecked):
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G4 --artifact docs/reviews/VERDICT-[feature]-G4.json
+```
+
+Exit `0` = gate criteria objectively met. Exit `2` = BLOCK, with the reason on
+stderr (FAIL decision, unresolved Critical, leaked secret, or a malformed /
+missing artifact). The gate fails **closed** — no artifact means no pass.
+
+**3.3 — Gate the user in:**
+
+- **Exit 0** → report PASS, the artifact paths, and any Major/Minor findings
+  still open. Then **stop**.
+- **Exit 2, or `decision: FAIL`** → `AskUserQuestion` presenting the blocking
+  reason and the Critical/Major findings (`file:line` each), with options along
+  the lines of: *fix now via `/fix-bug`* · *re-review after manual fixes* ·
+  *accept the risk and proceed anyway* · *stop here*.
+
+**3.4 — Stop.** Whatever the user chooses, this skill does not act on it: no
+automatic fix-loop, no re-spawn, no advancing to the next gate. The user
+re-invokes `/fix-bug` and then `/review-code` themselves.
+
 ## Checklist before Done
-- [ ] Read all files listed in DEV work log
-- [ ] Compare implementation against TECH spec
-- [ ] Security checklist complete
-- [ ] All findings have file + line reference
-- [ ] Verdict clear (PASS/FAIL) with justification
-- [ ] File `docs/reviews/REVIEW-[feature]-[date].md` CREATED ✅
+- [ ] Scope assembled from the DEV work log (batch-scoped if in batch mode)
+- [ ] Checklist + rubric handed to the reviewer by path, not re-judged here
+- [ ] `cbr:reviewer` spawned fresh — this skill graded nothing itself
+- [ ] `docs/reviews/REVIEW-[feature]-[date].md` written by the reviewer
+- [ ] `docs/reviews/VERDICT-[feature]-G4.json` written by the reviewer
+- [ ] `verdict-gate.py --gate G4` run, exit code reported
+- [ ] On block: `AskUserQuestion` raised with findings — then STOPPED ✅
 
 ---
 
@@ -108,27 +161,18 @@ File: `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
 | Direction | Skill | When |
 |-----------|-------|------|
 | Called from | `implement-feature` | Mandatory quality gate after each implementation batch — always run before next batch or PR |
-| Called from | `full-sdlc` | Phase 4 Main — per-batch incremental review, spawned by orchestrator after each dev batch |
 | On security findings | `vulnerability-scanner` | Any Critical/High security finding → deep OWASP audit |
-| If FAIL (≤ R2 per batch) | `fix-bug` / developer-agent | Fix Critical + Major findings → re-review same batch |
-| All batches PASS | `security-tester-agent` | Full OWASP scan on all implemented code (Phase 5) |
-| After PASS + security | `create-pr` | All checks green — ready to create pull request |
+| If FAIL (≤ R2 per batch) | `fix-bug` | Fix Critical + Major findings → re-review same batch |
+| All batches PASS | `vulnerability-scanner` | Full OWASP scan (G5a) on all implemented code — user starts it |
 
-**Input pattern (batch mode):**
+**Input pattern (batch mode)** — one gate run per batch, each ending in its own
+user gate:
 ```
 BATCH: Batch-N
 INPUT: docs/work-logs/DEV-[feature]-BN.md  ← scope list of files for this batch only
 SCOPE: Review only files in DEV-BN work log, not previous batches
-OUTPUT: docs/reviews/REVIEW-[feature]-BN.md
-Reference: .claude/skills/review-code/references/leader-review-checklist.md
-```
-
-**Incremental review flow:**
-```
-Batch-1: developer-agent → code-review-agent (B1) → [fix if FAIL, max R2] → PASS
-Batch-2: developer-agent → code-review-agent (B2) → [fix if FAIL, max R2] → PASS
-...
-All batches PASS → security-tester-agent (full OWASP) → unit-test-agent EXECUTE → integration-test-agent EXECUTE
+OUTPUT: docs/reviews/REVIEW-[feature]-BN.md + docs/reviews/VERDICT-[feature]-BN-G4.json
+Checklist: ${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-checklist.md
 ```
 
 ## Verification
@@ -144,5 +188,9 @@ All batches PASS → security-tester-agent (full OWASP) → unit-test-agent EXEC
 - "Write unit tests for the order module" (use unit-test)
 
 **Expected outputs:**
-- Artifact: `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
-- Quality gate: Verdict is clearly PASS or FAIL; all Critical/Major findings have file + line reference
+- Artifacts (both written by the spawned `cbr:reviewer`):
+  `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md` and
+  `docs/reviews/VERDICT-[feature]-G4.json`
+- Quality gate: G4 — `verdict-gate.py --gate G4` run and its exit code reported;
+  all Critical/Major findings have file + line reference; on block, the user was
+  asked and the skill stopped

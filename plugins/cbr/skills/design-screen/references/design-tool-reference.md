@@ -1,6 +1,6 @@
-# Design Tool Reference — UI Designer Agent
+# Design Tool Reference
 
-> Reference for ui-designer-agent. Loaded on-demand during Step 6 visual design output.
+> Reference for design-screen. Loaded on-demand during Step 6 visual design output.
 > Contains all 5 design tool paths: Figma (6B), SVG Fallback (6C), Pencil Dev (6D), Google Stitch (6E).
 
 ---
@@ -280,7 +280,7 @@ Write each SVG file completely — render all zones with actual shapes, not plac
    - Extract layout rules, spacing conventions, component patterns.
 3. Call `get_style_guide_tags()` → get available style tags.
 4. Call `get_style_guide(tags: [5-10 tags matching product type + industry + style from Step 1])`.
-   - Extract color palette, typography, visual direction — use alongside ui-ux-pro-max output.
+   - Extract color palette, typography, visual direction — use alongside design-system output.
 5. Create/open `.pen` file:
    `open_document(filePathOrNew: "docs/specs/pencil/SCREEN-[feature].pen")`
    - If `docs/specs/pencil/` does not exist → create it first.
@@ -450,7 +450,7 @@ For each screen defined in the wireframe spec (Step 4):
    - Key UI elements (data table, form fields, modal dialogs)
    - Target viewport (desktop 1440px / mobile 375px)
    - States to generate (default, loading, empty, error)
-   - Tone/style from ui-ux-pro-max Step 1 output
+   - Tone/style from design-system Step 1 output
 
    Example prompt:
    ```
@@ -483,7 +483,7 @@ For each generated screen:
 
 2. Call `get_screen_code(projectId, screenId)` → HTML/CSS/React reference code.
    - Save to: `docs/specs/stitch/[feature]-[SCR-XX]-[state].html`
-   - Note: reference/prototype code — developer-agent adapts to actual project framework.
+   - Note: reference/prototype code — implement-feature adapts to actual project framework.
 
 3. Call `get_screen_metadata(projectId, screenId)` → verify screen title, dimensions, creation date.
 

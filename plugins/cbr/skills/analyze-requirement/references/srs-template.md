@@ -1,6 +1,6 @@
-# SRS Output Template — BA Agent
+# SRS Output Template
 
-> Reference for ba-agent. Loaded on-demand when creating SRS document.
+> Reference for analyze-requirement. Loaded on-demand when creating SRS document.
 
 ## SRS Document Template
 
@@ -10,7 +10,7 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 # SRS: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: ba-agent
+**Author**: analyze-requirement
 **Status**: DRAFT
 
 ## 1. Project Background (背景・目的)
@@ -116,11 +116,11 @@ flowchart TD
 
 | Check | Rule |
 |-------|------|
-| API endpoint paths present? | REMOVE — belongs in BASIC spec (architect-agent) |
-| ORM field definitions present? | REMOVE — belongs in TECH spec (architect-agent) |
-| UI implementation details? | REMOVE — belongs in SCREEN spec (ui-designer-agent) |
-| Technology choice decisions? | REMOVE — belongs in TECH spec (architect-agent) |
-| Business rules contradict? | RESOLVE before writing — flag to orchestrator if unresolvable |
+| API endpoint paths present? | REMOVE — belongs in BASIC spec (design-function) |
+| ORM field definitions present? | REMOVE — belongs in TECH spec (design-function) |
+| UI implementation details? | REMOVE — belongs in SCREEN spec (design-screen) |
+| Technology choice decisions? | REMOVE — belongs in TECH spec (design-function) |
+| Business rules contradict? | RESOLVE before writing — raise to the user if unresolvable |
 
 
 

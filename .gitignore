@@ -1,10 +1,17 @@
+
 # Claude Code worktrees — isolated working trees created by the `worktree` skill.
 # Each worktree has its own working files that must not be tracked by the parent.
-.claude/worktrees/
-
 # Python coverage artifacts
-.coverage
 **/.coverage
+*.pyc
+.claude/worktrees/
+.coverage
+__pycache__/
 
 # Local planning artifacts (plans + reports) — kept on disk, not committed
 /plans/
+
+# Ephemeral runtime artifacts written by the lifecycle hooks (derived, not source)
+.claude/sdlc-index.json
+.claude/compact-checkpoint.md
+.claude/.smoke-*

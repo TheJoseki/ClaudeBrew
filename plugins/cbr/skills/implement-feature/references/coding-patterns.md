@@ -1,6 +1,6 @@
-# Coding Patterns Reference — Developer Agent
+# Coding Patterns Reference
 
-> Reference for developer-agent. Loaded on-demand for framework-specific implementation patterns.
+> Reference for implement-feature. Loaded on-demand for framework-specific implementation patterns.
 
 ## Backend Coding Standards
 
@@ -64,4 +64,4 @@ Apply the frontend framework's component pattern from PROJECT.md. General princi
 | Medium | 4–6 files | Implement in 2 sub-steps (data/service layer first, then controller/frontend) → check between sub-steps |
 | Large | 7+ files | Implement in 3 sub-steps → write a Context Checkpoint to work log after each sub-step |
 
-If batch is **Large AND feature is Complex**: note in Implementation Notes section recommending the orchestrator split this into 2 batches for future features of this scale.
+If batch is **Large AND feature is Complex**: note in Implementation Notes section recommending this be split into 2 batches for future features of this scale.

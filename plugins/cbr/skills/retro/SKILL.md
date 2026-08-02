@@ -1,11 +1,11 @@
 ---
 name: retro
-description: "Multi-agent retrospective ceremony. Orchestrator invokes this after Phase 8 delivery (auto) or after any phase/sprint (manual). Spawns contributing agents concurrently to provide phase-specific perspectives, then synthesizes 5 Why root-cause analysis, Lesson Learned per category, git velocity metrics, and prioritized Action Items. Output saved to docs/retros/."
-allowed-tools: Read, Grep, Glob, Bash, Agent, Write, Edit
+description: "Retrospective on a delivered feature, phase, or sprint. TRIGGER: user asks for a retro, post-mortem, or lessons-learned review after delivery. Reads the feature's own artifacts (SRS, TECH, review, test, security reports) plus git history, then produces 5-Why root-cause analysis, Lessons Learned per category, git velocity metrics, and prioritized Action Items. Output saved to docs/retros/. NOT FOR: work still in progress (use a handoff/session summary instead)."
+allowed-tools: Read, Grep, Glob, Bash, Write
 disable-model-invocation: false
 argument-hint: "[feature|phase|sprint name]"
 metadata:
-  version: "3.1"
+  version: "4.0"
   category: core-sdlc
 ---
 
@@ -29,159 +29,68 @@ Parse `$ARGUMENTS` to determine retro mode and scope:
 Determine `[feature-name]` and `[scope]` before proceeding.
 Auto-create `docs/retros/` if it does not exist.
 
----
-
-## Step 1: Spawn Contributing Agents Concurrently
-
-Spawn ALL applicable contributing agents in a **single message** with `run_in_background: true`.
-
-### Agent Selection by Mode
-
-| Mode | Agents to Spawn |
-|------|----------------|
-| `feature` | developer + code-review + unit-test + integration-test + ba |
-| `phase PhaseN` | Only agents relevant to that phase (see mapping below) |
-| `sprint` | developer + code-review + unit-test + integration-test (skip ba) |
-
-**Phase → Agent Mapping:**
-
-| Phase | Contributing Agents |
-|-------|-------------------|
-| Phase 1 (Requirements) | ba-agent |
-| Phase 2 (UI Design) | ui-designer-agent |
-| Phase 3a/3b (Architecture) | architect-agent |
-| Phase 4 (Implementation) | developer-agent + code-review-agent |
-| Phase 5a/5b (Security) | security-tester-agent |
-| Phase 6 (Unit Tests) | unit-test-agent |
-| Phase 7a/7b (Integration) | integration-test-agent |
-
-### Contributing Agent Spawn Prompts
-
-**Agent 1 — developer-agent:**
-
-```
-OBJECTIVE: Contribute to retrospective for feature [feature-name].
-  Review your own work artifacts and provide a candid assessment.
-OUTPUT FORMAT: docs/retros/RETRO-contrib-dev-[feature]-[YYYYMMDD].md
-  Required sections:
-  ## Developer Perspective
-  ### What Was Delivered (bullet list of key implementations)
-  ### Blockers & Surprises (what slowed you down or was harder than expected)
-  ### Scope Drift (anything added/changed outside original TECH spec)
-  ### Self-Assessment (what you would do differently next time)
-  ### Suggested Improvement (1-2 specific, actionable improvements for next feature)
-TOOL HINTS: Read docs/work-logs/DEV-[feature]-*.md first. Then Read docs/specs/detail-design/TECH-[feature].md
-  to compare planned vs actual. Use Glob to find all work log batches.
-TASK BOUNDARIES:
-  IN SCOPE — implementation challenges, work log blockers, scope drift vs TECH spec
-  NOT IN SCOPE — test failures (unit-test handles that), security issues, requirements gaps
-```
-
-**Agent 2 — code-review-agent:**
-
-```
-OBJECTIVE: Contribute to retrospective for feature [feature-name].
-  Analyze your review findings to identify systemic patterns worth improving.
-OUTPUT FORMAT: docs/retros/RETRO-contrib-review-[feature]-[YYYYMMDD].md
-  Required sections:
-  ## Code Review Perspective
-  ### Findings Summary (Critical count, Major count, total by batch)
-  ### Recurring Patterns (issues that appeared in >1 batch or >1 file)
-  ### Root Cause Hypothesis (why did these patterns occur — design, knowledge gap, time pressure?)
-  ### Process Observation (was the CODING-CHECKLIST.md sufficient? what was missing?)
-  ### Suggested Improvement (specific additions to CODING-CHECKLIST.md or coding standards)
-TOOL HINTS: Read docs/reviews/REVIEW-[feature]-*.md (all batches). Grep for "Critical" and "Major".
-  Use Glob to find all review files.
-TASK BOUNDARIES:
-  IN SCOPE — review findings patterns, checklist gaps, code quality trends
-  NOT IN SCOPE — test failures, implementation details, requirements quality
-```
-
-**Agent 3 — unit-test-agent:**
-
-```
-OBJECTIVE: Contribute to retrospective for feature [feature-name].
-  Analyze test execution rounds to identify testing effectiveness and gaps.
-OUTPUT FORMAT: docs/retros/RETRO-contrib-ut-[feature]-[YYYYMMDD].md
-  Required sections:
-  ## Unit Test Perspective
-  ### Rounds Summary (R1 result, R2 result, ..., final Rn — pass rate per round)
-  ### Failure Categories (group test failures by type: null ref, auth, validation, business logic)
-  ### Coverage Gaps (areas in TECH spec that had no test cases or thin coverage)
-  ### Test Quality Observation (were UTC test cases precise enough? boundary cases covered?)
-  ### Suggested Improvement (specific improvements to test case writing or test infrastructure)
-TOOL HINTS: Read docs/test-reports/UTR-[feature]-R*.md (all rounds). Read docs/test-cases/UTC-[feature].md.
-  Use Glob to find all UTR files.
-TASK BOUNDARIES:
-  IN SCOPE — unit test rounds, failure categories, UTC quality, coverage analysis
-  NOT IN SCOPE — integration/E2E failures, code review findings, implementation issues
-```
-
-**Agent 4 — integration-test-agent:**
-
-```
-OBJECTIVE: Contribute to retrospective for feature [feature-name].
-  Analyze integration/E2E test execution to identify workflow gaps and automation issues.
-OUTPUT FORMAT: docs/retros/RETRO-contrib-it-[feature]-[YYYYMMDD].md
-  Required sections:
-  ## Integration Test Perspective
-  ### Rounds Summary (R1–Rn pass rates for API + E2E separately)
-  ### Failure Categories (auth flow, data consistency, cross-module assumptions, E2E timing)
-  ### Environment Issues (anything that failed due to test env vs prod env differences)
-  ### ITC Quality Observation (were test scenarios sufficient? what user journeys were missed?)
-  ### Suggested Improvement (specific improvements to ITC scenarios or Playwright configuration)
-TOOL HINTS: Read docs/test-reports/ITR-[feature]-R*.md (all rounds). Read docs/test-cases/ITC-[feature].md.
-  Use Glob to find all ITR files.
-TASK BOUNDARIES:
-  IN SCOPE — integration/E2E test rounds, ITC scenario quality, env issues
-  NOT IN SCOPE — unit test failures, code review findings, implementation details
-```
-
-**Agent 5 — ba-agent (feature mode only, skip for sprint):**
-
-```
-OBJECTIVE: Contribute to retrospective for feature [feature-name].
-  Assess requirement quality and how well the SRS served the development team.
-OUTPUT FORMAT: docs/retros/RETRO-contrib-ba-[feature]-[YYYYMMDD].md
-  Required sections:
-  ## Requirements Perspective
-  ### Acceptance Criteria Quality (were ACs precise enough for testing? were any ambiguous?)
-  ### Scope Stability (how many scope changes occurred after G1 gate? what triggered them?)
-  ### Gate Reopens (list any gates that were REOPENED with root cause)
-  ### Domain Risk Accuracy (did the Planning Council correctly identify the real risks?)
-  ### Suggested Improvement (specific improvements to SRS template or AC writing process)
-TOOL HINTS: Read docs/specs/requirements/SRS-[feature].md. Read docs/plans/PLAN-[feature]-*.md
-  and check for REOPENED gates. Read docs/plans/COUNCIL-[feature]-BA.md if it exists.
-TASK BOUNDARIES:
-  IN SCOPE — requirement quality, AC precision, scope changes, gate reopens, Planning Council accuracy
-  NOT IN SCOPE — implementation details, test execution, code review findings
-```
-
-**Wait for all agents to complete before proceeding to Step 2.**
+**Precondition:** the scope must be finished (delivered feature, closed phase, ended sprint). If work is still in progress, stop and say so — a retro on live work produces guesses, not lessons.
 
 ---
 
-## Step 2: Orchestrator Synthesis — 5 Why Analysis
+## Step 1: Collect the Evidence
 
-After all contributing agents return, read all contribution files:
+Glob for the artifacts that exist, then read them. Missing artifacts are themselves a finding — record which ones are absent rather than inventing content.
 
-```bash
-# Find all contribution files for this feature
-ls docs/retros/RETRO-contrib-*-[feature]-*.md
-```
+| Perspective | Artifacts to read |
+|-------------|-------------------|
+| Requirements | `docs/specs/requirements/SRS-[feature].md` |
+| Design | `docs/specs/detail-design/TECH-[feature].md`, `docs/specs/basic-design/BASIC-[feature].md` |
+| Implementation | `docs/work-logs/DEV-[feature]-*.md` (all batches) |
+| Code review | `docs/reviews/REVIEW-[feature]-*.md` (all batches) |
+| Security | `docs/security/SEC-[feature]-*.md` |
+| Unit test | `docs/test-reports/UTR-[feature]-R*.md` (all rounds), `docs/test-cases/UTC-[feature].md` |
+| Integration test | `docs/test-reports/ITR-[feature]-R*.md` (all rounds), `docs/test-cases/ITC-[feature].md` |
 
-**Identify Top Issues** (from agent contributions):
-- Critical/High findings that appeared in code review
-- Phases that required >R2 test rounds
-- Gates that were REOPENED
+**Scope filter by mode:**
+
+| Mode | Read |
+|------|------|
+| `feature` | All rows above |
+| `phase PhaseN` | Only the rows for that phase (e.g. Phase 6 → unit test rows; Phase 4 → implementation + code review) |
+| `sprint` | Implementation, code review, and test rows for artifacts modified inside the date range (`git log --since --until --name-only`) — skip SRS |
+
+Use `Grep` for `Critical`, `Major`, `REOPENED`, and `BLOCKED` across the collected files to locate the high-signal passages before reading in full.
+
+---
+
+## Step 2: Per-Stage Observations
+
+For each perspective with artifacts present, write 3–6 factual bullets. **Every bullet cites the file it came from.** No bullet may assert something the artifacts do not show.
+
+| Perspective | What to extract |
+|-------------|----------------|
+| Requirements | AC precision (were any ambiguous?); scope changes after G1; gates marked REOPENED and why |
+| Implementation | What was delivered; blockers in the work logs; scope drift vs the TECH spec (compare planned vs actual) |
+| Code review | Critical/Major counts per batch; patterns recurring across >1 batch or >1 file; whether `CODING-CHECKLIST.md` covered them |
+| Security | Findings by OWASP category; whether they were introduced by a pattern already in the guardrails |
+| Unit test | Pass rate per round R1..Rn; failures grouped by type (null ref, auth, validation, business logic); coverage gaps vs the TECH spec |
+| Integration test | API and E2E pass rates per round; failure categories (auth flow, data consistency, cross-module assumptions, timing); env-vs-prod differences |
+
+A perspective with no artifacts gets one line: `No [type] artifact found — [what that prevents assessing].`
+
+---
+
+## Step 3: 5-Why on the Top 3 Issues
+
+Rank candidate issues by cost, then take the top 3:
+
+- Critical/High findings in review or security
+- Any phase that needed more than R2 test rounds
+- Gates marked REOPENED
 - Blockers that caused scope drift
 
-**For each of the top 3 issues, apply 5 Why:**
+For each:
 
 ```markdown
 ### Issue #N: [Issue Title]
-**Source**: [which agent reported this]
-**Impact**: [what it caused — extra rounds, gate failure, scope drift]
+**Source**: [artifact file this came from]
+**Impact**: [what it cost — extra rounds, gate failure, scope drift]
 
 | Step | Why? | Answer |
 |------|------|--------|
@@ -195,11 +104,13 @@ ls docs/retros/RETRO-contrib-*-[feature]-*.md
 **Action Item**: [specific, actionable change to prevent recurrence]
 ```
 
+Stop early if the chain reaches a genuine root cause before Why 5 — say so rather than padding.
+
 ---
 
-## Step 3: Lesson Learned Extraction
+## Step 4: Lessons Learned
 
-Synthesize insights from all agent contributions into 4 categories:
+Synthesize across all perspectives into 4 categories:
 
 ```markdown
 ### Lesson Learned
@@ -222,26 +133,26 @@ Synthesize insights from all agent contributions into 4 categories:
 
 ---
 
-## Step 4: Git Metrics Collection
+## Step 5: Git Metrics
 
-Collect velocity and quality metrics from git. Use Bash (read-only git commands):
+Collect velocity and quality metrics with read-only git commands:
 
 ```bash
-# Commit count and authors
-git log --oneline --since="[feature-start-date or sprint-start]" --until="[end-date]"
+# Commit count
+git log --oneline --since="[start]" --until="[end]"
 
 # LOC added/removed
 git diff --stat [start-commit]..[end-commit]
 
-# Fix ratio (commits with "fix:" prefix vs total)
+# Fix ratio (fix: commits vs total)
 git log --oneline --since="[start]" | grep -c "^"
-git log --oneline --since="[start]" | grep -c "^.*fix:"
+git log --oneline --since="[start]" | grep -c "fix:"
 
 # Delivery streak (days with at least 1 commit)
 git log --format="%ad" --date=short --since="[start]" | sort -u | wc -l
 ```
 
-Format metrics section:
+For `feature`/`phase` mode, derive the date range from the artifacts' own timestamps if the user did not supply one.
 
 ```markdown
 ### Metrics
@@ -257,15 +168,11 @@ Format metrics section:
 | Delivery streak | N active days |
 ```
 
-**Note**: If git history is unavailable or start date is unknown, skip metrics and note "N/A — git baseline unavailable."
+**Note**: If git history is unavailable or the start date is unknown, skip metrics and write `N/A — git baseline unavailable`. Never estimate them.
 
 ---
 
-## Step 5: Output — Action Items + Final Report
-
-Write the complete retro report to the canonical path.
-
-**Output path convention:**
+## Step 6: Write the Report
 
 | Mode | Path |
 |------|------|
@@ -273,14 +180,12 @@ Write the complete retro report to the canonical path.
 | `phase [phase] [name]` | `docs/retros/RETRO-phase-[phase]-[name]-[YYYYMMDD].md` |
 | `sprint [date-range]` | `docs/retros/RETRO-sprint-[YYYYMMDD].md` |
 
-**Report structure:**
-
 ```markdown
 # Retro: [Feature/Sprint Name] — [YYYY-MM-DD]
 
 **Mode**: [feature | phase | sprint]
 **Scope**: [phases covered]
-**Facilitator**: orchestrator-agent
+**Sources**: [list the artifact files actually read]
 
 ---
 
@@ -289,41 +194,23 @@ Write the complete retro report to the canonical path.
 
 ---
 
-## 2. Agent Perspectives
-
-### Developer
-[Summary from RETRO-contrib-dev file]
-
-### Code Review
-[Summary from RETRO-contrib-review file]
-
-### Unit Test
-[Summary from RETRO-contrib-ut file]
-
-### Integration Test
-[Summary from RETRO-contrib-it file]
-
-### Business Analysis
-[Summary from RETRO-contrib-ba file, if applicable]
+## 2. Stage Observations
+### Requirements / Design / Implementation / Code Review / Security / Unit Test / Integration Test
+[Step 2 bullets, each citing its source file. Omit stages with no artifacts, or list them under "Missing Artifacts".]
 
 ---
 
 ## 3. Top Issues — 5 Why Analysis
-
-[Issue #1 block]
-[Issue #2 block]
-[Issue #3 block]
+[Issue #1 / #2 / #3 blocks]
 
 ---
 
 ## 4. Lesson Learned
-
 [Process / Design / Testing / Security]
 
 ---
 
 ## 5. Metrics
-
 [Metrics table]
 
 ---
@@ -332,59 +219,26 @@ Write the complete retro report to the canonical path.
 
 | Priority | Action | Owner | Scope | Due |
 |----------|--------|-------|-------|-----|
-| HIGH | [specific action] | [agent or team] | next feature | [date] |
+| HIGH | [specific action] | [owner] | next feature | [date] |
 | MEDIUM | [specific action] | process | process-wide | [date] |
 | LOW | [specific action] | [owner] | optional | — |
 ```
 
-**After writing report:** Clean up contribution files (they've been synthesized):
+**Present to user:** show the Action Items table only, plus the report path. The user reads the full report in `docs/retros/`.
 
-```bash
-rm docs/retros/RETRO-contrib-*-[feature]-*.md
-```
-
-**Present to user:** Show Action Items table only (not the full report). User can read full report in `docs/retros/`.
+Then **stop.** Do not open the action items as work — the user decides what gets picked up.
 
 ---
 
-## Step 5b: Registry & Memory Feed-Forward
+## Lifecycle Placement
 
-After writing the retro report and before presenting to user:
-
-**Backlog Append:**
-For each Action Item with Priority HIGH or MEDIUM from the retro report:
-1. Read `docs/plans/BACKLOG-REGISTRY.md`
-2. Check for duplicate (grep Action description keywords)
-3. If no duplicate → append new entry:
-   - Source: `RETRO-[type]-[feature/sprint]-[date]`
-   - Type: `PROCESS`
-   - Priority: match retro Action Item priority
-   - Target: next feature/wave (or unassigned)
-   - Status: `⏳ OPEN`
-
-**Project Memory Append:**
-For each Lesson Learned insight that is non-obvious and reusable:
-1. Read `docs/memory/PROJECT-MEMORY.md`
-2. Apply Mem0 dedup: EXTRACT → SEARCH existing entries → CLASSIFY (NOOP/UPDATE/ADD)
-3. If ADD → append to appropriate section (Tech Stack / Testing / Domain Model)
-   - Agent: `retro-synthesis`
-   - Confidence: `MEDIUM` (verified in this feature's execution)
-
----
-
-## Lifecycle Placement (Recommended Trigger Points)
-
-This skill is invoked automatically by `full-sdlc` at Phase 8.5. It can also be invoked manually:
+The user invokes this skill after delivery, or at any completed checkpoint:
 
 ```
-AUTOMATIC:
-  Phase 8 (Delivery) → Phase 8.5 auto-trigger → /retro feature [name]
-
-MANUAL (PM/EM invokes):
-  After Phase 4 (optional mid-feature check)  → /retro phase Phase4 [feature]
-  After Phase 6 (test quality review)         → /retro phase Phase6 [feature]
-  End of sprint (bi-weekly)                   → /retro sprint [date-range]
-  Post-incident review                        → /retro feature [affected-feature]
+After delivery                        → /cbr:retro feature [name]
+After a completed phase               → /cbr:retro phase Phase6 [feature]
+End of sprint (bi-weekly)             → /cbr:retro sprint [date-range]
+Post-incident review                  → /cbr:retro feature [affected-feature]
 ```
 
 ---
@@ -393,9 +247,10 @@ MANUAL (PM/EM invokes):
 
 | Don't | Do |
 |-------|-----|
-| Run retro while feature is still in progress | Wait for Phase 8 completion (or gate completion for phase retro) |
-| Skip contributing agents to save time | Each agent's perspective is non-overlapping — all are needed for full picture |
+| Run retro while the feature is still in progress | Wait for the scope to close — mid-flight retros produce guesses |
+| Assert a finding the artifacts don't support | Cite the source file for every observation; write "no artifact found" when there isn't one |
+| Silently skip a missing artifact | List it under Missing Artifacts — the gap is itself a finding |
 | Write vague action items ("improve testing") | Write specific, ownable actions ("Add boundary tests for null input in UserService") |
-| Keep contribution files after synthesis | Delete RETRO-contrib-* files after synthesis — report is the canonical artifact |
-| Run 5 Why on every minor issue | Focus 5 Why on top 3 issues only — minor issues go directly to Action Items |
-| Skip retro for "simple" features | Simple features often have the most surprising lessons — skip is a anti-pattern |
+| Run 5 Why on every minor issue | Focus 5 Why on the top 3 issues only — minor issues go straight to Action Items |
+| Estimate git metrics when history is unavailable | Write `N/A — git baseline unavailable` |
+| Skip retro for "simple" features | Simple features often carry the most surprising lessons |

@@ -1,0 +1,7 @@
+[
+  { "query": "Should I use REST, GraphQL, or gRPC for my new API? Walk me through the tradeoffs and how to version it", "should_trigger": true },
+  { "query": "What database fits a high-write event log — Postgres, MongoDB, or a time-series DB? Help me decide the schema and indexes", "should_trigger": true },
+  { "query": "Help me choose the module boundaries and write an ADR for a new payments subsystem", "should_trigger": true },
+  { "query": "Choose a color palette and font pairing for my marketing dashboard", "should_trigger": false },
+  { "query": "Write unit tests for the InvoiceCalculator class in billing.ts", "should_trigger": false }
+]

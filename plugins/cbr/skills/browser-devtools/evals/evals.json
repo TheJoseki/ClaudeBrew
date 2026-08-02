@@ -11,13 +11,13 @@
     {
       "id": 2,
       "prompt": "Inspect the DOM of the dashboard page and tell me what the browser is actually showing.",
-      "expected_output": "Runs list_pages() to identify the active page, take_snapshot() for roles/names/UIDs, scans for alert/status roles and error-state elements (.error, [aria-invalid]), and reports page state (title/URL, form and nav structure) in the structured diagnosis block, routing onward (systematic-debugging / bug-fix-agent) if root cause is unclear.",
+      "expected_output": "Runs list_pages() to identify the active page, take_snapshot() for roles/names/UIDs, scans for alert/status roles and error-state elements (.error, [aria-invalid]), and reports page state (title/URL, form and nav structure) in the structured diagnosis block, routing onward (fix-bug) if root cause is unclear.",
       "files": []
     },
     {
       "id": 3,
       "prompt": "Why is the backend returning 500 on POST /api/orders?",
-      "expected_output": "Should route to systematic-debugging / not fire, because browser-devtools' NOT FOR excludes server-side bugs and non-browser errors — a 500 from an API endpoint is a backend fault with no DOM/browser evidence to inspect.",
+      "expected_output": "Should route to fix-bug / not fire, because browser-devtools' NOT FOR excludes server-side bugs and non-browser errors — a 500 from an API endpoint is a backend fault with no DOM/browser evidence to inspect.",
       "files": []
     }
   ]

@@ -1,0 +1,7 @@
+[
+  { "query": "I'm building a dashboard UI and need to choose a color palette, pick font pairings, and set up design tokens", "should_trigger": true },
+  { "query": "Set up a Tailwind theme with dark mode and shadcn/ui components for my Next.js app", "should_trigger": true },
+  { "query": "Help me establish a design system: CSS variables, semantic tokens, and component state specs", "should_trigger": true },
+  { "query": "Write a SQL query to find the top 10 customers by total order value", "should_trigger": false },
+  { "query": "Fix the 500 error thrown by the /api/login endpoint in auth/session.ts", "should_trigger": false }
+]

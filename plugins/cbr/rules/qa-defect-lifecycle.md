@@ -116,12 +116,12 @@ After ANY code change during a fix round:
 |--------------|----------------|
 | `sdlc-conventions.md` R5 retry loops | Formal round progression with expected pass rates |
 | `sdlc-conventions.md` quality gates G6/G7 | Evidence and classification requirements for gate decisions |
-| `agent-best-practices.md` 3-strike rule | Applies to individual bug fixes within a round |
-| `agent-best-practices.md` completion status | UTR/ITR must use DONE/BLOCKED status with evidence per round |
+| `coding-standards.md` 3-strike rule | Applies to individual bug fixes within a round |
+| `coding-standards.md` completion status | UTR/ITR must use DONE/BLOCKED status with evidence per round |
 
 ## 9. Deferred Defects (P4 items)
 
 S4/P4 defects not fixed within R5:
-1. Append to `docs/plans/BACKLOG-REGISTRY.md` as `CODE_QUALITY` type
-2. Reference in final test report under `## Deferred Items`
+1. Record in the final test report under `## Deferred Items`, typed `CODE_QUALITY`
+2. Surface the deferred list to the user at the gate — deferral is the user's call, not the skill's
 3. Not counted as failures for gate pass/fail — but MUST be documented

@@ -82,7 +82,7 @@ Phase 3: CONTRACT — Remove old column/table (after verification period)
 2. **Revert DB** — Run down migration ONLY if data not yet modified by users
 3. **Verify** — Run smoke tests on rolled-back version
 4. **Notify** — Update team/stakeholders with incident timeline
-5. **Post-mortem** — Document in CAR (see `risk-issue-management.md`) + add to PROJECT-MEMORY
+5. **Post-mortem** — Document in a CAR (see `risk-issue-management.md`) and feed the lesson into `retro`
 
 **Rule**: Rollback first, debug later. Never try multiple forward fixes under pressure.
 

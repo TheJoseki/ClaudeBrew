@@ -189,7 +189,7 @@ State plainly: where the artifact lives, that it is the **input to the
 stage to close. The next stage should be able to start from this file alone.
 
 Once the handoff is stated, **this skill ends.** Do not auto-invoke the
-`requirement` skill or any other downstream stage — the user (or an orchestrator)
+`requirement` skill or any other downstream stage — the user
 decides when Stage 2 begins. Cascading the pipeline silently would take the
 steering wheel away from the user between stages, which is exactly what the hard
 gate exists to prevent.

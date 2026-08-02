@@ -1,6 +1,6 @@
 # Code Review Checklist — Tech Lead Review
 
-> Reference for `code-review-agent`. Check all dimensions before issuing verdict.
+> Reference for `review-code`. Check all dimensions before issuing verdict.
 > Input: `docs/work-logs/DEV-[feature]-BN.md` (scope list of files for this batch only).
 
 ---
@@ -65,7 +65,7 @@ Write findings in `docs/reviews/REVIEW-[feature]-BN.md`:
 
 ```markdown
 # Code Review — [Feature] Batch N
-**Date**: [YYYY-MM-DD] | **Reviewer**: code-review-agent | **Verdict**: PASS / FAIL
+**Date**: [YYYY-MM-DD] | **Reviewer**: review-code | **Verdict**: PASS / FAIL
 
 ## Checklist Summary
 | Section | Status | Finding Count |

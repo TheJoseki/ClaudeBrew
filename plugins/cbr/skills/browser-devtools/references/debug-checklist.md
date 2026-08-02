@@ -90,10 +90,10 @@ evaluate_script(function: "() => JSON.stringify([...document.querySelectorAll('.
 
 | Finding | Route To |
 |---------|---------|
-| JS runtime error | `systematic-debugging` → `bug-fix-agent` |
-| API 401/403 | Check auth config → `bug-fix-agent` |
-| API 500 | `systematic-debugging` (backend) |
-| Framework error | `context7` MCP for docs → `bug-fix-agent` |
-| DOM structure wrong | `bug-fix-agent` (frontend template fix) |
-| CSS/layout issue | `bug-fix-agent` (frontend style fix) |
-| Root cause unknown | `systematic-debugging` |
+| JS runtime error | `fix-bug` |
+| API 401/403 | Check auth config → `fix-bug` |
+| API 500 | `fix-bug` (backend) |
+| Framework error | `context7` MCP for docs → `fix-bug` |
+| DOM structure wrong | `fix-bug` (frontend template fix) |
+| CSS/layout issue | `fix-bug` (frontend style fix) |
+| Root cause unknown | `fix-bug` |

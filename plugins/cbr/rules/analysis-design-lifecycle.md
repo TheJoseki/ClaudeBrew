@@ -67,7 +67,7 @@ An SRS passes G1 only when ALL of these hold:
 | `created_by` | FK to users (if project requires) | Audit — creator |
 
 ### Normalization & Integrity
-- Start at 3NF minimum. Denormalize only with measured evidence (document in DECISION-LEDGER)
+- Start at 3NF minimum. Denormalize only with measured evidence (record it in an ADR)
 - Foreign keys MUST have database-level constraints (not just application-level)
 - FK columns MUST be indexed
 - No CSV-in-column, no EAV pattern, no magic strings for status — use enum or lookup table

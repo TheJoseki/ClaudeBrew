@@ -17,86 +17,56 @@ import json
 import os
 import subprocess
 import sys
+import re
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-MODEL = "claude-opus-4-7"
+# Empty = use the CLI's current default model. Pinning a stale model measured the
+# OLD model answering from memory (not the skill's triggerability) — e.g. opus-4-7
+# answers "REST vs GraphQL" inline without consulting the `architecture` skill.
+MODEL = os.environ.get("CBR_TRIGGER_MODEL", "")
 TIMEOUT = 90
 THRESHOLD = 0.5
+# Which skill's triggering to detect (substring; matches the plain and `cbr:`-namespaced
+# forms). Override to eval a different skill, e.g. CBR_TRIGGER_SKILL=design-system.
+SKILL = os.environ.get("CBR_TRIGGER_SKILL", "brainstorming")
+# When set, load the plugin into each headless probe so its skills are actually
+# available to trigger (without this, `claude -p` runs with the plugin unloaded and
+# every should-trigger query reads as a miss).
+PLUGIN_DIR = os.environ.get("CBR_PLUGIN_DIR", "")
 
 
-def _decide_from_stream(stdout, result_box):
-    """Read claude -p stream-json line by line; decide trigger ASAP.
-
-    Mirrors the vendored harness: detect the Skill/Read tool firing from
-    streaming events and stop immediately rather than waiting for the (long)
-    brainstorming run to finish. Stores 'yes'/'no' in result_box[0].
-    """
-    pending = None          # 'Skill' or 'Read' tool block in progress
-    acc = ""                # accumulated tool input json
-    for line in stdout:     # blocking line iteration (no select needed)
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            ev = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        t = ev.get("type")
-        if t == "stream_event":
-            se = ev.get("event", {})
-            st = se.get("type", "")
-            if st == "content_block_start":
-                cb = se.get("content_block", {})
-                if cb.get("type") == "tool_use":
-                    name = cb.get("name", "")
-                    if name in ("Skill", "Read"):
-                        pending, acc = name, ""
-                    else:
-                        result_box[0] = "no"   # model used a different tool first
-                        return
-            elif st == "content_block_delta" and pending:
-                d = se.get("delta", {})
-                if d.get("type") == "input_json_delta":
-                    acc += d.get("partial_json", "")
-                    if "brainstorming" in acc:
-                        result_box[0] = "yes"
-                        return
-            elif st in ("content_block_stop", "message_stop"):
-                if pending:
-                    result_box[0] = "yes" if "brainstorming" in acc else "no"
-                    return
-                if st == "message_stop":
-                    result_box[0] = "no"
-                    return
-        elif t == "assistant":
-            for c in ev.get("message", {}).get("content", []):
-                if c.get("type") != "tool_use":
-                    continue
-                name = c.get("name", "")
-                inp = c.get("input", {}) or {}
-                if name == "Skill" and "brainstorming" in str(inp.get("skill", "")):
-                    result_box[0] = "yes"
-                    return
-                fp = str(inp.get("file_path", ""))
-                if name == "Read" and "brainstorming" in fp and "SKILL.md" in fp:
-                    result_box[0] = "yes"
-                    return
-                result_box[0] = "no"
-                return
-        elif t == "result":
-            if result_box[0] is None:
-                result_box[0] = "no"
+def _reader(stdout, box):
+    """Accumulate the stream buffer; set box[0]='yes' AS SOON AS the target skill's
+    SKILL.md read (or a Skill tool_use naming it) appears, so run_once can kill the
+    probe immediately instead of waiting for the (possibly long) generation. 'no' at
+    end of stream. Separators are normalized (JSON escapes Windows `\\`, nested
+    tool_results double-escape it); requiring SKILL.md for the path avoids matching an
+    unrelated file that merely contains the skill word (e.g. system-architecture.md).
+    Block/event shapes vary across runs, so this matches the raw buffer, not a parse."""
+    path_re = re.compile(r"skills/+" + re.escape(SKILL) + r"/+SKILL\.md")
+    skill_re = re.compile(r'"skill":"[^"]*' + re.escape(SKILL))
+    buf = ""
+    for line in stdout:
+        buf += line
+        if path_re.search(buf.replace("\\", "/")) or skill_re.search(buf):
+            box[0] = "yes"
             return
+    box[0] = box[0] or "no"
 
 
 def run_once(query: str) -> str:
     """Run one claude -p probe; return 'yes'/'no'/'timeout'/'error'."""
     env = dict(os.environ)
     env["BSQ"] = query
+    plugin = f" --plugin-dir '{PLUGIN_DIR}'" if PLUGIN_DIR else ""
+    # --max-turns 1: triggering is decided in the first assistant turn (the model
+    # surfaces the skill's SKILL.md then); bounding it keeps probes fast and avoids
+    # the model running the whole task (and its file side-effects).
+    model = f" --model {MODEL}" if MODEL else ""
     ps_cmd = (
         "claude -p $env:BSQ --output-format stream-json --verbose "
-        f"--include-partial-messages --model {MODEL}"
+        f"--include-partial-messages --max-turns 1{model}{plugin}"
     )
     try:
         proc = subprocess.Popen(
@@ -107,23 +77,18 @@ def run_once(query: str) -> str:
     except Exception:
         return "error"
 
-    result_box = [None]
-    reader = threading.Thread(target=_decide_from_stream, args=(proc.stdout, result_box))
+    box = [None]
+    reader = threading.Thread(target=_reader, args=(proc.stdout, box))
     reader.daemon = True
     reader.start()
     reader.join(TIMEOUT)
-
-    # Stop the (possibly still-running) claude process either way
-    if proc.poll() is None:
+    if proc.poll() is None:      # decided early ('yes') or hit TIMEOUT — stop the probe
         proc.kill()
         try:
             proc.wait(timeout=10)
         except Exception:
             pass
-
-    if result_box[0] is None:
-        return "timeout"
-    return result_box[0]
+    return box[0] or "timeout"
 
 
 def main():

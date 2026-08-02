@@ -9,22 +9,22 @@ description: Mandates checklist usage at coding and review stages. Enforces self
 ## 1. Checklist Lifecycle
 
 ```
-architect-agent (Step D1)     → Creates/updates docs/CODING-CHECKLIST.md
-developer-agent (self-review) → Reviews code against CODING-CHECKLIST.md
-code-review-agent (audit)     → Reviews against CODING-CHECKLIST.md + CODE-REVIEW-CHECKLIST.md
-Any agent (discovery)         → Updates checklist when new pattern found
+design-function (Step D1)        → Creates/updates docs/CODING-CHECKLIST.md
+implement-feature (self-review)  → Reviews code against CODING-CHECKLIST.md
+review-code (audit)              → Reviews against CODING-CHECKLIST.md + CODE-REVIEW-CHECKLIST.md
+Any stage (discovery)            → Updates checklist when new pattern found
 ```
 
 ## 2. CODING-CHECKLIST.md — Creation Rules
 
 | Rule | Detail |
 |------|--------|
-| Who creates | architect-agent at Step D1 (after TECH spec, before Phase 4) |
+| Who creates | `design-function` at Step D1 (after the TECH spec, before implementation) |
 | Template | `docs/_templates/CODING-CHECKLIST.md` |
 | Customization | ALL `[PROJECT_SPECIFIC]` placeholders replaced with actual values from PROJECT.md |
 | Location | `docs/CODING-CHECKLIST.md` (project root docs/, one per project) |
-| Update trigger | New feature adds new patterns not in checklist → architect adds section |
-| Block if missing | developer-agent MUST NOT proceed to coding if this file is absent |
+| Update trigger | New feature adds new patterns not in checklist → `design-function` adds a section |
+| Block if missing | `implement-feature` MUST NOT proceed to coding if this file is absent |
 
 ## 3. Developer Self-Review (MANDATORY before work log)
 
@@ -91,7 +91,7 @@ N/A Justifications:
 
 | Aspect | Self-Review (Developer) | Code Review (Reviewer) |
 |--------|------------------------|----------------------|
-| Who | Developer who wrote the code | Independent code-review-agent |
+| Who | Whoever wrote the code | `review-code`, via a fresh `cbr:reviewer` that did not write it |
 | When | Before creating work log | After work log submitted |
 | Checklist | CODING-CHECKLIST.md | CODING-CHECKLIST.md + CODE-REVIEW-CHECKLIST.md |
 | Purpose | Catch own mistakes | Catch issues developer missed; verify spec adherence |
@@ -99,11 +99,11 @@ N/A Justifications:
 
 ## 6. Checklist Update Protocol
 
-When any agent discovers a pattern that should be checked but is NOT in the checklist:
+When any stage discovers a pattern that should be checked but is NOT in the checklist:
 
 | Step | Action |
 |------|--------|
-| 1 | Note the pattern in work log or review report |
-| 2 | Append to `docs/plans/BACKLOG-REGISTRY.md` as `CHECKLIST_UPDATE` type |
-| 3 | Next architect-agent spawn: read BACKLOG, update CODING-CHECKLIST.md |
-| 4 | If pattern is Critical (security/data loss): update immediately via FLAG |
+| 1 | Note the pattern in the work log or review report |
+| 2 | Append it to `docs/CODING-CHECKLIST.md` under the matching section |
+| 3 | Surface it to the user at the current stage's gate, so the next feature inherits it |
+| 4 | If the pattern is Critical (security/data loss): update the checklist immediately and raise it before the gate, not after |

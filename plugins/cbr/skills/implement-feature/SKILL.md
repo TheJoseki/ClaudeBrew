@@ -1,8 +1,8 @@
 ---
 name: implement-feature
-description: "Full-stack Developer implements a feature for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: technical design already exists (TECH spec), user wants to implement code. NOT FOR: features without existing specs (use full-sdlc), or bug fixes (use fix-bug)."
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill
-argument-hint: "[feature name (optional — reads TECH spec)]"
+description: "Full-stack Developer implements a feature for any project. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: technical design already exists (TECH spec), user wants to implement code. NOT FOR: features without existing specs (design them with design-function first), or bug fixes (use fix-bug)."
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill, Task, Agent
+argument-hint: "[feature name (optional — reads TECH spec)] [--parallel]"
 metadata:
   version: "3.1"
   category: core-sdlc
@@ -24,6 +24,7 @@ Do NOT hardcode framework assumptions.
 | --- | --- |
 | Step 0 | Always — detect tech stack first |
 | Step 1: Read Inputs | Always — mandatory before coding |
+| Parallel mode | Only when invoked with `--parallel` |
 | Step 2: Backend | When project has backend |
 | Step 3: Frontend | When project has frontend |
 | Step 4: Self-Check | Always — must pass before work log |
@@ -49,6 +50,23 @@ If TECH spec **NOT FOUND**:
 3. Read coding standards:
    - `docs/CODING_RULES.md` — golden rules, security, BE/FE rules, naming
    - `docs/CODING_CONVENTION.md` — code templates, import order, patterns
+
+## Parallel mode (`--parallel`)
+
+**Default is single-stream** — implement in this context, in the order below.
+
+When invoked with `--parallel` and the TECH spec splits cleanly into independent
+modules (no shared files, no output-feeds-input chain), spawn N `cbr:developer`
+subagents in one message, each with an explicit **file-ownership boundary**, then
+synthesize their work here: integrate the shared files no worker owned, run
+Step 4 across the merged result, and write **one** work log.
+
+> **Procedure**: [`references/parallel-mode.md`](references/parallel-mode.md) —
+> when to split, how to assign disjoint ownership, the hard File Ownership Rules
+> to restate in every spawn prompt, and how to synthesize.
+
+Parallel or not, this skill **stops after Step 5**. It never spawns
+`review-code` or `unit-test` — the user starts the next stage.
 
 ## Step 2: Backend Implementation
 
@@ -102,7 +120,7 @@ If errors exist → FIX before continuing.
 
 ## Step 5: Create Work Log (MANDATORY — DO NOT SKIP)
 
-> **Next steps after work log**: `/lint-and-validate` → `/review-code` (mandatory quality gate before PR)
+> **Next steps after work log**: `/validate-and-test` → `/review-code` (mandatory quality gate before PR)
 
 Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
 
@@ -134,7 +152,7 @@ Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
 [Deviations from TECH spec, decisions made]
 
 ## Known Gaps / QA Notes
-[What unit-test-agent / integration-test-agent should focus on]
+[What `unit-test` / `integration-test` should focus on]
 ```
 
 ## Checklist before Done
@@ -151,15 +169,34 @@ Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
 
 ---
 
+## Deliver / open PR (user-invoked — NOT part of the run above)
+
+**Do not run this after Step 5.** Implementation stops at the work log; the
+quality gates (`review-code` G4, `vulnerability-scanner` G5a, `unit-test` G6,
+`integration-test` G7) come first and each is gated by the user. Open the PR
+only when the user explicitly asks for it and those gates are green.
+
+1. Read git conventions from `docs/CODING_RULES.md` (branch naming, commit
+   convention, PR checklist) if it exists.
+2. `git status` + `git diff --stat` — review everything that will ship.
+3. Commit on the feature branch (never the base branch — see the `worktree`
+   skill), one focused commit per logical change.
+4. `gh pr create` with a description covering: summary, changes by area, and the
+   verdict artifacts produced by the gates.
+
+Before opening it, confirm: type check and tests pass, no hardcoded secrets,
+migrations are reversible, i18n complete, role-based access verified.
+
+---
+
 ## Skill Connections
 
 | Direction | Skill | When |
 |-----------|-------|------|
 | Before this | `design-function` | TECH spec does not exist yet — design first |
 | Before this | `design-screen` | SCREEN spec does not exist yet (if frontend work needed) |
-| After this | `lint-and-validate` | Always — run type check + lint immediately after implementation |
+| After this | `validate-and-test` | Always — run type check + lint immediately after implementation |
 | After this | `review-code` | Always — mandatory quality gate before creating a PR |
 | Parallel | `unit-test` | Mode A — write UTC document at same time as implementation (Phase 4b) |
 | Parallel | `integration-test` | Mode A — write ITC document at same time as implementation (Phase 4c) |
 | On bug found | `fix-bug` | Self-check (Step 4) reveals a bug during implementation |
-| Called from | `full-sdlc` | Phase 4a — invoked automatically by orchestrator |
