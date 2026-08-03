@@ -38,11 +38,13 @@ def check(cond, msg):
         _FAILURES.append(msg)
 
 
-def write(root, relpath, content=""):
+def write(root, relpath, content="", mtime=None):
     full = os.path.join(root, relpath.replace("/", os.sep))
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8") as fh:
         fh.write(content)
+    if mtime is not None:
+        os.utime(full, (mtime, mtime))
     return full
 
 
@@ -106,48 +108,49 @@ def test_cs_transcript_path_missing_file():
 
 def test_cs_active_plan_with_phase():
     with tempfile.TemporaryDirectory() as d:
-        write(d, "docs/plans/PLAN-pay-20260801.md",
-              "---\nstatus: ACTIVE\n---\n| 1 | Build | ⏳ IN_PROGRESS |\n")
+        write(d, "docs/streams/pay-20260801/plan/PLAN.md", "# Plan\n| 1 | Build | ⏳ IN_PROGRESS |\n")
         out = run_main("{}", d)
-        check("Plan file: PLAN-pay-20260801.md" in out, "active plan detected")
+        check("Plan file: pay-20260801" in out, "active stream plan detected (reports stream folder)")
         check("⏳" in out and "IN_PROGRESS" in out, "current phase captured")
 
 
 def test_cs_active_plan_no_phase_marker():
     with tempfile.TemporaryDirectory() as d:
-        write(d, "docs/plans/PLAN-pay-20260801.md", "---\nstatus: ACTIVE\n---\nno marker here\n")
+        write(d, "docs/streams/pay-20260801/plan/PLAN.md", "# Plan\nno marker here\n")
         out = run_main("{}", d)
-        check("Plan file: PLAN-pay-20260801.md" in out, "active plan detected")
+        check("Plan file: pay-20260801" in out, "stream plan detected")
         check("Current phase: N/A" in out, "no marker -> N/A")
 
 
-def test_cs_inactive_plan_skipped():
+def test_cs_newest_stream_plan():
     with tempfile.TemporaryDirectory() as d:
-        write(d, "docs/plans/PLAN-old-20260101.md", "---\nstatus: DONE\n---\n")
+        write(d, "docs/streams/old-20260101/plan/PLAN.md", "old", mtime=1_000_000)
+        write(d, "docs/streams/new-20260801/plan/PLAN.md", "new", mtime=2_000_000)
         out = run_main("{}", d)
-        check("Plan file: none" in out, "inactive plan not selected")
+        check("Plan file: new-20260801" in out, "newest stream's plan is reported active")
 
 
 def test_cs_worklog_status():
     with tempfile.TemporaryDirectory() as d:
-        write(d, "docs/work-logs/DEV-pay-20260801.md", "# Log\nSTATUS: IN_PROGRESS\n")
+        write(d, "docs/streams/pay-20260801/work-logs/DEV-20260801.md", "# Log\nSTATUS: IN_PROGRESS\n")
         out = run_main("{}", d)
-        check("Log file: DEV-pay-20260801.md" in out, "work-log detected")
+        check("Log file: DEV-20260801.md" in out, "work-log detected")
         check("STATUS: IN_PROGRESS" in out, "work-log status captured")
 
 
-def test_cs_plan_read_error_skipped():
-    # A directory named like a plan file: glob matches it, open() raises -> except: continue.
+def test_cs_plan_read_error():
+    # A directory where PLAN.md should be: glob matches it, open() raises -> except: pass.
     with tempfile.TemporaryDirectory() as d:
-        os.makedirs(os.path.join(d, "docs", "plans", "PLAN-bad.md"))
+        os.makedirs(os.path.join(d, "docs", "streams", "bad-20260801", "plan", "PLAN.md"))
         out = run_main("{}", d)
-        check("Plan file: none" in out, "unreadable plan skipped via except")
+        check("Plan file: bad-20260801" in out, "stream name set even if PLAN unreadable")
+        check("Current phase: N/A" in out, "unreadable plan -> phase N/A via except")
 
 
 def test_cs_worklog_read_error():
-    # A directory named like a work-log: selected as newest, open() raises -> except: pass.
+    # A directory where a work-log should be: selected as newest, open() raises -> except: pass.
     with tempfile.TemporaryDirectory() as d:
-        os.makedirs(os.path.join(d, "docs", "work-logs", "DEV-bad.md"))
+        os.makedirs(os.path.join(d, "docs", "streams", "x-20260801", "work-logs", "DEV-bad.md"))
         out = run_main("{}", d)
         check("Log file: DEV-bad.md" in out, "log name set even if unreadable")
         check("Status: N/A" in out, "unreadable log -> status N/A via except")

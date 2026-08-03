@@ -39,26 +39,26 @@ def main():
         except Exception:
             pass
 
-    # Active plan (imported-suite convention: docs/plans/PLAN-*.md with status: ACTIVE).
+    # Active plan: the newest docs/streams/<slug>-<date>/plan/PLAN.md (report its stream folder).
     active_plan_name = ""
     current_phase = "N/A"
-    for plan_file in sorted(glob.glob(os.path.join(project_dir, "docs", "plans", "PLAN-*.md"))):
+    plans = glob.glob(os.path.join(project_dir, "docs", "streams", "*", "plan", "PLAN.md"))
+    if plans:
+        newest_plan = max(plans, key=os.path.getmtime)
+        active_plan_name = os.path.basename(os.path.dirname(os.path.dirname(newest_plan)))
         try:
-            content = open(plan_file, encoding="utf-8", errors="ignore").read()
-        except Exception:
-            continue
-        if "status: ACTIVE" in content:
-            active_plan_name = os.path.basename(plan_file)
+            content = open(newest_plan, encoding="utf-8", errors="ignore").read()
             for line in content.splitlines():
                 if "⏳" in line:  # ⏳ current-phase marker
                     current_phase = line.strip()
                     break
-            break
+        except Exception:
+            pass
 
-    # Most recent work-log.
+    # Most recent work-log across streams.
     log_name = ""
     log_status = "N/A"
-    logs = glob.glob(os.path.join(project_dir, "docs", "work-logs", "*.md"))
+    logs = glob.glob(os.path.join(project_dir, "docs", "streams", "*", "work-logs", "*.md"))
     if logs:
         newest = max(logs, key=os.path.getmtime)
         log_name = os.path.basename(newest)

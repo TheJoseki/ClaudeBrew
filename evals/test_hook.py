@@ -47,7 +47,8 @@ def main():
         cases_main = [
             (j("src", "app.ts"), "DENY"),
             (j("packages", "api", "server.py"), "DENY"),
-            (j("docs", "specs", "x-brainstorm.md"), "ALLOW"),
+            (j("docs", "streams", "pay-20260801", "brainstorm", "BRAINSTORM.md"), "ALLOW"),
+            (j("docs", "streams", "pay-20260801", "assets", "stitch", "SCR-01.png"), "ALLOW"),
             (j(".claude", "settings.json"), "ALLOW"),
             (j(".claude", "hooks", "enforce-worktree.py"), "ALLOW"),
             (j("README.md"), "ALLOW"),

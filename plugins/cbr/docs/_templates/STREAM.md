@@ -20,18 +20,18 @@ cross-artifact identity carrier).
 
 | Stage | Artifact | Path | Status |
 |-------|----------|------|--------|
-| Brainstorm | BRAINSTORM | `docs/specs/brainstorms/BRAINSTORM-[slug].md` | [status — e.g. done] |
-| Requirement | SRS | `docs/specs/requirements/SRS-[slug].md` | [status — e.g. pending] |
-| UI design | SCREEN | `docs/specs/requirements/SCREEN-[slug].md` | [status — e.g. n/a] |
-| Basic design | BASIC | `docs/specs/basic-design/BASIC-[slug].md` | [status] |
-| Detail design | TECH | `docs/specs/detail-design/TECH-[slug].md` | [status] |
-| Plan | PLAN | `docs/plans/PLAN-[slug]-[YYYYMMDD].md` | [status] |
-| Implement | DEV log | `docs/work-logs/DEV-[slug]-[YYYYMMDD].md` | [status] |
-| Review | REVIEW + VERDICT-G4 | `docs/reviews/REVIEW-[slug]-[YYYYMMDD].md` | [status] |
-| Security | SEC + VERDICT-G5a | `docs/security/SEC-[slug]-[YYYYMMDD].md` | [status] |
-| Unit test | UTR + VERDICT-G6 | `docs/test-reports/UTR-[slug]-R[n].md` | [status] |
-| Integration test | ITR + VERDICT-G7 | `docs/test-reports/ITR-[slug]-R[n].md` | [status] |
-| Retro | RETRO | `docs/retros/RETRO-[type]-[slug]-[YYYYMMDD].md` | [status] |
+| Brainstorm | BRAINSTORM | `brainstorm/BRAINSTORM.md` | [status — e.g. done] |
+| Requirement | SRS | `requirements/SRS.md` | [status — e.g. pending] |
+| UI design | SCREEN | `requirements/SCREEN.md` | [status — e.g. n/a] |
+| Basic design | BASIC | `design/BASIC.md` | [status] |
+| Detail design | TECH | `design/TECH.md` | [status] |
+| Plan | PLAN | `plan/PLAN.md` | [status] |
+| Implement | DEV log | `work-logs/DEV-[YYYYMMDD].md` | [status] |
+| Review | REVIEW + VERDICT-G4 | `reviews/REVIEW-[YYYYMMDD].md` (+ `reviews/VERDICT-G4.json`) | [status] |
+| Security | SEC + VERDICT-G5a | `security/SEC-[YYYYMMDD].md` (+ `security/VERDICT-G5a.json`) | [status] |
+| Unit test | UTR + VERDICT-G6 | `test-reports/UTR-R[n].md` (+ `test-reports/VERDICT-G6.json`) | [status] |
+| Integration test | ITR + VERDICT-G7 | `test-reports/ITR-R[n].md` (+ `test-reports/VERDICT-G7.json`) | [status] |
+| Retro | RETRO | `retro/RETRO-[YYYYMMDD].md` | [status] |
 
 Add or remove rows to match the stream's actual scope; delete a row for a stage this stream skips.
 
