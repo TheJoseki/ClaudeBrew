@@ -44,55 +44,76 @@ G7** — so only those four have a JSON verdict artifact:
 
 The remaining gates are plain user approvals with no verdict at all.
 
-Each verdict is written **beside its own gate's report** — `docs/reviews/` next to the
-REVIEW, `docs/security/` next to the SEC report, `docs/test-reports/` next to the UTR/ITR
-— so a gate's evidence and its verdict never drift apart. Every one is validated by
+Each verdict is written **beside its own gate's report, inside the stream** — `<stream>/reviews/` next to
+the REVIEW, `<stream>/security/` next to the SEC report, `<stream>/test-reports/` next to the UTR/ITR — so a
+gate's evidence and its verdict never drift apart. Every one is validated by
 `hooks/verdict-gate.py --gate <G> --artifact <path>` before the user is asked to decide.
 
-## Artifact Paths (Canonical)
+## Artifact Paths (Canonical — stream-first)
 
-Each artifact is written by the skill that owns it. Never deviate without explicit project override.
+**A work-stream is a directory.** Every per-feature artifact lives under
+`docs/streams/<slug>-<YYYYMMDD>/`: the **folder is the identity**, the **sub-folder is the type**, and the
+**filename drops the slug** (a time-series artifact keeps only its date or round). Each artifact is written
+by the skill that owns it — never deviate without explicit project override. Paths below are relative to the
+stream root `docs/streams/<slug>-<YYYYMMDD>/` unless they start with `docs/`.
 
-| Owner | Artifact | Path Pattern |
-|-------|----------|-------------|
-| `brainstorming` | Stream Manifest | `docs/streams/[slug]-[YYYYMMDD]/STREAM.md` (created at stream start; links every artifact of the stream) |
-| `brainstorming` | Brainstorm | `docs/specs/brainstorms/BRAINSTORM-[topic].md` |
-| `worktree` | Worktree handoff | `docs/specs/worktrees/WORKTREE-[topic].md` |
-| `analyze-requirement` | SRS | `docs/specs/requirements/SRS-[feature].md` |
-| `design-screen` | Screen Design | `docs/specs/requirements/SCREEN-[feature].md` |
-| `design-function` | Basic Design (BD) | `docs/specs/basic-design/BASIC-[feature].md` |
-| `design-function` | Detail Design (DD) | `docs/specs/detail-design/TECH-[feature].md` |
-| `architecture` | Decision record (ADR) | `docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md` |
-| `design-function` | Coding Checklist | `docs/CODING-CHECKLIST.md` (project-level, created once per project) |
-| `implement-feature` | Work Log | `docs/work-logs/DEV-[feature]-[YYYYMMDD].md` |
-| `review-code` | Design Review Report | `docs/reviews/DESIGN-REVIEW-[feature]-[YYYYMMDD].md` |
-| `review-code` | Review Report | `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md` |
-| `vulnerability-scanner` | Security Report | `docs/security/SEC-[feature]-[YYYYMMDD].md` |
-| cbr:reviewer (pool) | Gate Verdict — G4 | `docs/reviews/VERDICT-[feature]-G4.json` (per-batch: `VERDICT-[feature]-B[n]-G4.json`) |
-| cbr:reviewer (pool) | Gate Verdict — G5a | `docs/security/VERDICT-[feature]-G5a.json` |
-| cbr:tester (pool) | Gate Verdict — G6 | `docs/test-reports/VERDICT-[feature]-G6.json` |
-| cbr:tester (pool) | Gate Verdict — G7 | `docs/test-reports/VERDICT-[feature]-G7.json` |
-| `unit-test` (Mode A) | Test Cases | `docs/test-cases/UTC-[feature].md` |
-| `unit-test` (Mode B) | Test Report | `docs/test-reports/UTR-[feature]-R[n].md` |
-| `integration-test` (Mode A) | Test Cases | `docs/test-cases/ITC-[feature].md` |
-| `integration-test` (Mode B) | Test Report | `docs/test-reports/ITR-[feature]-R[n].md` |
-| `fix-bug` | Bug Report | `docs/bug-reports/BUG-[YYYYMMDD]-[nn].md` |
-| `plan-writing` | Plan | `docs/plans/PLAN-[feature]-[YYYYMMDD].md` |
-| `analyze-requirement` | Business Process Flow | Inline Mermaid in `SRS-[feature].md` §6 |
-| `design-screen` (Stitch) | Stitch Screen PNG | `docs/specs/stitch/[feature]-[SCR-XX]-[state].png` |
-| `design-screen` (Stitch) | Stitch Reference Code | `docs/specs/stitch/[feature]-[SCR-XX]-[state].html` |
-| `design-function` | Screen Preview PNG | `docs/specs/pencil/exports/BASIC-[feature]-[SCR-XX].png` |
-| `design-function` | Service Flow Diagram | Inline Mermaid in `TECH-[feature].md` §4.2 |
-| `design-function` | Class Diagram | Inline Mermaid in `TECH-[feature].md` §6 |
-| `retro` | Retrospective Report | `docs/retros/RETRO-[type]-[feature/sprint]-[YYYYMMDD].md` |
-| Each pool agent (self) | Agent Memory | `.claude/agent-memory/<agent-name>/MEMORY.md` (native auto-managed) |
-| Any skill | Reference Templates | `docs/_templates/[NAME].md` (on-demand loading) |
-| user / relevant skill | DAR Evaluation | `docs/dars/DAR-[feature]-[topic]-[YYYYMMDD].md` |
+| Owner | Artifact | Path (relative to the stream folder) |
+|-------|----------|--------------------------------------|
+| `brainstorming` | Stream Manifest | `STREAM.md` (created at stream start; the stream's index + board) |
+| `brainstorming` | Brainstorm | `brainstorm/BRAINSTORM.md` |
+| `researcher` (pool) | Research Report | `research/RES-[topic].md` |
+| `worktree` | Worktree handoff | `WORKTREE.md` |
+| `analyze-requirement` | SRS | `requirements/SRS.md` |
+| `design-screen` | Screen Design | `requirements/SCREEN.md` |
+| `design-function` | Basic Design (BD) | `design/BASIC.md` |
+| `design-function` | Detail Design (DD) | `design/TECH.md` |
+| `architecture` | Decision record (ADR) | `design/decisions/ADR-[topic]-[YYYYMMDD].md` (stream-scoped) |
+| `implement-feature` | Work Log | `work-logs/DEV-[YYYYMMDD].md` |
+| `review-code` | Design Review Report | `reviews/DESIGN-REVIEW-[YYYYMMDD].md` |
+| `review-code` | Review Report | `reviews/REVIEW-[YYYYMMDD].md` |
+| `vulnerability-scanner` | Security Report | `security/SEC-[YYYYMMDD].md` |
+| cbr:reviewer (pool) | Gate Verdict — G4 | `reviews/VERDICT-G4.json` (per-batch: `reviews/VERDICT-B[n]-G4.json`) |
+| cbr:reviewer (pool) | Gate Verdict — G5a | `security/VERDICT-G5a.json` |
+| cbr:tester (pool) | Gate Verdict — G6 | `test-reports/VERDICT-G6.json` |
+| cbr:tester (pool) | Gate Verdict — G7 | `test-reports/VERDICT-G7.json` |
+| `unit-test` (Mode A) | Test Cases | `test-cases/UTC.md` |
+| `unit-test` (Mode B) | Test Report | `test-reports/UTR-R[n].md` |
+| `integration-test` (Mode A) | Test Cases | `test-cases/ITC.md` |
+| `integration-test` (Mode B) | Test Report | `test-reports/ITR-R[n].md` |
+| `fix-bug` | Bug Report | `bug-reports/BUG-[YYYYMMDD]-[nn].md` |
+| `plan-writing` | Plan | `plan/PLAN.md` |
+| `design-screen` (Stitch) | Stitch Screen PNG/HTML | `assets/stitch/[SCR-XX]-[state].png` / `.html` |
+| `design-function` | Screen Preview PNG | `assets/pencil/BASIC-[SCR-XX].png` |
+| `retro` | Retrospective Report | `retro/RETRO-[YYYYMMDD].md` |
+| `handoff` | Session Handoff | `handoffs/HANDOFF-[YYYYMMDD].md` |
+| user / relevant skill | DAR Evaluation | `dars/DAR-[topic]-[YYYYMMDD].md` |
+| user / relevant skill | Corrective Action Report | `cars/CAR-[topic]-[YYYYMMDD].md` |
+| `estimate` | Estimation | `estimate/EST-[YYYYMMDD].md` (re-run per re-estimate → time-series) |
+| `design-screen`/`design-function` | Screen & design exports | `assets/<tool>/[SCR-XX]-[state].<ext>` — `<tool>` ∈ `stitch` \| `pencil` \| `figma` |
+| `analyze-requirement` | Business Process Flow | Inline Mermaid in `requirements/SRS.md` §6 |
+| `design-function` | Service Flow / Class Diagram | Inline Mermaid in `design/TECH.md` §4.2 / §6 |
+
+**Project-level (at `docs/` root, NOT per-stream):**
+
+| Owner | Artifact | Path |
+|-------|----------|------|
+| `design-function` | Coding Checklist | `docs/CODING-CHECKLIST.md` (created once per project) |
+| `architecture` | Project-wide ADR | `docs/decisions/ADR-[topic]-[YYYYMMDD].md` (a decision spanning streams) |
 | user / relevant skill | Risk Register (EPIC) | `docs/risks/RISK-[epic-name].md` |
-| user / relevant skill | Corrective Action Report | `docs/cars/CAR-[feature]-[topic]-[YYYYMMDD].md` |
-| `estimate` | Estimation | `docs/estimates/EST-[feature]-[YYYYMMDD].md` |
+| Any skill | Reference Templates | `docs/_templates/[NAME].md` (on-demand loading) |
+| Each pool agent (self) | Agent Memory | `.claude/agent-memory/<agent-name>/MEMORY.md` (native auto-managed) |
 
-**Auto-create rule**: If `docs/[subfolder]/` does not exist, create it. Never fail because a directory is missing. This includes `docs/specs/requirements/` (SRS, SCREEN), `docs/specs/basic-design/` (BASIC), `docs/specs/detail-design/` (TECH), `docs/specs/stitch/` (Stitch PNG/HTML exports), `docs/specs/pencil/exports/` (Pencil exports), `docs/reviews/` (review reports + the G4 verdict), `docs/security/` (security reports + the G5a verdict), `docs/test-reports/` (UTR/ITR + the G6/G7 verdicts), `docs/retros/` (retrospective reports), `docs/dars/` (DAR evaluations), `docs/risks/` (risk registers), `docs/cars/` (corrective action reports), `docs/estimates/` (estimation documents), `docs/streams/` (work-stream manifests).
+Project-level reference docs (`PROJECT.md`, `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`,
+`API_DESIGN.md`, `TEST_VIEWPOINT.md`, `CODE-REVIEW-CHECKLIST.md`) also live at `docs/` root, seeded from
+`docs/_templates/`. **These and the project-level table above stay at `docs/` root — never relocate a
+project-level doc into a stream folder** (G3c reads `docs/TEST_VIEWPOINT.md` there).
+
+**Auto-create rule**: Never fail because a directory is missing — create it. A stream folder
+`docs/streams/<slug>-<YYYYMMDD>/` contains, on demand: `brainstorm/`, `requirements/`, `design/`
+(+ `design/decisions/`), `plan/`, `work-logs/`, `reviews/`, `security/`, `test-cases/`, `test-reports/`,
+`bug-reports/`, `retro/`, `handoffs/`, `research/`, `dars/`, `cars/`, `estimate/`, and
+`assets/{stitch,pencil,figma,diagrams}/`. The project-level dirs `docs/decisions/` and `docs/risks/` are
+likewise auto-created.
 
 ## Work-Stream Grouping
 
@@ -100,8 +121,9 @@ Each feature's SDLC artifacts belong to one **work-stream**. `brainstorming` dec
 `docs/streams/[slug]-[YYYYMMDD]/STREAM.md` (the manifest), and every per-feature artifact carries a
 `stream: [slug]-[YYYYMMDD]` frontmatter field — a persistent cross-artifact identity carrier.
 
-- **Phase 1 (current)**: artifacts keep their canonical **type-first paths above**; the manifest links them.
-  Physical co-location under `docs/streams/[id]/` is a deferred Phase 2 (do not relocate yet).
+- **The stream folder IS the layout** — artifacts live under `docs/streams/[slug]-[YYYYMMDD]/` per the table
+  above; there is no type-first layout. The folder name carries the slug; `hooks/lib/sdlc_state.py` derives
+  the active feature + gate state from the stream folder, and `STREAM.md` is its index.
 - `STREAM.md` has two **authored** zones (membership table + task board) and one **derived** zone (the
   G1–G8 gate snapshot). The derived zone is regenerated by `handoff`/`session-init` from artifact/verdict globs — **gate authority
   stays with the glob (`hooks/lib/sdlc_state.py`); never hand-edit the gate zone**, and it is never a
@@ -168,7 +190,7 @@ Skills and pool agents draw on 4 memory tiers (loaded in order):
 | Tier | Scope | Files | Loaded By |
 |------|-------|-------|-----------|
 | 1 — Core | Always loaded | `.claude/rules/*.md`, `CLAUDE.md`, `PROJECT.md` | Claude Code (auto) |
-| 2 — Project | Cross-session shared | The artifacts above — `docs/specs/**`, `docs/plans/PLAN-*.md`, `docs/reviews/**` | Read on demand by the skill that needs them |
+| 2 — Project | Cross-session shared | The stream artifacts above — `docs/streams/**` | Read on demand by the skill that needs them |
 | 3 — Agent | Per-agent persistent | `.claude/agent-memory/<agent-name>/MEMORY.md` | Claude Code native (auto-load 200 lines) for pool agents declaring a `memory:` scope |
 | 4 — Session | Current execution only | Work-log checkpoints | Read on resume |
 
