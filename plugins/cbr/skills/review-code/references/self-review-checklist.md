@@ -40,7 +40,7 @@
 
 ## Documentation
 
-- [ ] Work log (`docs/work-logs/DEV-[feature]-BN.md`) lists every file created/modified in this batch
+- [ ] Work log (`docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md`) lists every file created/modified in this batch
 - [ ] Work log notes any deviations from the TECH spec and the reason why
 - [ ] Work log includes self-review result: "Self-review: PASS" or lists items still pending
 

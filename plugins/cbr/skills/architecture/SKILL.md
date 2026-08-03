@@ -88,10 +88,16 @@ New structural requirement
 
 ### Step 3: Document the decision (ADR)
 
-Write hard-to-reverse decisions to
-`docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md` — `[topic]` is a short
-kebab-case slug for the subject decided (e.g. `ADR-background-jobs-20260731.md`),
-not the name of this skill.
+Write hard-to-reverse decisions to an ADR whose location follows the decision's
+scope:
+
+- **Belongs to one feature's work-stream** →
+  `docs/streams/[feature]-[YYYYMMDD]/design/decisions/ADR-[topic]-[YYYYMMDD].md`
+- **Spans multiple streams (project-wide)** →
+  `docs/decisions/ADR-[topic]-[YYYYMMDD].md`
+
+`[topic]` is a short kebab-case slug for the subject decided (e.g.
+`ADR-background-jobs-20260731.md`), not the name of this skill.
 
 ```markdown
 ## ADR: [Short Title]

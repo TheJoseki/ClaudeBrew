@@ -52,7 +52,7 @@ If any scenario FAIL → capture diagnostic info:
 
 ## Mode C Test Report Template
 
-File: `docs/test-reports/ITR-[feature]-browser-R[n].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-browser-R[n].md`
 
 ```markdown
 # Integration Test Report: [Feature Name] — Browser Live R[n]

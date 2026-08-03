@@ -1,17 +1,17 @@
 {
   "skill_name": "plan-writing",
-  "notes": "Implementation-planning skill: turns scope into a short, specific phase/task table with verifiable done conditions, explicit dependencies, and optional per-stage assignments; saves docs/plans/PLAN-[feature]-[YYYYMMDD].md. Evaluate that positives produce an actionable plan; the end-to-end delivery boundary should not fire, since delivery is a sequence of separately gated stages rather than one skill.",
+  "notes": "Implementation-planning skill: turns scope into a short, specific phase/task table with verifiable done conditions, explicit dependencies, and optional per-stage assignments; saves docs/streams/[feature]-[YYYYMMDD]/plan/PLAN.md. Evaluate that positives produce an actionable plan; the end-to-end delivery boundary should not fire, since delivery is a sequence of separately gated stages rather than one skill.",
   "evals": [
     {
       "id": 1,
       "prompt": "Write an implementation plan for the search feature with a task breakdown and verification criteria.",
-      "expected_output": "Produces a one-screen plan (docs/plans/PLAN-search-[YYYYMMDD].md): phase/task table naming specific files/endpoints, input/output per task, explicit dependencies, status values, and concrete done conditions. Tasks are small, focused, verifiable, and ordered — no verbose or generic 'implement feature' entries.",
+      "expected_output": "Produces a one-screen plan (docs/streams/search-[YYYYMMDD]/plan/PLAN.md): phase/task table naming specific files/endpoints, input/output per task, explicit dependencies, status values, and concrete done conditions. Tasks are small, focused, verifiable, and ordered — no verbose or generic 'implement feature' entries.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Create a multi-agent execution plan for building the dashboard, with parallel agent assignments.",
-      "expected_output": "Produces a plan with the parallel-execution extension: phase/task rows assigned to the owning stage skills (implement-feature, unit-test Mode A, integration-test Mode A), noting that implement-feature --parallel fans out to cbr:developer workers, and marking which phases are independent vs sequenced by dependency, plus done conditions. Saved to docs/plans/PLAN-dashboard-[YYYYMMDD].md.",
+      "expected_output": "Produces a plan with the parallel-execution extension: phase/task rows assigned to the owning stage skills (implement-feature, unit-test Mode A, integration-test Mode A), noting that implement-feature --parallel fans out to cbr:developer workers, and marking which phases are independent vs sequenced by dependency, plus done conditions. Saved to docs/streams/dashboard-[YYYYMMDD]/plan/PLAN.md.",
       "files": []
     },
     {

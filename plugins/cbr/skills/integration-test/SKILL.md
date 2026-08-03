@@ -30,27 +30,27 @@ Do NOT hardcode framework assumptions.
 
 **Mode A (CREATE)** — author the test cases
 - Input: TECH spec + SRS
-- Output: `docs/test-cases/ITC-[feature].md`
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 - This is execution work; it may run `--parallel`.
 
 **Mode B (EXECUTE R[n])** — the **G7 quality gate**
-- Input: `docs/test-cases/ITC-[feature].md`
-- Output: `docs/test-reports/ITR-[feature]-R[n].md` + the G7 verdict artifact
+- Input: `docs/streams/[feature]-*/test-cases/ITC.md`
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md` + the G7 verdict artifact
 - Run by a freshly spawned `cbr:tester`, never graded here — see Mode B below.
-- **Precondition**: Grep for `docs/test-cases/ITC-[feature].md` before proceeding.
+- **Precondition**: Grep for `docs/streams/[feature]-*/test-cases/ITC.md` before proceeding.
   If NOT FOUND → STOP: "ITC not found. Run `/integration-test` Mode A first to create the test cases."
 
 ## Required Reading
 - `docs/TEST_VIEWPOINT.md` — Integration TC catalog, quality gates
 - `docs/API_DESIGN.md` — Endpoint chains, request/response (if exists)
 - `docs/ARCHITECTURE.md` — Key business workflows, role-based access (if exists)
-- `docs/specs/detail-design/TECH-[feature].md`, `docs/specs/requirements/SRS-[feature].md`
+- `docs/streams/[feature]-*/design/TECH.md`, `docs/streams/[feature]-*/requirements/SRS.md`
 
 ---
 
 ## Mode A: Create ITC Document
 
-File: `docs/test-cases/ITC-[feature].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 
 > **Template**: See [`references/itc-template.md`](references/itc-template.md) for the full ITC document template.
 > **Script templates**: See [`references/script-templates.md`](references/script-templates.md) for Playwright and HTTP integration test script templates.
@@ -119,15 +119,19 @@ require 100% of BASIC workflows plus the TECH API contracts to be covered
 
 ### Step 1 — Spawn one `cbr:tester`
 
+**Resolve the stream folder once** — the newest `docs/streams/[feature]-*/` (create it
+if absent) — and use that one resolved path for both the report/verdict writes below and
+the `verdict-gate.py --artifact` argument in Step 2, so the two never drift.
+
 Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 
-- **Scope**: `docs/test-cases/ITC-[feature].md` + the workflows under test.
+- **Scope**: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md` + the workflows under test.
 - **Commands**: the PROJECT.md test commands above (tell it to detect, not assume).
 - **Round**: which R[n] this is, and the pass-rate bar for that round.
 - **Outputs**, both mandatory:
-  - Test report → `docs/test-reports/ITR-[feature]-R[n].md`
+  - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`
     (template: [`references/itr-template.md`](references/itr-template.md))
-  - Verdict artifact → `docs/test-reports/VERDICT-[feature]-G7.json`, conforming
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json`, conforming
     to `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
     `producedBy: "cbr:tester"` and **`gate: "G7"` exactly** — the API/E2E split
     is reported inside the ITR, never as a `G7a`/`G7b` gate value, which the
@@ -140,7 +144,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 ### Step 2 — Validate
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G7 --artifact docs/test-reports/VERDICT-[feature]-G7.json
+python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G7 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no
@@ -172,10 +176,10 @@ the user re-invokes `/fix-bug` and then this skill for R[n+1].
 - "Run all tests including unit tests" (use validate-and-test)
 
 **Expected outputs:**
-- Artifact (Mode A): `docs/test-cases/ITC-[feature].md`
+- Artifact (Mode A): `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 - Artifacts (Mode B, written by the spawned `cbr:tester`):
-  `docs/test-reports/ITR-[feature]-R[n].md` and
-  `docs/test-reports/VERDICT-[feature]-G7.json`
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md` and
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json`
 - Quality gate: G7 — all key business workflows covered, R5 = 100% pass rate,
   `verdict-gate.py --gate G7` run with its exit code reported
 

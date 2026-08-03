@@ -27,15 +27,15 @@ intermittent, or hard-to-reproduce bug — or one that recurs after a fix — lo
 ## Step 1: Receive Bug Input
 
 Read input from:
-- UTR report: `docs/test-reports/UTR-[feature]-R[n].md` (section "Bug Reports")
-- ITR report: `docs/test-reports/ITR-[feature]-R[n].md` (section "Bug Reports")
+- UTR report: `docs/streams/[feature]-*/test-reports/UTR-R[n].md` (section "Bug Reports")
+- ITR report: `docs/streams/[feature]-*/test-reports/ITR-R[n].md` (section "Bug Reports")
 - Or direct user report
 
 Required reading:
 - `docs/CODING_RULES.md` — verify fix does not violate rules
 - `docs/CODING_CONVENTION.md` — follow patterns when fixing
-- `docs/specs/detail-design/TECH-[feature].md` — design source of truth; verify fix aligns with architecture
-- `docs/specs/decisions/ADR-*.md` — a recorded decision may explain the root cause
+- `docs/streams/[feature]-*/design/TECH.md` — design source of truth; verify fix aligns with architecture
+- `docs/streams/[feature]-*/design/decisions/ADR-*.md` — a recorded decision may explain the root cause
 
 ## Step 2: Reproduce Bug
 
@@ -86,7 +86,10 @@ cd frontend && [frontend test command]
 
 Bug ID format: `BUG-[YYYYMMDD]-[nn]`
 
-File: `docs/bug-reports/BUG-[YYYYMMDD]-[nn].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/bug-reports/BUG-[YYYYMMDD]-[nn].md`
+Resolve the stream first: the newest `docs/streams/*/` whose artifacts match the failing
+area (the UTR/ITR from Step 1 names it). If the bug arrived as a direct report with no
+UTR/ITR, ask the user which stream it belongs to. Create the `bug-reports/` sub-folder if absent.
 
 ```markdown
 # Bug Fix Report: [Bug ID]
@@ -127,7 +130,7 @@ File: `docs/bug-reports/BUG-[YYYYMMDD]-[nn].md`
 - [ ] Fix does not violate CODING_RULES.md (soft delete, guards, i18n)
 - [ ] Affected test PASS
 - [ ] Full suite PASS (no regression)
-- [ ] Bug report `docs/bug-reports/BUG-[id]-[feature].md` CREATED ✅
+- [ ] Bug report `docs/streams/[feature]-[YYYYMMDD]/bug-reports/BUG-[YYYYMMDD]-[nn].md` CREATED ✅
 
 ---
 

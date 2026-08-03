@@ -90,7 +90,7 @@ is likely uncommitted, so it must be made reachable from the new branch:
 - **Default — commit it first.** Commit the approved spec to the base branch
   before `EnterWorktree`. A tracked file is visible on every branch, and approval
   is a natural commit milestone (it dogfoods "approved artifact = milestone").
-- **Alternative — `.worktreeinclude`.** Add `docs/specs/*` so the native worktree
+- **Alternative — `.worktreeinclude`.** Add `docs/streams/*` so the native worktree
   flow copies the untracked artifact across. Use when an auto-commit is unwanted.
 
 State which you used in the handoff artifact.

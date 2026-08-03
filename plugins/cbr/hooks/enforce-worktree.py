@@ -30,12 +30,12 @@ BASE_BRANCHES = {"main", "master"}
 # on the base branch. This is the load-bearing list: without it the hook would
 # block the brainstorming skill from writing its own artifact on main, which
 # would make the whole pipeline self-defeating. It is *scope*, not an opt-out.
-#   - docs/specs/* : SDLC handoff artifacts every stage reads/writes
+#   - docs/streams/* : per-feature SDLC artifacts every stage reads/writes (incl. non-md assets)
 #   - .claude/*    : skills, settings, hooks (harness config, never the product)
 #   - *.md         : documentation, at any depth (fnmatch '*' spans '/')
 #   - dotfiles that configure the repo/worktrees themselves
 EXEMPT_GLOBS = [
-    "docs/specs/*",
+    "docs/streams/*",
     ".claude/*",
     "*.md",
     ".gitignore",

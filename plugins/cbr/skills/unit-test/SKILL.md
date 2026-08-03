@@ -30,27 +30,27 @@ Do NOT hardcode framework assumptions.
 
 **Mode A (CREATE)** — author the test cases
 - Input: TECH spec + code (just implemented or being implemented)
-- Output: `docs/test-cases/UTC-[feature].md`
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 - This is execution work; it may run `--parallel`.
 
 **Mode B (EXECUTE R[n])** — the **G6 quality gate**
-- Input: `docs/test-cases/UTC-[feature].md` + code
-- Output: `docs/test-reports/UTR-[feature]-R[n].md` + the G6 verdict artifact
+- Input: `docs/streams/[feature]-*/test-cases/UTC.md` + code
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` + the G6 verdict artifact
 - Run by a freshly spawned `cbr:tester`, never graded here — see Mode B below.
-- **Precondition**: Grep for `docs/test-cases/UTC-[feature].md` before proceeding.
+- **Precondition**: Grep for `docs/streams/[feature]-*/test-cases/UTC.md` before proceeding.
   If NOT FOUND → STOP: "UTC not found. Run `/unit-test` Mode A first to create the test cases."
 
 ## Required Reading
 - `docs/TEST_VIEWPOINT.md` — ISTQB techniques, TC catalog, quality gates
 - `docs/CODING_RULES.md` — Rules to verify (soft delete, guards, i18n, no any)
-- `docs/specs/detail-design/TECH-[feature].md` — Technical spec
-- `docs/work-logs/DEV-[feature]-*.md` — Dev log (if exists)
+- `docs/streams/[feature]-*/design/TECH.md` — Technical spec
+- `docs/streams/[feature]-*/work-logs/DEV-*.md` — Dev log (if exists)
 
 ---
 
 ## Mode A: Create UTC Document
 
-File: `docs/test-cases/UTC-[feature].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 
 > **Template**: See [`references/utc-template.md`](references/utc-template.md) for the full UTC and UTR document templates.
 
@@ -118,15 +118,19 @@ G6 also requires ≥80% coverage and 100% of TECH-spec functions covered
 
 ### Step 1 — Spawn one `cbr:tester`
 
+**Resolve the stream folder once** — the newest `docs/streams/[feature]-*/` (create it
+if absent) — and use that one resolved path for both the report/verdict writes below and
+the `verdict-gate.py --artifact` argument in Step 2, so the two never drift.
+
 Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 
-- **Scope**: `docs/test-cases/UTC-[feature].md` + the code under test.
+- **Scope**: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md` + the code under test.
 - **Commands**: the PROJECT.md test commands above (tell it to detect, not assume).
 - **Round**: which R[n] this is, and the pass-rate bar for that round.
 - **Outputs**, both mandatory:
-  - Test report → `docs/test-reports/UTR-[feature]-R[n].md`
+  - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
     (template: [`references/utc-template.md`](references/utc-template.md))
-  - Verdict artifact → `docs/test-reports/VERDICT-[feature]-G6.json`, conforming
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`, conforming
     to `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
     `gate: "G6"` and `producedBy: "cbr:tester"`.
 - **Evidence requirement**: `verification` MUST hold the actual command(s) run
@@ -137,7 +141,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 ### Step 2 — Validate
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G6 --artifact docs/test-reports/VERDICT-[feature]-G6.json
+python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G6 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no
@@ -170,10 +174,10 @@ skill for R[n+1].
 - "Run all tests" (use validate-and-test)
 
 **Expected outputs:**
-- Artifact (Mode A): `docs/test-cases/UTC-[feature].md`
+- Artifact (Mode A): `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 - Artifacts (Mode B, written by the spawned `cbr:tester`):
-  `docs/test-reports/UTR-[feature]-R[n].md` and
-  `docs/test-reports/VERDICT-[feature]-G6.json`
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` and
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`
 - Quality gate: G6 — ≥80% coverage, R5 = 100% pass rate,
   `verdict-gate.py --gate G6` run with its exit code reported
 

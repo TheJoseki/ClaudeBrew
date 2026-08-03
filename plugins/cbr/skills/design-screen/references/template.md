@@ -1,15 +1,15 @@
 # SCREEN File Output Document Template
 
-Use this template when creating `docs/specs/requirements/SCREEN-[feature-name].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md`.
 
 ```markdown
 # Screen Design: [Feature Name]
 **Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: design-screen
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **UI Library**: [detected from PROJECT.md]
 **Design Style**: [selected from design-system output]
 **Design Tool**: [Figma MCP / Pencil Dev / SVG fallback]
-**Pencil File**: [docs/specs/pencil/SCREEN-[feature].pen — or N/A]
+**Pencil File**: [docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen — or N/A]
 
 ## Design System Applied
 - **Style**: [Minimal / Enterprise / Consumer / ...]
@@ -99,13 +99,13 @@ ViewName.[ext]
 <!-- Populated by Step 6D (Pencil Dev MCP path) — only if user chose Pencil Dev -->
 <!-- Developer: use batch_get(filePath, nodeIds) to read component structure for implementation -->
 
-**Pencil File**: `docs/specs/pencil/SCREEN-[feature].pen`
+**Pencil File**: `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen`
 
 | Screen | Frame ID | Name | Viewport | Exported PNG |
 |--------|----------|------|----------|--------------|
-| [SCR-XX] [Name] Default | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](pencil/exports/[frameId].png) |
-| [SCR-XX] [Name] Loading | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](pencil/exports/[frameId].png) |
-| [SCR-XX] [Name] Mobile  | [frameId] | [frame name] | 390x844  | [exports/[frameId].png](pencil/exports/[frameId].png) |
+| [SCR-XX] [Name] Default | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](../assets/pencil/exports/[frameId].png) |
+| [SCR-XX] [Name] Loading | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](../assets/pencil/exports/[frameId].png) |
+| [SCR-XX] [Name] Mobile  | [frameId] | [frame name] | 390x844  | [exports/[frameId].png](../assets/pencil/exports/[frameId].png) |
 
 <!-- Pencil MCP tools for implement-feature:
      batch_get(filePath, nodeIds, readDepth:3) → full node tree with layout/styles/component refs
@@ -118,7 +118,7 @@ ViewName.[ext]
 
 | Screen | Desktop SVG | Mobile SVG |
 |--------|-------------|------------|
-| [SCR-XX] [Name] | [SCREEN-[feature]-[SCR-XX]-desktop.svg](figma/SCREEN-[feature]-[SCR-XX]-desktop.svg) | [SCREEN-[feature]-[SCR-XX]-mobile.svg](figma/SCREEN-[feature]-[SCR-XX]-mobile.svg) |
+| [SCR-XX] [Name] | [[SCR-XX]-desktop.svg](../assets/figma/[SCR-XX]-desktop.svg) | [[SCR-XX]-mobile.svg](../assets/figma/[SCR-XX]-mobile.svg) |
 
 <!-- SVG files: open in Figma via File → Import → select .svg, or open directly in browser -->
 

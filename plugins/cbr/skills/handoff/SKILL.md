@@ -46,27 +46,31 @@ Read `CLAUDE.md` (auto-loaded) or `PROJECT.md` to detect:
 
 Glob and Read the following (skip if not found — note as missing):
 
+All per-feature artifacts live under the feature's stream folder
+`docs/streams/[feature]-*/` (glob the `*` — the folder date is the stream-start
+date). `STREAM.md` is the primary index; the paths below are its sub-folders.
+
 | Artifact | Path | Status |
 |----------|------|--------|
 | Stream manifest | `docs/streams/[feature]-*/STREAM.md` (if present: use for membership + task board) | |
-| PLAN file | `docs/plans/PLAN-[feature]-*.md` | |
-| SRS | `docs/specs/requirements/SRS-[feature].md` | |
-| BASIC spec | `docs/specs/basic-design/BASIC-[feature].md` | |
-| TECH spec | `docs/specs/detail-design/TECH-[feature].md` | |
-| SCREEN spec | `docs/specs/requirements/SCREEN-[feature].md` | |
-| Work logs | `docs/work-logs/DEV-[feature]-*.md` | |
-| Review reports | `docs/reviews/REVIEW-[feature]-*.md` | |
-| UTC | `docs/test-cases/UTC-[feature].md` | |
-| ITC | `docs/test-cases/ITC-[feature].md` | |
-| Bug reports | `docs/bug-reports/BUG-*.md` | |
-| Gate verdicts | `docs/reviews/VERDICT-[feature]-*.json` | |
+| PLAN file | `docs/streams/[feature]-*/plan/PLAN.md` | |
+| SRS | `docs/streams/[feature]-*/requirements/SRS.md` | |
+| BASIC spec | `docs/streams/[feature]-*/design/BASIC.md` | |
+| TECH spec | `docs/streams/[feature]-*/design/TECH.md` | |
+| SCREEN spec | `docs/streams/[feature]-*/requirements/SCREEN.md` | |
+| Work logs | `docs/streams/[feature]-*/work-logs/DEV-*.md` | |
+| Review reports | `docs/streams/[feature]-*/reviews/REVIEW-*.md` | |
+| UTC | `docs/streams/[feature]-*/test-cases/UTC.md` | |
+| ITC | `docs/streams/[feature]-*/test-cases/ITC.md` | |
+| Bug reports | `docs/streams/[feature]-*/bug-reports/BUG-*.md` | |
+| Gate verdicts | `docs/streams/[feature]-*/reviews/VERDICT-*.json`, `.../security/VERDICT-*.json`, `.../test-reports/VERDICT-*.json` | |
 
 **Cross-cutting state:**
 
 | Source | Path | Status |
 |--------|------|--------|
-| Plan | `docs/plans/PLAN-[feature]-*.md` | |
-| Decision records | `docs/specs/decisions/ADR-*.md` | |
+| Plan | `docs/streams/[feature]-*/plan/PLAN.md` | |
+| Decision records | `docs/streams/[feature]-*/design/decisions/ADR-*.md` (stream-scoped), `docs/decisions/ADR-*.md` (project-wide) | |
 | Risk register | `docs/risks/RISK-*.md` (or the PLAN's Risk Register section) | |
 | Agent memory | `.claude/agent-memory/*/MEMORY.md` | |
 
@@ -104,7 +108,9 @@ From work logs, review reports, and flags:
 
 ## Step 4: Write Handoff Document
 
-File: `docs/handoffs/HANDOFF-[feature]-[YYYYMMDD].md`
+File: `docs/streams/[feature]-*/handoffs/HANDOFF-[YYYYMMDD].md` — write into the
+existing stream folder's `handoffs/` subfolder (brainstorming created the stream;
+its folder date is the stream-start date, distinct from today's handoff date).
 
 ```markdown
 # Handoff: [feature-name]
@@ -138,10 +144,10 @@ File: `docs/handoffs/HANDOFF-[feature]-[YYYYMMDD].md`
 
 | Artifact | Path | Status |
 |----------|------|--------|
-| PLAN | docs/plans/PLAN-[feature]-[date].md | ✅ exists |
-| SRS | docs/specs/requirements/SRS-[feature].md | ✅ exists |
-| TECH spec | docs/specs/detail-design/TECH-[feature].md | ✅ exists |
-| UTC | docs/test-cases/UTC-[feature].md | ⏳ in progress |
+| PLAN | docs/streams/[feature]-[date]/plan/PLAN.md | ✅ exists |
+| SRS | docs/streams/[feature]-[date]/requirements/SRS.md | ✅ exists |
+| TECH spec | docs/streams/[feature]-[date]/design/TECH.md | ✅ exists |
+| UTC | docs/streams/[feature]-[date]/test-cases/UTC.md | ⏳ in progress |
 
 ---
 
@@ -166,12 +172,12 @@ File: `docs/handoffs/HANDOFF-[feature]-[YYYYMMDD].md`
 ## Cross-Cutting State
 
 ### Active Plans
-<!-- From docs/plans/PLAN-*.md — list plans with unfinished phases -->
+<!-- From docs/streams/*/plan/PLAN.md — list plans with unfinished phases -->
 | Plan | Type | Status | Phase |
 |------|------|--------|-------|
 
 ### Unresolved Decisions
-<!-- From docs/specs/decisions/ADR-*.md — only open or superseded-pending -->
+<!-- From docs/streams/*/design/decisions/ADR-*.md and docs/decisions/ADR-*.md — only open or superseded-pending -->
 | ID | Domain | Decision | Status |
 |----|--------|----------|--------|
 
@@ -186,10 +192,10 @@ File: `docs/handoffs/HANDOFF-[feature]-[YYYYMMDD].md`
 
 ```
 Next stage: /cbr:[stage-skill] [feature-name]
-Plan file: docs/plans/PLAN-[feature]-[date].md
+Plan file: docs/streams/[feature]-[date]/plan/PLAN.md
 Resume at the first phase still marked ⏳ PENDING.
 
-Context: See docs/handoffs/HANDOFF-[feature]-[date].md for the full state summary.
+Context: See docs/streams/[feature]-[date]/handoffs/HANDOFF-[date].md for the full state summary.
 Open issues: [count] — see the Open Issues table above.
 Last gate passed: [G-n]. The user starts the next stage; nothing cascades on its own.
 ```

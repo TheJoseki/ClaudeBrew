@@ -76,15 +76,15 @@ prompt carries the four things `cbr:developer` expects:
 1. The spec section for that slice (path + section, not pasted content).
 2. Its **File Ownership** list — the exact paths it may create/modify.
 3. Acceptance criteria for the slice.
-4. Its work-log path, e.g. `docs/work-logs/DEV-[feature]-[slice].md`.
+4. Its work-log path, e.g. `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[slice].md`.
 
 ```
 Agent(subagent_type="cbr:developer",
       prompt="Implement the <slice> slice of <feature>.
-              SPEC: docs/specs/detail-design/TECH-<feature>.md § <section>
+              SPEC: docs/streams/<feature>-<YYYYMMDD>/design/TECH.md § <section>
               FILE OWNERSHIP: <explicit paths — you may modify nothing else>
               ACCEPTANCE: <criteria>
-              WORK LOG: docs/work-logs/DEV-<feature>-<slice>.md")
+              WORK LOG: docs/streams/<feature>-<YYYYMMDD>/work-logs/DEV-<slice>.md")
 ```
 
 ### File Ownership Rules (hard — restate these in every spawn prompt)

@@ -4,7 +4,7 @@
 
 ## Work Log Output Template
 
-File: `docs/work-logs/DEV-[feature]-BN.md` (replace BN with actual batch: B1, B2, B3)
+File: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (replace BN with actual batch: B1, B2, B3)
 
 ```markdown
 # Work Log: [Feature Name] — Batch N
@@ -12,7 +12,7 @@ File: `docs/work-logs/DEV-[feature]-BN.md` (replace BN with actual batch: B1, B2
 **Batch**: Batch-N | **Scope**: [modules/deliverables in this batch]
 **Date**: [YYYY-MM-DD]
 **Developer**: implement-feature
-**Input TECH spec**: docs/specs/detail-design/TECH-[feature].md
+**Input TECH spec**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
 **Status**: COMPLETED
 
 ## Files Created

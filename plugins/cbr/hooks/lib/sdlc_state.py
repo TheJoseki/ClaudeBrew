@@ -2,32 +2,22 @@
 """sdlc_state.py — reconstruct cbr SDLC state from committed docs/ artifacts.
 
 Pure, zero-dependency helpers shared by the `session-init` and `subagent-context`
-hooks. The canonical artifact-path table in `rules/sdlc-conventions.md` IS the
-addressing scheme; these helpers glob those paths and read only cheap signals
-(filenames, PLAN frontmatter, verdict `decision` fields, markdown headers) —
-never full spec bodies.
+hooks. The canonical layout in `rules/sdlc-conventions.md` IS the addressing scheme:
+every per-feature artifact lives under `docs/streams/<slug>-<YYYYMMDD>/<subdir>/`, the
+**folder is the identity**, the sub-folder is the type, and the filename drops the slug.
+These helpers glob the stream folders and read only cheap signals (folder names, verdict
+`decision` fields, STREAM.md status, markdown headers) — never full spec bodies.
 
-Design contract: functions tolerate a missing/empty `docs/` tree (return
-None / [] / {}), but do NOT blanket-swallow errors — the calling hooks own
-fail-open (try/except -> exit 0). Keeping the logic here (not in the hooks) makes
-it directly unit-testable and keeps both hooks thin.
+Design contract: functions tolerate a missing/empty `docs/` tree (return None / [] / {}),
+but do NOT blanket-swallow errors — the calling hooks own fail-open (try/except -> exit 0).
+Keeping the logic here (not in the hooks) makes it directly unit-testable and thin.
 """
 import glob
 import json
 import os
 import re
 
-# --- Canonical artifact locations (relative to project_dir) -----------------
-# Mirror rules/sdlc-conventions.md. If that table changes, change these.
-SPEC_REQUIREMENTS = os.path.join("docs", "specs", "requirements")
-SPEC_BASIC = os.path.join("docs", "specs", "basic-design")
-SPEC_DETAIL = os.path.join("docs", "specs", "detail-design")
-PLANS_DIR = os.path.join("docs", "plans")
-WORKLOGS_DIR = os.path.join("docs", "work-logs")
-REVIEWS_DIR = os.path.join("docs", "reviews")
-SECURITY_DIR = os.path.join("docs", "security")
-TESTREPORTS_DIR = os.path.join("docs", "test-reports")
-HANDOFFS_DIR = os.path.join("docs", "handoffs")
+# --- Canonical locations (relative to project_dir) --------------------------
 STREAMS_DIR = os.path.join("docs", "streams")
 
 # Gate -> the stage skill that advances it (drives next_action).
@@ -41,52 +31,28 @@ GATE_SKILL = {
 }
 GATE_ORDER = ["G1", "G3", "G4", "G5a", "G6", "G7"]
 
-# Verdict gate -> the docs/ subdir its VERDICT-*.json lives in.
-VERDICT_DIR = {
-    "G4": REVIEWS_DIR,
-    "G5a": SECURITY_DIR,
-    "G6": TESTREPORTS_DIR,
-    "G7": TESTREPORTS_DIR,
-}
+# Verdict gate -> the stream sub-folder its VERDICT-*.json lives in (beside its report).
+VERDICT_SUBDIR = {"G4": "reviews", "G5a": "security", "G6": "test-reports", "G7": "test-reports"}
 
-# Large specs get section-range pointers (H6-style) for the active feature.
-LARGE_SPECS = (
-    ("SRS", SPEC_REQUIREMENTS),
-    ("BASIC", SPEC_BASIC),
-    ("TECH", SPEC_DETAIL),
+# Large specs get section-range pointers (H6-style); stream-relative locations.
+_STREAM_SPECS = (
+    ("SRS", os.path.join("requirements", "SRS.md")),
+    ("BASIC", os.path.join("design", "BASIC.md")),
+    ("TECH", os.path.join("design", "TECH.md")),
+    ("SCREEN", os.path.join("requirements", "SCREEN.md")),
 )
-_ALL_SPECS = LARGE_SPECS + (("SCREEN", SPEC_REQUIREMENTS),)
+_LARGE_SPEC_TYPES = {"SRS", "BASIC", "TECH"}
 
-_DATE_RE = re.compile(r"-\d{8}$")          # -YYYYMMDD
-_GATE_RE = re.compile(r"-G\d[a-z]?$")      # -G4, -G5a
-_BATCH_RE = re.compile(r"-B\d+$")          # -B2
-_ROUND_RE = re.compile(r"-R\d+$")          # -R3
 _HEADER_RE = re.compile(r"^(#{2,3})\s+(.+?)\s*$")
-_STATUS_ACTIVE_RE = re.compile(r"^status:\s*ACTIVE", re.MULTILINE)
+_STREAM_DIR_RE = re.compile(r"^(.+)-\d{8}$")                       # <slug>-<YYYYMMDD>
+_ARCHIVED_RE = re.compile(r"^status:\s*[\"']?(archived|abandoned)\b", re.MULTILINE)
 
 
-def slug_from_filename(name):
-    """Extract the feature slug from a canonical artifact filename.
-
-    Slugs may contain hyphens; only the uppercase TYPE- prefix and the known
-    trailing tokens (gate, batch, round, date) are stripped. Returns None when the
-    name has no TYPE- prefix (not a recognized artifact).
-    """
-    stem = os.path.basename(name)
-    for ext in (".md", ".json"):
-        if stem.endswith(ext):
-            stem = stem[: -len(ext)]
-            break
-    parts = stem.split("-", 1)
-    if len(parts) != 2 or not parts[0].isupper() or not parts[0].isalpha():
-        return None
-    stem = parts[1]
-    # Strip trailing tokens in the order they nest: gate, then batch/round, then date.
-    stem = _GATE_RE.sub("", stem)
-    stem = _BATCH_RE.sub("", stem)
-    stem = _ROUND_RE.sub("", stem)
-    stem = _DATE_RE.sub("", stem)
-    return stem or None
+def slug_from_stream_dir(name):
+    """Extract the slug from a stream folder name `<slug>-<YYYYMMDD>`. None if undated."""
+    base = os.path.basename(str(name).rstrip("/\\"))
+    m = _STREAM_DIR_RE.match(base)
+    return m.group(1) if m else None
 
 
 def _read_head(path, n=60):
@@ -98,35 +64,56 @@ def _read_head(path, n=60):
         return ""
 
 
+def _stream_dir(project_dir, slug):
+    """Return the newest `docs/streams/<slug>-*/` directory for a slug, or None.
+
+    A feature may have more than one stream over time; the most-recently-modified is
+    the current one.
+    """
+    if not slug:
+        return None
+    # Exact-slug filter: glob `<slug>-*` also matches a different feature that shares the
+    # prefix (e.g. `payment-*` matches `payment-export-...`), so re-check the parsed slug.
+    hits = [p for p in glob.glob(os.path.join(project_dir, STREAMS_DIR, f"{slug}-*"))
+            if os.path.isdir(p) and slug_from_stream_dir(p) == slug]
+    if not hits:
+        return None
+    return max(hits, key=os.path.getmtime)
+
+
+def _stream_archived(stream_dir):
+    """True if the stream's STREAM.md frontmatter marks it archived/abandoned."""
+    return bool(_ARCHIVED_RE.search(_read_head(os.path.join(stream_dir, "STREAM.md"))))
+
+
+def _all_pass(gates):
+    """True when every ordered gate is 'pass' (the stream's work is complete)."""
+    return all(gates.get(g) == "pass" for g in GATE_ORDER)
+
+
 def resolve_active_feature(project_dir):
     """Return (slug, ambiguity_list).
 
-    Rule (see plan phase-02):
-      1. Exactly one docs/plans/PLAN-*.md with `status: ACTIVE` -> (its slug, []).
-      2. Several ACTIVE plans -> (None, [slugs]) so the caller emits a picker.
-      3. No ACTIVE plan -> most-recently-modified artifact under specs/work-logs/
-         reviews -> (its slug, []).
-      4. Nothing at all -> (None, []).
+    A stream is 'in flight' when its gate line is not all-pass and its STREAM.md is not
+    archived/abandoned. Exactly one in-flight stream -> (slug, []); several -> (None,
+    [slugs]) so the caller emits a picker; none -> (None, []). Gate authority is the glob,
+    not a hand-set flag — `status:` only *excludes* an archived/abandoned stream.
     """
-    active = []
-    for p in sorted(glob.glob(os.path.join(project_dir, PLANS_DIR, "PLAN-*.md"))):
-        if _STATUS_ACTIVE_RE.search(_read_head(p)):
-            s = slug_from_filename(p)
-            if s:
-                active.append(s)
-    active = list(dict.fromkeys(active))  # de-dupe, preserve order
-    if len(active) == 1:
-        return active[0], []
-    if len(active) > 1:
-        return None, active
-
-    candidates = []
-    for d in (SPEC_REQUIREMENTS, SPEC_BASIC, SPEC_DETAIL, WORKLOGS_DIR, REVIEWS_DIR):
-        candidates.extend(glob.glob(os.path.join(project_dir, d, "*.md")))
-    if not candidates:
-        return None, []
-    newest = max(candidates, key=os.path.getmtime)
-    return slug_from_filename(newest), []
+    in_flight = []
+    for stream in sorted(glob.glob(os.path.join(project_dir, STREAMS_DIR, "*"))):
+        if not os.path.isdir(stream):
+            continue
+        slug = slug_from_stream_dir(stream)
+        if not slug or _stream_archived(stream):
+            continue
+        if not _all_pass(infer_gate_progress(project_dir, slug)["gates"]):
+            in_flight.append(slug)
+    in_flight = list(dict.fromkeys(in_flight))  # de-dupe, preserve order
+    if len(in_flight) == 1:
+        return in_flight[0], []
+    if len(in_flight) > 1:
+        return None, in_flight
+    return None, []
 
 
 def _verdict_decision(path):
@@ -144,35 +131,36 @@ def _gate_verdict(project_dir, slug, gate):
     """Aggregate verdict status for a gate across its (possibly per-batch) files.
 
     fail/blocked on any -> 'fail'; all pass -> 'pass'; some pass -> 'partial';
-    none found -> None.
+    none found -> None. Verdicts live in the stream's `reviews/`, `security/`, or
+    `test-reports/` sub-folder.
     """
-    subdir = VERDICT_DIR[gate]
-    hits = set(glob.glob(os.path.join(project_dir, subdir, f"VERDICT-{slug}-*{gate}.json")))
-    hits.add(os.path.join(project_dir, subdir, f"VERDICT-{slug}-{gate}.json"))
-    decisions = [d for d in (_verdict_decision(h) for h in hits) if d]
+    d = _stream_dir(project_dir, slug)
+    if not d:
+        return None
+    subdir = VERDICT_SUBDIR[gate]
+    hits = set(glob.glob(os.path.join(d, subdir, f"VERDICT-*{gate}.json")))
+    hits.add(os.path.join(d, subdir, f"VERDICT-{gate}.json"))
+    decisions = [x for x in (_verdict_decision(h) for h in hits) if x]
     if not decisions:
         return None
-    if any(d in ("fail", "blocked") for d in decisions):
+    if any(x in ("fail", "blocked") for x in decisions):
         return "fail"
-    if all(d == "pass" for d in decisions):
+    if all(x == "pass" for x in decisions):
         return "pass"
     return "partial"
-
-
-def _exists(project_dir, *relparts):
-    return os.path.isfile(os.path.join(project_dir, *relparts))
 
 
 def infer_gate_progress(project_dir, slug):
     """Return {'gates': {G: status}, 'next_action': str|None, 'gate_line': str}.
 
-    Gate status is inferred from artifact existence (G1 SRS, G3 TECH) and verdict
-    decisions (G4/G5a/G6/G7). next_action is the first non-'pass' gate's skill
-    (fix-bug when that gate is 'fail').
+    Gate status is inferred from artifact existence (G1 `requirements/SRS.md`, G3
+    `design/TECH.md`) and verdict decisions (G4/G5a/G6/G7), all within the stream folder.
+    next_action is the first non-'pass' gate's skill (fix-bug when that gate is 'fail').
     """
+    d = _stream_dir(project_dir, slug)
     gates = {
-        "G1": "pass" if _exists(project_dir, SPEC_REQUIREMENTS, f"SRS-{slug}.md") else "pending",
-        "G3": "pass" if _exists(project_dir, SPEC_DETAIL, f"TECH-{slug}.md") else "pending",
+        "G1": "pass" if (d and os.path.isfile(os.path.join(d, "requirements", "SRS.md"))) else "pending",
+        "G3": "pass" if (d and os.path.isfile(os.path.join(d, "design", "TECH.md"))) else "pending",
     }
     for gate in ("G4", "G5a", "G6", "G7"):
         gates[gate] = _gate_verdict(project_dir, slug, gate) or "pending"
@@ -215,8 +203,11 @@ def extract_sections(path):
 
 
 def find_latest_handoff(project_dir, slug):
-    """Return the newest docs/handoffs/HANDOFF-[slug]-*.md as a /-path, or None."""
-    hits = glob.glob(os.path.join(project_dir, HANDOFFS_DIR, f"HANDOFF-{slug}-*.md"))
+    """Return the newest `<stream>/handoffs/HANDOFF-*.md` as a /-path, or None."""
+    d = _stream_dir(project_dir, slug)
+    if not d:
+        return None
+    hits = glob.glob(os.path.join(d, "handoffs", "HANDOFF-*.md"))
     if not hits:
         return None
     newest = max(hits, key=os.path.getmtime)
@@ -224,15 +215,11 @@ def find_latest_handoff(project_dir, slug):
 
 
 def find_stream_manifest(project_dir, slug):
-    """Return the newest docs/streams/<slug>-*/STREAM.md as a /-path, or None.
-
-    The stream folder is `<slug>-<YYYYMMDD>`; a feature may have more than one over
-    time, so pick the most-recently-modified. Additive: no existing caller depends
-    on this (Phase-1 leaves the type-first globs untouched).
-    """
+    """Return the newest `docs/streams/<slug>-*/STREAM.md` as a /-path, or None."""
     if not slug:
         return None
-    hits = glob.glob(os.path.join(project_dir, STREAMS_DIR, f"{slug}-*", "STREAM.md"))
+    hits = [p for p in glob.glob(os.path.join(project_dir, STREAMS_DIR, f"{slug}-*", "STREAM.md"))
+            if slug_from_stream_dir(os.path.dirname(p)) == slug]  # exclude prefix-collisions
     if not hits:
         return None
     newest = max(hits, key=os.path.getmtime)
@@ -240,20 +227,21 @@ def find_stream_manifest(project_dir, slug):
 
 
 def _feature_artifacts(project_dir, slug):
-    """Collect the feature's artifacts with paths; section-range the large specs."""
+    """Collect the stream's artifacts with paths; section-range the large specs."""
+    d = _stream_dir(project_dir, slug)
+    if not d:
+        return []
     arts = []
-    for type_, subdir in _ALL_SPECS:
-        rel = os.path.join(subdir, f"{type_}-{slug}.md")
-        full = os.path.join(project_dir, rel)
+    for type_, rel in _STREAM_SPECS:
+        full = os.path.join(d, rel)
         if os.path.isfile(full):
-            rec = {"type": type_, "path": rel.replace("\\", "/")}
-            if type_ in dict(LARGE_SPECS):
+            rec = {"type": type_, "path": os.path.relpath(full, project_dir).replace("\\", "/")}
+            if type_ in _LARGE_SPEC_TYPES:
                 rec["sections"] = extract_sections(full)
             arts.append(rec)
     for gate in ("G4", "G5a", "G6", "G7"):
-        for h in sorted(glob.glob(
-            os.path.join(project_dir, VERDICT_DIR[gate], f"VERDICT-{slug}*{gate}.json")
-        )):
+        subdir = VERDICT_SUBDIR[gate]
+        for h in sorted(glob.glob(os.path.join(d, subdir, f"VERDICT-*{gate}.json"))):
             arts.append({
                 "type": f"VERDICT-{gate}",
                 "path": os.path.relpath(h, project_dir).replace("\\", "/"),

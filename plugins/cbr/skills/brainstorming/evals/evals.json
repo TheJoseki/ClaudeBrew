@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "I want to build a habit tracker app. Help me think it through before we start building.",
-      "expected_output": "Recommends single mode (narrow, solo). Explores context, then runs a batched, pre-analyzed clarify loop instead of assuming defaults (platform, audience, core habit model, reminders, data sync, monetization). Produces docs/specs/brainstorms/BRAINSTORM-habit-tracker.md with all 12 sections, ends with handoff and does NOT auto-start the requirement stage.",
+      "expected_output": "Recommends single mode (narrow, solo). Explores context, then runs a batched, pre-analyzed clarify loop instead of assuming defaults (platform, audience, core habit model, reminders, data sync, monetization). Scaffolds the stream folder docs/streams/habit-tracker-[YYYYMMDD]/ with its STREAM.md manifest and produces docs/streams/habit-tracker-[YYYYMMDD]/brainstorm/BRAINSTORM.md with all 12 sections, ends with handoff and does NOT auto-start the requirement stage.",
       "files": []
     },
     {

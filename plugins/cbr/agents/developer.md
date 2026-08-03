@@ -20,7 +20,7 @@ You are an **implementation capability** spawned on demand by ClaudeBrew executi
 ## Method
 1. Read the spec section + owned files before writing.
 2. Implement the minimum that satisfies the acceptance criteria (YAGNI/KISS/DRY).
-3. Write a short work-log to the path the spawn prompt gives (default `docs/work-logs/DEV-[slice].md`): what changed, per file, and any deviation from spec.
+3. Write a short work-log to the path the spawn prompt gives (default `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[slice].md`): what changed, per file, and any deviation from spec.
 4. Do NOT self-review or run the gate — a fresh `reviewer`/`tester` does that (stop-after-stage).
 
 End with `Status: DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT` + `EVIDENCE:` (files created/modified) + one-line summary.

@@ -4,14 +4,14 @@
 
 ## UTC Document Template (Mode A Output)
 
-File: `docs/test-cases/UTC-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 
 ```markdown
 # Unit Test Cases: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Author**: unit-test
-**Input TECH**: docs/specs/detail-design/TECH-[feature].md
+**Input TECH**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
 **Techniques**: EP, BVA, Decision Table, Error Guessing (ISTQB CTFL 4.0)
 **Test Runner**: [detected from PROJECT.md]
 **Complexity**: Small / Medium / Large
@@ -62,7 +62,7 @@ File: `docs/test-cases/UTC-[feature-name].md`
 
 ## UTR Document Template (Mode B Output)
 
-File: `docs/test-reports/UTR-[feature]-R[n].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
 
 ```markdown
 # Unit Test Report: [Feature Name] — Round R[n]
@@ -70,7 +70,7 @@ File: `docs/test-reports/UTR-[feature]-R[n].md`
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
 **Author**: unit-test
-**UTC Document**: docs/test-cases/UTC-[feature].md
+**UTC Document**: docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md
 
 ## Summary
 | Metric | Value |

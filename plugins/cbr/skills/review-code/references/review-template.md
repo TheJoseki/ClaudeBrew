@@ -4,7 +4,7 @@
 
 ## Review Report Template
 
-File: `docs/reviews/REVIEW-[feature]-BN.md`
+File: `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md`
 
 > Reference checklist: `.claude/skills/review-code/references/leader-review-checklist.md`
 
@@ -14,8 +14,8 @@ File: `docs/reviews/REVIEW-[feature]-BN.md`
 **Batch**: Batch-N | **Scope**: [modules/deliverables in this batch]
 **Date**: [YYYY-MM-DD]
 **Reviewer**: review-code
-**DEV Work Log**: docs/work-logs/DEV-[feature]-BN.md
-**TECH Spec**: docs/specs/detail-design/TECH-[feature].md
+**DEV Work Log**: docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md
+**TECH Spec**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
 
 ---
 ## VERDICT: PASS / CONDITIONAL PASS / FAIL

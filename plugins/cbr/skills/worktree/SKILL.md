@@ -65,7 +65,7 @@ denies once `/cbr:setup` has registered it). Both are true at once — the stanc
 never bends; only the deterministic enforcement behind it is opt-in.
 
 The one nuance: the gate exempts **SDLC artifacts and harness config**
-(`docs/specs/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`). These
+(`docs/streams/*`, `.claude/*`, `*.md`, `.gitignore`, `.worktreeinclude`). These
 are not "feature code", and exempting them is what lets the brainstorming stage
 write its own artifact on the base branch. Exemptions are *scope*, not an escape
 hatch — never treat them as a way around isolation.
@@ -92,11 +92,11 @@ into the project's CLAUDE.md/memory and is also what configures
 
 ```
 0. Preconditions (doctor)   → verify: git repo + worktree support; gate registration checked (opt-in — absent by default); worktree.baseRef set; not already in a worktree
-1. Confirm input artifact   → verify: an APPROVED docs/specs/...-brainstorm.md exists
+1. Confirm input artifact   → verify: an APPROVED docs/streams/<slug>-*/brainstorm/BRAINSTORM.md exists
 2. Derive the branch name    → verify: slug from the spec's topic; valid charset; confirmed with the user (name only)
 3. Carry the spec across     → verify: the approved spec is reachable from the new branch (committed, or .worktreeinclude)
 4. Enter the worktree        → verify: EnterWorktree succeeded; session CWD is under .claude/worktrees/<name>; branch != base
-5. Write the handoff artifact → verify: docs/specs/...-worktree.md exists inside the worktree
+5. Write the handoff artifact → verify: docs/streams/<slug>-*/WORKTREE.md exists inside the worktree
 6. Confirm enforcement       → verify: report the REAL gate state (registered → harness denies base-branch feature edits; not registered → advisory only, point to /cbr:setup); tell the user where they are
 7. Handoff                   → verify: state worktree path + branch; next stage = requirement; then STOP
 ```
@@ -133,7 +133,7 @@ proceeding to a half-isolated state.
 ### Phase 1 — Confirm the input artifact
 
 This skill consumes the approved brainstorm. Locate the most recent
-`docs/specs/brainstorms/BRAINSTORM-<topic>.md` and confirm its `Status: approved`.
+`docs/streams/<slug>-*/brainstorm/BRAINSTORM.md` and confirm its `Status: approved`.
 If there is no approved brainstorm, you are being invoked too early — say so and
 point back to the `brainstorming` stage rather than inventing scope here.
 
@@ -153,7 +153,7 @@ will not appear in the fresh worktree. Make the approved spec reachable from the
 new branch. Default: **commit the approved spec to the base branch first** — the
 approval is a natural commit milestone, and a committed spec is tracked and
 visible on every branch. (Alternative, when an auto-commit is unwanted: add
-`docs/specs/*` to `.worktreeinclude` so the untracked file is copied across.)
+`docs/streams/*` to `.worktreeinclude` so the untracked file is copied across.)
 Pick one and state which. Full rationale in `references/worktree-mechanics.md`.
 
 ### Phase 4 — Enter the worktree
@@ -166,8 +166,10 @@ enter it with `EnterWorktree`'s `path` argument instead.)
 
 ### Phase 5 — Write the handoff artifact
 
-Inside the worktree, write `docs/specs/worktrees/WORKTREE-<topic>.md` following
-`references/artifact-template.md`. It records the branch, worktree path, base
+Inside the worktree, write `docs/streams/<slug>-<YYYYMMDD>/WORKTREE.md` following
+`references/artifact-template.md` (the stream folder already exists — brainstorming
+scaffolded it; WORKTREE.md sits directly at the stream root). It records the branch,
+worktree path, base
 ref, the source brainstorm spec, and the enforcement status — so the
 `requirement` stage can start from this file alone.
 

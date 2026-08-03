@@ -165,8 +165,13 @@ Rules:
 
 ## Optional: Decision Log
 
-If significant recommendations were made this session, write a brief decision record to:
-`docs/specs/decisions/ADR-code-quality-[YYYYMMDD].md`
+If significant recommendations were made this session, write a brief decision
+record — to the stream's `design/decisions/` when the analysis is scoped to one
+feature's work-stream, or to project-level `docs/decisions/` when it spans
+streams:
+
+- `docs/streams/[feature]-[YYYYMMDD]/design/decisions/ADR-code-quality-[YYYYMMDD].md`, or
+- `docs/decisions/ADR-code-quality-[YYYYMMDD].md`
 
 ```markdown
 ## Code Quality Review — [YYYYMMDD]

@@ -1,17 +1,17 @@
 {
   "skill_name": "estimate",
-  "notes": "WBS feature-estimation skill: decomposes scope into tasks, assigns story points, converts to MD/MM (via calc_estimate.py), applies buffers/phase ratios, writes docs/estimates/EST-[feature]-[YYYYMMDD].md. Evaluate that positives produce the estimate artifact; the plan-creation boundary should route to plan-writing.",
+  "notes": "WBS feature-estimation skill: decomposes scope into tasks, assigns story points, converts to MD/MM (via calc_estimate.py), applies buffers/phase ratios, writes docs/streams/[feature]-[YYYYMMDD]/estimate/EST-[YYYYMMDD].md. Evaluate that positives produce the estimate artifact; the plan-creation boundary should route to plan-writing.",
   "evals": [
     {
       "id": 1,
       "prompt": "Estimate the effort for building the notifications feature — give me a WBS and man-days.",
-      "expected_output": "Detects team size/methodology from PROJECT.md (or asks), decomposes into phase/module/task WBS, assigns 1-13 story points per task (breaking down any 13), converts points to MD/MM via calc_estimate.py with a complexity buffer, and writes docs/estimates/EST-notifications-[YYYYMMDD].md with summary, WBS, assumptions, and risks.",
+      "expected_output": "Detects team size/methodology from PROJECT.md (or asks), decomposes into phase/module/task WBS, assigns 1-13 story points per task (breaking down any 13), converts points to MD/MM via calc_estimate.py with a complexity buffer, and writes docs/streams/notifications-[YYYYMMDD]/estimate/EST-[YYYYMMDD].md with summary, WBS, assumptions, and risks.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Break down and size the work for the checkout flow so we can plan effort — include story points and a buffer.",
-      "expected_output": "Produces a task-level WBS covering backend/frontend/tests/devops, story-point sizing, MD/MM totals with the correct buffer tier, and phase-ratio distribution, saved to docs/estimates/EST-checkout-flow-[YYYYMMDD].md. Treats the number as a forecast, not a commitment.",
+      "expected_output": "Produces a task-level WBS covering backend/frontend/tests/devops, story-point sizing, MD/MM totals with the correct buffer tier, and phase-ratio distribution, saved to docs/streams/checkout-flow-[YYYYMMDD]/estimate/EST-[YYYYMMDD].md. Treats the number as a forecast, not a commitment.",
       "files": []
     },
     {

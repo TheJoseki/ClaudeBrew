@@ -1,11 +1,11 @@
 # TECH File Output Document Template
 
-Use this template when creating `docs/specs/detail-design/TECH-[feature-name].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`.
 
 ```markdown
 # Technical Design: [Feature Name]
 **Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: design-function
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **Tech Stack**: [detected from PROJECT.md]
 
 ## 1. ORM Schema Changes

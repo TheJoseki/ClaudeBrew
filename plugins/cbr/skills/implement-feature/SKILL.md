@@ -34,10 +34,10 @@ Do NOT hardcode framework assumptions.
 
 Required artifacts for this skill:
 
-- [ ] `docs/specs/detail-design/TECH-[feature].md` — Grep/Glob to verify file exists
+- [ ] `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` — Grep/Glob to verify file exists
 
 If TECH spec **NOT FOUND**:
-> STOP. Report: "Cannot implement — TECH spec not found at `docs/specs/detail-design/TECH-[feature].md`.
+> STOP. Report: "Cannot implement — TECH spec not found at `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`.
 > Run `/design-function` first to create the technical specification."
 > Do NOT approximate or infer missing TECH spec content.
 
@@ -45,8 +45,8 @@ If TECH spec **NOT FOUND**:
 
 ## Step 1: Read Input Artifacts (MANDATORY)
 
-1. Read TECH spec: `docs/specs/detail-design/TECH-[feature].md` — source of truth
-2. Read SCREEN spec: `docs/specs/requirements/SCREEN-[feature].md` (if FE work needed)
+1. Read TECH spec: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` — source of truth
+2. Read SCREEN spec: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md` (if FE work needed)
 3. Read coding standards:
    - `docs/CODING_RULES.md` — golden rules, security, BE/FE rules, naming
    - `docs/CODING_CONVENTION.md` — code templates, import order, patterns
@@ -122,7 +122,7 @@ If errors exist → FIX before continuing.
 
 > **Next steps after work log**: `/validate-and-test` → `/review-code` (mandatory quality gate before PR)
 
-Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
+Create `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[YYYYMMDD].md`:
 
 ```markdown
 # Work Log: [Feature Name]
@@ -165,7 +165,7 @@ Create `docs/work-logs/DEV-[feature]-[YYYYMMDD].md`:
 - [ ] Frontend: Composition API / hooks pattern per PROJECT.md — no legacy Options API
 - [ ] Frontend: All strings via i18n — both locale files updated
 - [ ] Self-check: all commands PASS
-- [ ] Work log: `docs/work-logs/DEV-[feature]-[date].md` CREATED ✅
+- [ ] Work log: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[date].md` CREATED ✅
 
 ---
 

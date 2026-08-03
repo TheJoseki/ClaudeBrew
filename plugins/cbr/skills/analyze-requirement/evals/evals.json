@@ -1,17 +1,17 @@
 {
   "skill_name": "analyze-requirement",
-  "notes": "Business Analyst / SRS authoring skill (SDLC Stage 2, gate G1). Evaluate by checking it detects project context, extracts actors + Given-When-Then user stories + testable acceptance criteria + edge cases, and writes docs/specs/requirements/SRS-[feature].md; positives should fire, the design boundary should route to design-function.",
+  "notes": "Business Analyst / SRS authoring skill (SDLC Stage 2, gate G1). Evaluate by checking it detects project context, extracts actors + Given-When-Then user stories + testable acceptance criteria + edge cases, and writes docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md; positives should fire, the design boundary should route to design-function.",
   "evals": [
     {
       "id": 1,
       "prompt": "Analyze the requirements for the user management module and write the SRS.",
-      "expected_output": "Reads CLAUDE.md/PROJECT.md for context, then produces docs/specs/requirements/SRS-user-management.md: actors/roles, Given-When-Then user stories, testable acceptance criteria (1:1 with test cases), business rules, and edge cases (empty state, error, permission denied, soft delete). Stops at G1 without doing technical design.",
+      "expected_output": "Reads CLAUDE.md/PROJECT.md for context, then produces docs/streams/user-management-[YYYYMMDD]/requirements/SRS.md: actors/roles, Given-When-Then user stories, testable acceptance criteria (1:1 with test cases), business rules, and edge cases (empty state, error, permission denied, soft delete). Stops at G1 without doing technical design.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Define the user stories and acceptance criteria for the payment feature so QA can write test cases from them.",
-      "expected_output": "Extracts user stories in Given-When-Then form and acceptance criteria that are each writable as a test case, maps to any existing API/screen docs, flags dependencies and risks, and writes docs/specs/requirements/SRS-payment.md. Does not implement or design endpoints.",
+      "expected_output": "Extracts user stories in Given-When-Then form and acceptance criteria that are each writable as a test case, maps to any existing API/screen docs, flags dependencies and risks, and writes docs/streams/payment-[YYYYMMDD]/requirements/SRS.md. Does not implement or design endpoints.",
       "files": []
     },
     {

@@ -1,7 +1,7 @@
 # Code Review Checklist — Tech Lead Review
 
 > Reference for `review-code`. Check all dimensions before issuing verdict.
-> Input: `docs/work-logs/DEV-[feature]-BN.md` (scope list of files for this batch only).
+> Input: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (scope list of files for this batch only).
 
 ---
 
@@ -61,7 +61,7 @@
 
 ## Review Report Format
 
-Write findings in `docs/reviews/REVIEW-[feature]-BN.md`:
+Write findings in `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md`:
 
 ```markdown
 # Code Review — [Feature] Batch N

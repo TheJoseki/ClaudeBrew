@@ -37,7 +37,7 @@ Do NOT hardcode framework assumptions (UI library, component names, routing conv
 - `docs/CODING_RULES.md` — FE rules, i18n rules (if exists)
 - `docs/CODING_CONVENTION.md` — Component templates (if exists)
 - `PROJECT.md` or `CLAUDE.md` — detect UI library (Vuetify, shadcn/ui, Ant Design, MUI, Bootstrap, etc.)
-- Input SRS: `docs/specs/requirements/SRS-[feature].md`
+- Input SRS: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
 
 ## Step 1b: Design Intelligence (MANDATORY — run before wireframing)
 
@@ -100,7 +100,7 @@ Always use the library identified in PROJECT.md, not these examples directly.
 
 ## Step 3: Create SCREEN File (MANDATORY — DO NOT SKIP)
 
-File: `docs/specs/requirements/SCREEN-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md`
 
 > **Template**: See [`references/template.md`](references/template.md) for the full output document template.
 
@@ -116,11 +116,11 @@ File: `docs/specs/requirements/SCREEN-[feature-name].md`
 - [ ] Status color mapping consistent
 - [ ] Design tokens section included (colors, spacing, typography)
 - [ ] Design output created via one of: Figma MCP (6B) / Pencil Dev MCP (6D) / SVG wireframes (6C)
-- [ ] If Pencil path: `.pen` file at `docs/specs/pencil/SCREEN-[feature].pen`, design tokens as variables, exported PNGs
+- [ ] If Pencil path: `.pen` file at `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen`, design tokens as variables, exported PNGs
 - [ ] If Figma path: HTML prototype + Figma frames with file key and node IDs
-- [ ] If SVG path: SVG wireframe files at `docs/specs/figma/SCREEN-[feature]-[SCR-XX]-desktop.svg` + `-mobile.svg`
+- [ ] If SVG path: SVG wireframe files at `docs/streams/[feature]-[YYYYMMDD]/assets/figma/[SCR-XX]-desktop.svg` + `-mobile.svg`
 - [ ] SCREEN spec has appropriate design references table (Figma Frames / Pencil Frames / SVG Wireframes)
-- [ ] File `docs/specs/requirements/SCREEN-[feature].md` CREATED ✅
+- [ ] File `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md` CREATED ✅
 
 ## Verification
 
@@ -135,7 +135,7 @@ File: `docs/specs/requirements/SCREEN-[feature-name].md`
 - "Review the dashboard components" (use review-code)
 
 **Expected outputs:**
-- Artifact: `docs/specs/requirements/SCREEN-[feature].md`
+- Artifact: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md`
 - Quality gate: All screens have wireframes, i18n keys, role-based visibility, and loading/empty/error states
 
 ---

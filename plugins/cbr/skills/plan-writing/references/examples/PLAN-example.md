@@ -13,7 +13,8 @@
 | Created | 2026-03-20 |
 | Estimate | 3 weeks (2 BE devs + 1 FE dev) |
 | Branch | `feature/payment-processing` |
-| TECH spec | `docs/specs/detail-design/TECH-payment-processing.md` |
+| Stream | `docs/streams/payment-processing-20260320/` |
+| TECH spec | `docs/streams/payment-processing-20260320/design/TECH.md` |
 
 ---
 
@@ -21,7 +22,7 @@
 
 ### Phase 1 — Requirements (G1)
 **Status**: ✅ COMPLETE
-**Output**: `docs/specs/requirements/SRS-payment-processing.md`
+**Output**: `docs/streams/payment-processing-20260320/requirements/SRS.md`
 **Gate criterion**: SRS approved by user, all user stories have acceptance criteria
 
 | Task | Owner | Status |
@@ -34,7 +35,7 @@
 
 ### Phase 2 — UI Design (G2)
 **Status**: ✅ COMPLETE
-**Output**: `docs/specs/requirements/SCREEN-payment-processing.md`
+**Output**: `docs/streams/payment-processing-20260320/requirements/SCREEN.md`
 **Gate criterion**: All screen states defined (default/loading/error/success/empty)
 
 | Task | Owner | Status |
@@ -47,7 +48,7 @@
 
 ### Phase 3a — Basic Design (G3a)
 **Status**: ✅ COMPLETE
-**Output**: `docs/specs/basic-design/BASIC-payment-processing.md`
+**Output**: `docs/streams/payment-processing-20260320/design/BASIC.md`
 **Gate criterion**: Module list, DB table list, API endpoint list approved
 
 | Task | Owner | Status |
@@ -60,7 +61,7 @@
 
 ### Phase 3b — Detail Design (G3b)
 **Status**: ✅ COMPLETE
-**Output**: `docs/specs/detail-design/TECH-payment-processing.md`
+**Output**: `docs/streams/payment-processing-20260320/design/TECH.md`
 **Gate criterion**: ORM schema, service methods, DTOs complete; TECH spec approved
 
 | Task | Owner | Status |
@@ -99,12 +100,12 @@
 #### `unit-test` (Mode A):
 | Task | Output | Status |
 |------|--------|--------|
-| UTC document for PaymentService + InvoiceService | `docs/test-cases/UTC-payment-processing.md` | ⏳ |
+| UTC document for PaymentService + InvoiceService | `docs/streams/payment-processing-20260320/test-cases/UTC.md` | ⏳ |
 
 #### `integration-test` (Mode A):
 | Task | Output | Status |
 |------|--------|--------|
-| ITC document for /payments + /invoices + /webhooks/stripe | `docs/test-cases/ITC-payment-processing.md` | ⏳ |
+| ITC document for /payments + /invoices + /webhooks/stripe | `docs/streams/payment-processing-20260320/test-cases/ITC.md` | ⏳ |
 
 ---
 
@@ -152,7 +153,7 @@
 
 ```
 Next stage: /cbr:implement-feature payment-processing
-Plan file: docs/plans/PLAN-payment-processing-20260320.md
+Plan file: docs/streams/payment-processing-20260320/plan/PLAN.md
 Resume at Phase 4 (Implementation) — status ⏳ IN PROGRESS
 Continue from task 4.4 (confirmPayment)
 ```

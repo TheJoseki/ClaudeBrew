@@ -139,7 +139,8 @@ Rules:
 ### Optional: decision log
 
 If TDD was applied to a significant new module or a problematic area this
-session, record it at `docs/specs/decisions/ADR-tdd-<slug>-[YYYYMMDD].md`:
+session, record it in the active feature's stream at
+`docs/streams/[feature]-*/design/decisions/ADR-tdd-<slug>-[YYYYMMDD].md`:
 
 ```markdown
 ## TDD Session — [YYYYMMDD]

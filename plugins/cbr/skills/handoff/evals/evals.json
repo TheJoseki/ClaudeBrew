@@ -1,11 +1,11 @@
 {
   "skill_name": "handoff",
-  "notes": "handoff builds a session-continuity document: collect the feature's artifacts and cross-cutting state (plan, ADRs, risk register), assess the current SDLC stage/last gate passed, capture open issues and key decisions, and write docs/handoffs/HANDOFF-[feature]-[date].md with exact resume instructions naming the next stage skill. Evaluate whether it reads artifacts first (not from memory) and captures open items plus the precise next action.",
+  "notes": "handoff builds a session-continuity document: collect the feature's artifacts and cross-cutting state (plan, ADRs, risk register), assess the current SDLC stage/last gate passed, capture open issues and key decisions, and write docs/streams/[feature]-[date]/handoffs/HANDOFF-[date].md with exact resume instructions naming the next stage skill. Evaluate whether it reads artifacts first (not from memory) and captures open items plus the precise next action.",
   "evals": [
     {
       "id": 1,
       "prompt": "Session's ending — create a handoff for the payment-integration feature so the next session can continue.",
-      "expected_output": "Collects artifacts (PLAN, SRS, TECH, work logs, reviews, gate verdicts, UTC/ITC) and cross-cutting state (ADRs, risk register), assesses the active stage and last gate passed, captures open issues, and writes docs/handoffs/HANDOFF-payment-integration-[date].md with a state summary and resume instructions naming the next stage skill.",
+      "expected_output": "Collects artifacts (PLAN, SRS, TECH, work logs, reviews, gate verdicts, UTC/ITC) and cross-cutting state (ADRs, risk register), assesses the active stage and last gate passed, captures open issues, and writes docs/streams/payment-integration-[date]/handoffs/HANDOFF-[date].md with a state summary and resume instructions naming the next stage skill.",
       "files": []
     },
     {
