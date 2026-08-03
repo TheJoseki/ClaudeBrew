@@ -1,6 +1,6 @@
 # Code Review Output Document Template
 
-Use this template when creating `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md`.
 
 ```markdown
 # Code Review: [Feature Name]

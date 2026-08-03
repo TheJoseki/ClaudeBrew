@@ -4,14 +4,14 @@
 
 ## Template
 
-File: `docs/specs/basic-design/BASIC-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md`
 
 ```markdown
 # Basic Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Author**: design-function
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **Status**: DRAFT
 
 ## 1. System Architecture
@@ -86,8 +86,8 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 [Performance, security, scalability — high level]
 
 ## 10. UI Screen Previews
-> From docs/specs/requirements/SCREEN-[feature].md. Default state only.
-> Use Pencil MCP `get_screenshot(frameId)` → save to docs/specs/pencil/exports/
+> From docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md. Default state only.
+> Use Pencil MCP `get_screenshot(frameId)` → save to docs/streams/[feature]-[YYYYMMDD]/assets/pencil/ as BASIC-[SCR-XX].png
 
 | Screen | Name | Preview | Frame ID |
 |--------|------|---------|----------|
@@ -102,4 +102,4 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md`
 - [ ] Screen-to-API mapping complete
 - [ ] No implementation details (no DTOs, no ORM decorators)
 - [ ] Section 10 populated if frontend exists
-- [ ] File `docs/specs/basic-design/BASIC-[feature].md` CREATED AND WRITTEN
+- [ ] File `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` CREATED AND WRITTEN

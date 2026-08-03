@@ -36,8 +36,8 @@ Ask the user:
 
 Create **two separate HTML files** — one per viewport:
 
-- **Desktop**: `docs/specs/figma/SCREEN-[feature]-desktop.html` — 1920×1080
-- **Mobile**: `docs/specs/figma/SCREEN-[feature]-mobile.html` — 390×844
+- **Desktop**: `docs/streams/[feature]-[YYYYMMDD]/assets/figma/SCREEN-desktop.html` — 1920×1080
+- **Mobile**: `docs/streams/[feature]-[YYYYMMDD]/assets/figma/SCREEN-mobile.html` — 390×844
 
 > **Figma capture rules — CRITICAL for correct output:**
 >
@@ -149,7 +149,7 @@ Write complete HTML — no skeletons, realistic domain data, all sections filled
 
 ```bash
 # Start local HTTP server
-python -m http.server 8765 --directory docs/specs/figma &
+python -m http.server 8765 --directory docs/streams/[feature]-[YYYYMMDD]/assets/figma &
 PROTO_SERVER_PID=$!
 ```
 
@@ -157,7 +157,7 @@ PROTO_SERVER_PID=$!
 
 Step 1 — Initial call with:
 ```
-url:          http://localhost:8765/SCREEN-[feature]-desktop.html
+url:          http://localhost:8765/SCREEN-desktop.html
 outputMode:   "newFile"
 fileName:     "[Project] [Feature] — Desktop 1920"
 viewportWidth: 1920
@@ -177,7 +177,7 @@ Step 2 — Poll every 5s with `desktopCaptureId`, up to 10 attempts:
 
 Step 1 — New initial call with:
 ```
-url:          http://localhost:8765/SCREEN-[feature]-mobile.html
+url:          http://localhost:8765/SCREEN-mobile.html
 outputMode:   "existingFile"
 fileKey:      [desktopFileKey]          ← same file, adds mobile page
 fileName:     "[Project] [Feature] — Mobile 390"
@@ -216,8 +216,8 @@ Store all frame references in the SCREEN spec **Figma Frames** table (see output
 
 > Generates Figma-importable SVG wireframe files as fallback when Figma MCP is not connected.
 
-**Output path**: `docs/specs/figma/SCREEN-[feature]-[SCR-XX]-desktop.svg`
-**Mobile path**: `docs/specs/figma/SCREEN-[feature]-[SCR-XX]-mobile.svg` (375×812)
+**Output path**: `docs/streams/[feature]-[YYYYMMDD]/assets/figma/[SCR-XX]-desktop.svg`
+**Mobile path**: `docs/streams/[feature]-[YYYYMMDD]/assets/figma/[SCR-XX]-mobile.svg` (375×812)
 
 **SVG wireframe conventions:**
 
@@ -282,8 +282,8 @@ Write each SVG file completely — render all zones with actual shapes, not plac
 4. Call `get_style_guide(tags: [5-10 tags matching product type + industry + style from Step 1])`.
    - Extract color palette, typography, visual direction — use alongside design-system output.
 5. Create/open `.pen` file:
-   `open_document(filePathOrNew: "docs/specs/pencil/SCREEN-[feature].pen")`
-   - If `docs/specs/pencil/` does not exist → create it first.
+   `open_document(filePathOrNew: "docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen")`
+   - If `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/` does not exist → create it first.
 
 ### Phase 2: Set Up Design Tokens as Pencil Variables
 
@@ -392,16 +392,16 @@ For each screen frame:
 
 1. Export PNG screenshots for each screen frame:
    ```
-   export_nodes(nodeIds: [all screen frame IDs], outputDir: "docs/specs/pencil/exports", format: "png")
+   export_nodes(nodeIds: [all screen frame IDs], outputDir: "docs/streams/[feature]-[YYYYMMDD]/assets/pencil/exports", format: "png")
    ```
-   - If `docs/specs/pencil/exports/` does not exist → create it.
+   - If `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/exports/` does not exist → create it.
 
 2. Record all frame references in the SCREEN spec **Pencil Frames** table (see output template).
 
 3. Record the `.pen` file path in the SCREEN spec metadata header:
    ```
    **Design Tool**: Pencil Dev
-   **Pencil File**: docs/specs/pencil/SCREEN-[feature].pen
+   **Pencil File**: docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen
    ```
 
 4. **Ask user** to open the `.pen` file in Pencil and confirm designs look correct before proceeding.
@@ -478,11 +478,11 @@ For each screen defined in the wireframe spec (Step 4):
 For each generated screen:
 
 1. Call `get_screen_image(projectId, screenId)` → base64 PNG.
-   - Decode and save to: `docs/specs/stitch/[feature]-[SCR-XX]-[state].png`
-   - If `docs/specs/stitch/` does not exist → create it.
+   - Decode and save to: `docs/streams/[feature]-[YYYYMMDD]/assets/stitch/[SCR-XX]-[state].png`
+   - If `docs/streams/[feature]-[YYYYMMDD]/assets/stitch/` does not exist → create it.
 
 2. Call `get_screen_code(projectId, screenId)` → HTML/CSS/React reference code.
-   - Save to: `docs/specs/stitch/[feature]-[SCR-XX]-[state].html`
+   - Save to: `docs/streams/[feature]-[YYYYMMDD]/assets/stitch/[SCR-XX]-[state].html`
    - Note: reference/prototype code — implement-feature adapts to actual project framework.
 
 3. Call `get_screen_metadata(projectId, screenId)` → verify screen title, dimensions, creation date.

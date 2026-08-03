@@ -4,7 +4,7 @@
 
 ## SRS Document Template
 
-File: `docs/specs/requirements/SRS-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
 
 ```markdown
 # SRS: [Feature Name]
@@ -60,10 +60,10 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 >
 > **If draw.io MCP available (preferred)**:
 > 1. Generate draw.io swimlane XML with actors as swimlane rows
-> 2. Save XML to `docs/specs/diagrams/SRS-[feature]-flow.drawio`
+> 2. Save XML to `docs/streams/[feature]-[YYYYMMDD]/assets/diagrams/SRS-flow.drawio`
 > 3. Open with `open_drawio_xml` tool to validate
-> 4. Export PNG via draw.io: `![Main Flow](./diagrams/SRS-[feature]-flow.png)`
-> 5. Add edit link: [Open in draw.io](./diagrams/SRS-[feature]-flow.drawio)
+> 4. Export PNG via draw.io: `![Main Flow](../assets/diagrams/SRS-flow.png)`
+> 5. Add edit link: [Open in draw.io](../assets/diagrams/SRS-flow.drawio)
 >
 > **If draw.io MCP not available (Mermaid fallback)**:
 

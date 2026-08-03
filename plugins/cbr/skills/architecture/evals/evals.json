@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "We're adding a background job system to our monolith. Should this be a new module, a separate service, or middleware? Walk me through the trade-offs before we commit.",
-      "expected_output": "Applies the decision tree, biases toward the simplest option that satisfies current needs, weighs the new-dependency cost explicitly, respects existing module boundaries, and records an ADR at docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md (topic slugged from the subject decided, e.g. ADR-background-jobs-*) capturing scope, context, decision, alternatives, consequences, and a re-check trigger.",
+      "expected_output": "Applies the decision tree, biases toward the simplest option that satisfies current needs, weighs the new-dependency cost explicitly, respects existing module boundaries, and records an ADR — project-wide here, at docs/decisions/ADR-[topic]-[YYYYMMDD].md (topic slugged from the subject decided, e.g. ADR-background-jobs-*) — capturing scope, context, decision, alternatives, consequences, and a re-check trigger.",
       "files": []
     },
     {
@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "Write the technical design — endpoints, DTOs, ORM schema, and service methods — for the payments module.",
-      "expected_output": "Should route to design-function (produces docs/specs/detail-design/TECH-payments.md), not architecture — architecture supplies the style, structure, and data-model decision frameworks, whereas this asks for a named feature's concrete tech-spec artifact.",
+      "expected_output": "Should route to design-function (produces docs/streams/payments-[YYYYMMDD]/design/TECH.md), not architecture — architecture supplies the style, structure, and data-model decision frameworks, whereas this asks for a named feature's concrete tech-spec artifact.",
       "files": []
     }
   ]

@@ -1,10 +1,10 @@
 # ITR Document Template
 
-Use this template when creating `docs/test-reports/ITR-[feature]-R[n].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`.
 
 ```markdown
 # Integration Test Report: [Feature] — Round R[n]
-Date: [YYYY-MM-DD] | ITC: docs/test-cases/ITC-[feature].md
+Date: [YYYY-MM-DD] | ITC: docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md
 
 ## Summary
 | Total | Passed | Failed | Pass Rate |

@@ -12,8 +12,8 @@
 
 ## State Summary (5 bullets max)
 
-- [DONE] G1 SRS approved — `docs/specs/requirements/SRS-user-auth.md`
-- [DONE] G3b TECH spec approved — `docs/specs/detail-design/TECH-user-auth.md` (JWT + bcrypt + refresh token rotation)
+- [DONE] G1 SRS approved — `docs/streams/user-auth-20260318/requirements/SRS.md`
+- [DONE] G3b TECH spec approved — `docs/streams/user-auth-20260318/design/TECH.md` (JWT + bcrypt + refresh token rotation)
 - [DONE] G4 Code Review PASSED — 0 Critical, 1 Major fixed (AuthService not injecting UserRepository correctly)
 - [PENDING] G6 Unit Tests — 14/16 tests pass; 2 failures in `auth.service.spec.ts` (see Open Issues)
 - [PENDING] G7a API Integration Tests — not started, blocked on G6
@@ -36,14 +36,14 @@ Expected: 16/16 pass, coverage ≥ 85%
 
 | Artifact | Path | Status |
 |----------|------|--------|
-| PLAN | docs/plans/PLAN-user-auth-20260318.md | ✅ exists |
-| SRS | docs/specs/requirements/SRS-user-auth.md | ✅ exists |
-| TECH spec | docs/specs/detail-design/TECH-user-auth.md | ✅ exists |
-| Work Log | docs/work-logs/DEV-user-auth-20260320.md | ✅ exists |
-| Code Review | docs/reviews/REVIEW-user-auth-20260319.md | ✅ PASSED |
-| UTC | docs/test-cases/UTC-user-auth.md | ✅ 16 test cases |
-| UTR | docs/test-reports/UTR-user-auth-R1.md | ⚠️ 2 FAIL |
-| ITC | docs/test-cases/ITC-user-auth.md | ✅ exists (not run yet) |
+| PLAN | docs/streams/user-auth-20260318/plan/PLAN.md | ✅ exists |
+| SRS | docs/streams/user-auth-20260318/requirements/SRS.md | ✅ exists |
+| TECH spec | docs/streams/user-auth-20260318/design/TECH.md | ✅ exists |
+| Work Log | docs/streams/user-auth-20260318/work-logs/DEV-20260320.md | ✅ exists |
+| Code Review | docs/streams/user-auth-20260318/reviews/REVIEW-20260319.md | ✅ PASSED |
+| UTC | docs/streams/user-auth-20260318/test-cases/UTC.md | ✅ 16 test cases |
+| UTR | docs/streams/user-auth-20260318/test-reports/UTR-R1.md | ⚠️ 2 FAIL |
+| ITC | docs/streams/user-auth-20260318/test-cases/ITC.md | ✅ exists (not run yet) |
 | Bug reports | — | None open |
 
 ---
@@ -76,10 +76,10 @@ Expected: 16/16 pass, coverage ≥ 85%
 
 ```
 Next stage: /cbr:unit-test user-authentication
-Plan file: docs/plans/PLAN-user-auth-20260318.md
+Plan file: docs/streams/user-auth-20260318/plan/PLAN.md
 Resume at Phase 6 (Unit Tests) — status ⏳ PENDING
 
-Context: See docs/handoffs/HANDOFF-user-auth-20260320.md
+Context: See docs/streams/user-auth-20260318/handoffs/HANDOFF-20260320.md
 Open issues: 2 failing unit tests — see Open Issues table.
 Fix src/auth/auth.service.spec.ts issues #1 and #2 first,
 then re-run: cd backend && npx jest --testPathPattern=auth --coverage

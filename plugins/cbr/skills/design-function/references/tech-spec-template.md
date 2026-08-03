@@ -27,15 +27,15 @@ List: `{ data, total, page, pageSize }`. Single: `{ data }`. Pagination default 
 
 ## TECH Spec Template
 
-File: `docs/specs/detail-design/TECH-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 
 ```markdown
 # Technical Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Author**: design-function
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
-**Input Basic Design**: docs/specs/basic-design/BASIC-[feature].md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
+**Input Basic Design**: docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md
 **Status**: DRAFT
 
 ## 1. Data Schema Changes
@@ -68,7 +68,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 
 | Flow ID | Source | Reference |
 |---------|--------|-----------|
-| BF-001 | BASIC-[feature].md §6.5 | [Flow Name] |
+| BF-001 | BASIC.md §6.5 | [Flow Name] |
 
 | Step | BASIC Business Action | API Call(s) | Service Method | DB State Change | Verification Query |
 |------|----------------------|-------------|----------------|-----------------|-------------------|

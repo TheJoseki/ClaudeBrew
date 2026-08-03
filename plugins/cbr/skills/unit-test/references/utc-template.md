@@ -2,7 +2,7 @@
 
 ## UTC Document Template
 
-Use this template when creating `docs/test-cases/UTC-[feature].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`.
 
 ```markdown
 # Unit Test Cases: [Feature]
@@ -26,11 +26,11 @@ Frontend test framework: [detected from PROJECT.md]
 
 ## UTR Document Template
 
-Use this template when creating `docs/test-reports/UTR-[feature]-R[n].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`.
 
 ```markdown
 # Unit Test Report: [Feature] — Round R[n]
-Date: [YYYY-MM-DD] | UTC: docs/test-cases/UTC-[feature].md
+Date: [YYYY-MM-DD] | UTC: docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md
 
 ## Summary
 | Total | Passed | Failed | Pass Rate | BE Coverage | FE Coverage |

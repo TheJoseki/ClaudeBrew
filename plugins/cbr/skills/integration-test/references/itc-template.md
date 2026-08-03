@@ -1,6 +1,6 @@
 # ITC Document Template
 
-Use this template when creating `docs/test-cases/ITC-[feature].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`.
 
 ```markdown
 # Integration Test Cases: [Feature]

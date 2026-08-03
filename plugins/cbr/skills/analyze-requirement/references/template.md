@@ -1,6 +1,6 @@
 # SRS Output Document Template
 
-Use this template when creating `docs/specs/requirements/SRS-[feature-name].md`.
+Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`.
 
 ```markdown
 # SRS: [Feature Name]

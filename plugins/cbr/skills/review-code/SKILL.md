@@ -33,7 +33,7 @@ Do NOT hardcode framework pattern expectations.
 Required artifacts for this skill:
 
 - [ ] Implementation code files must exist (Glob/Grep for feature-related source files)
-- [ ] `docs/work-logs/DEV-[feature]-*.md` — preferred, but optional if code path is known
+- [ ] `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-*.md` — preferred, but optional if code path is known
 
 If implementation code **NOT FOUND**:
 > STOP. Report: "Cannot review — no implementation found for this feature.
@@ -46,8 +46,8 @@ If implementation code **NOT FOUND**:
 - `docs/CODING_RULES.md` — all rules to verify
 - `docs/CODING_CONVENTION.md` — patterns, templates, import order
 - `docs/ARCHITECTURE.md` — system patterns, auth flow (if exists)
-- Input DEV log: `docs/work-logs/DEV-[feature]-*.md` (see implemented files)
-- Input TECH spec: `docs/specs/detail-design/TECH-[feature].md` (verify implementation matches design)
+- Input DEV log: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-*.md` (see implemented files)
+- Input TECH spec: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` (verify implementation matches design)
 
 ## Step 2: Assemble the G4 checklist (this skill owns the criteria)
 
@@ -113,9 +113,9 @@ your own review is the failure mode this step exists to prevent.
 - **Checklist**: the Step 2 dimensions + the `leader-review-checklist.md` path.
 - **Rubric**: the verdict table above, verbatim.
 - **Outputs**, both mandatory:
-  - Findings report → `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md`
+  - Findings report → `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md`
     (template: [`references/template.md`](references/template.md))
-  - Verdict artifact → `docs/reviews/VERDICT-[feature]-G4.json`, conforming to
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json`, conforming to
     `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
     `gate: "G4"` and `producedBy: "cbr:reviewer"`. A reviewer runs no build or
     test commands, so `verification` stays `[]`.
@@ -125,8 +125,13 @@ your own review is the failure mode this step exists to prevent.
 **3.2 — Validate the verdict** (never trust it unchecked):
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G4 --artifact docs/reviews/VERDICT-[feature]-G4.json
+python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G4 --artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json
 ```
+
+In batch mode, validate that batch's verdict instead —
+`--artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-G4.json` (the exact path
+the reviewer wrote in Step 3.1). The `--artifact` path must always equal the file written;
+the gate fails closed on a missing artifact.
 
 Exit `0` = gate criteria objectively met. Exit `2` = BLOCK, with the reason on
 stderr (FAIL decision, unresolved Critical, leaked secret, or a malformed /
@@ -149,8 +154,8 @@ re-invokes `/fix-bug` and then `/review-code` themselves.
 - [ ] Scope assembled from the DEV work log (batch-scoped if in batch mode)
 - [ ] Checklist + rubric handed to the reviewer by path, not re-judged here
 - [ ] `cbr:reviewer` spawned fresh — this skill graded nothing itself
-- [ ] `docs/reviews/REVIEW-[feature]-[date].md` written by the reviewer
-- [ ] `docs/reviews/VERDICT-[feature]-G4.json` written by the reviewer
+- [ ] `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[date].md` written by the reviewer
+- [ ] `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json` written by the reviewer
 - [ ] `verdict-gate.py --gate G4` run, exit code reported
 - [ ] On block: `AskUserQuestion` raised with findings — then STOPPED ✅
 
@@ -169,9 +174,9 @@ re-invokes `/fix-bug` and then `/review-code` themselves.
 user gate:
 ```
 BATCH: Batch-N
-INPUT: docs/work-logs/DEV-[feature]-BN.md  ← scope list of files for this batch only
+INPUT: docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md  ← scope list of files for this batch only
 SCOPE: Review only files in DEV-BN work log, not previous batches
-OUTPUT: docs/reviews/REVIEW-[feature]-BN.md + docs/reviews/VERDICT-[feature]-BN-G4.json
+OUTPUT: docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md + docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-G4.json
 Checklist: ${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-checklist.md
 ```
 
@@ -189,8 +194,8 @@ Checklist: ${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-che
 
 **Expected outputs:**
 - Artifacts (both written by the spawned `cbr:reviewer`):
-  `docs/reviews/REVIEW-[feature]-[YYYYMMDD].md` and
-  `docs/reviews/VERDICT-[feature]-G4.json`
+  `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md` and
+  `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json`
 - Quality gate: G4 — `verdict-gate.py --gate G4` run and its exit code reported;
   all Critical/Major findings have file + line reference; on block, the user was
   asked and the skill stopped

@@ -17,7 +17,7 @@ $ARGUMENTS
 ## Live Project Context (auto-injected)
 
 - PROJECT.md exists: !`test -f PROJECT.md && echo "YES — read for team size and methodology" || echo "NOT FOUND — will ask user"`
-- Existing estimates: !`ls docs/estimates/EST-*.md 2>/dev/null | tail -3 || echo "(no prior estimates found)"`
+- Existing estimates: !`ls docs/streams/*/estimate/EST-*.md 2>/dev/null | tail -3 || echo "(no prior estimates found)"`
 
 ---
 
@@ -128,7 +128,7 @@ Adjust ratios based on feature complexity and team familiarity.
 
 ## Output: Estimate Document
 
-File: `docs/estimates/EST-[feature]-[YYYYMMDD].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/estimate/EST-[YYYYMMDD].md` (inside the feature's work-stream folder; a re-estimate writes another dated EST beside it — time-series. The stream-folder date is the stream-start date; the EST filename date is this estimate's date.)
 
 ```markdown
 # Estimate: [feature-name]

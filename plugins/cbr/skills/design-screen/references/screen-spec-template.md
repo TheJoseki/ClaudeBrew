@@ -4,18 +4,18 @@
 
 ## Template
 
-File: `docs/specs/requirements/SCREEN-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md`
 
 ```markdown
 # Screen Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Author**: design-screen
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **UI Library**: [detected from PROJECT.md]
 **Design Style**: [selected style from Step 1]
 **Design Tool**: [Figma MCP / Pencil Dev / Google Stitch / SVG fallback]
-**Pencil File**: [docs/specs/pencil/SCREEN-[feature].pen — or N/A]
+**Pencil File**: [docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen — or N/A]
 **Related Screens**: [IDs from existing SCREEN specs]
 
 ## Design System Applied
@@ -104,7 +104,7 @@ get_screenshot(fileKey, nodeId)
 
 ## Pencil Frames
 <!-- Populated by Step 6D — only if user chose Pencil Dev -->
-**Pencil File**: `docs/specs/pencil/SCREEN-[feature].pen`
+**Pencil File**: `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen`
 
 | Screen | Frame ID | Name | Viewport | Exported PNG |
 |--------|----------|------|----------|--------------|
@@ -127,7 +127,7 @@ get_guidelines(topic:"code")
 |-------|-------|--------|
 
 ### Developer Agent — Stitch Consumption
-View PNGs in docs/specs/stitch/. Reference HTML as structural prototype. Map DNA tokens to CSS vars.
+View PNGs in docs/streams/[feature]-[YYYYMMDD]/assets/stitch/. Reference HTML as structural prototype. Map DNA tokens to CSS vars.
 
 ## SVG Wireframes
 <!-- Populated by Step 6C — used when other tools unavailable -->

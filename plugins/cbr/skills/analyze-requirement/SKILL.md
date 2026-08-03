@@ -36,7 +36,7 @@ Do NOT hardcode project-specific domain assumptions.
 - `docs/CODING_RULES.md` — domain rules (if exists)
 - `docs/TEST_VIEWPOINT.md` — test scenarios to align AC (if exists)
 - `design/` or `specs/` — source design files (if exists)
-- Input plan file `docs/plans/PLAN-[feature]-*.md` (if one exists)
+- Input plan file `docs/streams/[feature]-[YYYYMMDD]/plan/PLAN.md` (if one exists)
 
 ## Step 2: Analyze
 
@@ -50,7 +50,7 @@ Do NOT hardcode project-specific domain assumptions.
 
 ## Step 3: Create SRS File (MANDATORY — DO NOT SKIP)
 
-File: `docs/specs/requirements/SRS-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
 
 > **Template**: See [`references/template.md`](references/template.md) for the full output document template.
 
@@ -61,7 +61,7 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 - [ ] API refs match existing API design docs (if available)
 - [ ] Screen refs match existing screen design docs (if available)
 - [ ] Edge cases covered: empty state, error, permission denied, soft delete
-- [ ] File `docs/specs/requirements/SRS-[feature].md` CREATED ✅
+- [ ] File `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md` CREATED ✅
 
 ## Verification
 
@@ -76,7 +76,7 @@ File: `docs/specs/requirements/SRS-[feature-name].md`
 - "Review the user management code" (use review-code)
 
 **Expected outputs:**
-- Artifact: `docs/specs/requirements/SRS-[feature].md`
+- Artifact: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
 - Quality gate: All acceptance criteria are testable (1:1 mapping with test cases)
 
 ---

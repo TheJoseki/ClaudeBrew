@@ -158,7 +158,7 @@ Apply the minimal fix, then verify thoroughly.
 - [ ] Full test suite passes (no regression)
 - [ ] Regression test added
 - [ ] Similar code checked for same issue
-- [ ] Bug report created: docs/bug-reports/BUG-[YYYYMMDD]-[nn]-[feature].md
+- [ ] Bug report created: docs/streams/[feature]-[YYYYMMDD]/bug-reports/BUG-[YYYYMMDD]-[nn].md
 ```
 
 ---

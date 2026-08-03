@@ -74,7 +74,7 @@ To keep "ask about everything" ergonomic rather than exhausting:
 3. Analyze & clarify loop         → verify: every named uncertainty resolved by the user
 4. DAR on trade-offs              → verify: each real trade-off has a decision record
 5. Synthesize approaches          → verify: 2-3 approaches presented; sections approved
-6. Write the artifact             → verify: file exists at the target path
+6. Scaffold stream & write artifact → verify: stream folder + STREAM.md exist; brainstorm file written under the stream
 7. Self-review                    → verify: no placeholders/contradictions/open assumptions
 8. User approval                  → verify: explicit "approved"
 9. Handoff                        → verify: artifact location + carried-forward open questions stated
@@ -157,12 +157,20 @@ required by the actual goal. If the request spans multiple independent
 subsystems, flag it and decompose into ordered sub-topics, each warranting its
 own brainstorm.
 
-### Phase 6 — Write the artifact
+### Phase 6 — Scaffold the stream & write the artifact
 
-Write to `docs/specs/brainstorms/BRAINSTORM-<topic>.md` (`<topic>` = short
-kebab-case slug). Follow `references/artifact-template.md` exactly — its
-field list is the **contract** the requirement stage reads, so every section
-matters.
+Brainstorming **opens the work-stream**. Pick a short kebab-case `<slug>` for the
+topic and today's date `<YYYYMMDD>`, then:
+
+1. Create the stream folder `docs/streams/<slug>-<YYYYMMDD>/` (the folder name is
+   the stream identity every later artifact inherits).
+2. Scaffold its manifest `docs/streams/<slug>-<YYYYMMDD>/STREAM.md` from
+   `docs/_templates/STREAM.md` — the stream's index + task board. `brainstorming`
+   owns creating it; later stages only append their own rows.
+3. Write the brainstorm to `docs/streams/<slug>-<YYYYMMDD>/brainstorm/BRAINSTORM.md`
+   (the folder carries the slug, so the filename drops it). Follow
+   `references/artifact-template.md` exactly — its field list is the **contract**
+   the requirement stage reads, so every section matters.
 
 ### Phase 7 — Self-review
 

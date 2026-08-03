@@ -6,7 +6,9 @@ honesty here directly determine downstream quality. Fill every section. If a
 section genuinely does not apply, write `Not applicable —` followed by the
 one-line reason; never leave it blank or as a placeholder.
 
-Write the file to `docs/specs/brainstorms/BRAINSTORM-<topic>.md`.
+Write the file to `docs/streams/<slug>-<YYYYMMDD>/brainstorm/BRAINSTORM.md` (inside
+the work-stream folder brainstorming scaffolds — the folder carries the slug, so the
+filename drops it).
 
 ## Template
 

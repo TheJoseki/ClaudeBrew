@@ -4,7 +4,7 @@
 
 ## Figma Design Context Fetch
 
-Before implementing any frontend component, check `docs/specs/requirements/SCREEN-[feature].md` for a **Figma Frames** table.
+Before implementing any frontend component, check `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md` for a **Figma Frames** table.
 
 **If Figma Frames table exists AND Figma MCP is connected:**
 
@@ -38,7 +38,7 @@ Then call these tools in sequence:
 
 ## Pencil Design Context Fetch
 
-Check `docs/specs/requirements/SCREEN-[feature].md` for a **Pencil Frames** table.
+Check `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md` for a **Pencil Frames** table.
 
 **If Pencil Frames table exists AND Pencil MCP is connected:**
 
@@ -76,7 +76,7 @@ Then call these tools in sequence:
 
 **If Pencil MCP is not connected but Pencil Frames table exists:**
 → Read the `.pen` file directly with Read tool (it is JSON). Parse node structure for component hierarchy.
-→ Use exported PNG screenshots in `docs/specs/pencil/exports/` as visual reference.
+→ Use exported PNG screenshots in `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/` as visual reference.
 → Use Design Tokens from SCREEN spec markdown as fallback.
 
 **If neither Figma Frames nor Pencil Frames exists** (SVG fallback was used):

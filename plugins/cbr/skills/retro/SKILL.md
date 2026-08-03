@@ -1,6 +1,6 @@
 ---
 name: retro
-description: "Retrospective on a delivered feature, phase, or sprint. TRIGGER: user asks for a retro, post-mortem, or lessons-learned review after delivery. Reads the feature's own artifacts (SRS, TECH, review, test, security reports) plus git history, then produces 5-Why root-cause analysis, Lessons Learned per category, git velocity metrics, and prioritized Action Items. Output saved to docs/retros/. NOT FOR: work still in progress (use a handoff/session summary instead)."
+description: "Retrospective on a delivered feature, phase, or sprint. TRIGGER: user asks for a retro, post-mortem, or lessons-learned review after delivery. Reads the feature's own artifacts (SRS, TECH, review, test, security reports) plus git history, then produces 5-Why root-cause analysis, Lessons Learned per category, git velocity metrics, and prioritized Action Items. Output saved to the feature's work-stream folder (docs/streams/[feature]-*/retro/). NOT FOR: work still in progress (use a handoff/session summary instead)."
 allowed-tools: Read, Grep, Glob, Bash, Write
 disable-model-invocation: false
 argument-hint: "[feature|phase|sprint name]"
@@ -27,7 +27,8 @@ Parse `$ARGUMENTS` to determine retro mode and scope:
 | *(no args)* | Prompt user to specify | — |
 
 Determine `[feature-name]` and `[scope]` before proceeding.
-Auto-create `docs/retros/` if it does not exist.
+Auto-create the `retro/` subfolder of the target stream if it does not exist
+(for `sprint` mode, the `docs/streams/sprint-[YYYYMMDD]/retro/` folder — see Step 6).
 
 **Precondition:** the scope must be finished (delivered feature, closed phase, ended sprint). If work is still in progress, stop and say so — a retro on live work produces guesses, not lessons.
 
@@ -37,15 +38,19 @@ Auto-create `docs/retros/` if it does not exist.
 
 Glob for the artifacts that exist, then read them. Missing artifacts are themselves a finding — record which ones are absent rather than inventing content.
 
+All artifacts live under the feature's stream folder `docs/streams/[feature]-*/`
+(glob the `*` — the folder date is the stream-start date). Read from these
+sub-folders:
+
 | Perspective | Artifacts to read |
 |-------------|-------------------|
-| Requirements | `docs/specs/requirements/SRS-[feature].md` |
-| Design | `docs/specs/detail-design/TECH-[feature].md`, `docs/specs/basic-design/BASIC-[feature].md` |
-| Implementation | `docs/work-logs/DEV-[feature]-*.md` (all batches) |
-| Code review | `docs/reviews/REVIEW-[feature]-*.md` (all batches) |
-| Security | `docs/security/SEC-[feature]-*.md` |
-| Unit test | `docs/test-reports/UTR-[feature]-R*.md` (all rounds), `docs/test-cases/UTC-[feature].md` |
-| Integration test | `docs/test-reports/ITR-[feature]-R*.md` (all rounds), `docs/test-cases/ITC-[feature].md` |
+| Requirements | `docs/streams/[feature]-*/requirements/SRS.md` |
+| Design | `docs/streams/[feature]-*/design/TECH.md`, `docs/streams/[feature]-*/design/BASIC.md` |
+| Implementation | `docs/streams/[feature]-*/work-logs/DEV-*.md` (all batches) |
+| Code review | `docs/streams/[feature]-*/reviews/REVIEW-*.md` (all batches) |
+| Security | `docs/streams/[feature]-*/security/SEC-*.md` |
+| Unit test | `docs/streams/[feature]-*/test-reports/UTR-R*.md` (all rounds), `docs/streams/[feature]-*/test-cases/UTC.md` |
+| Integration test | `docs/streams/[feature]-*/test-reports/ITR-R*.md` (all rounds), `docs/streams/[feature]-*/test-cases/ITC.md` |
 
 **Scope filter by mode:**
 
@@ -176,9 +181,15 @@ For `feature`/`phase` mode, derive the date range from the artifacts' own timest
 
 | Mode | Path |
 |------|------|
-| `feature [name]` | `docs/retros/RETRO-feature-[name]-[YYYYMMDD].md` |
-| `phase [phase] [name]` | `docs/retros/RETRO-phase-[phase]-[name]-[YYYYMMDD].md` |
-| `sprint [date-range]` | `docs/retros/RETRO-sprint-[YYYYMMDD].md` |
+| `feature [name]` | `docs/streams/[name]-*/retro/RETRO-[YYYYMMDD].md` |
+| `phase [phase] [name]` | `docs/streams/[name]-*/retro/RETRO-phase-[phase]-[YYYYMMDD].md` |
+| `sprint [date-range]` | `docs/streams/sprint-[YYYYMMDD]/retro/RETRO-[YYYYMMDD].md` |
+
+`feature`/`phase` retros land in that feature's own work-stream folder (the
+folder carries the slug, so the filename drops it; the RETRO date is time-series).
+A `sprint` retro spans many streams and has no single feature identity, so it gets
+its **own** stream folder keyed by the sprint's end date —
+`docs/streams/sprint-[YYYYMMDD]/` (folder = identity).
 
 ```markdown
 # Retro: [Feature/Sprint Name] — [YYYY-MM-DD]
@@ -224,7 +235,7 @@ For `feature`/`phase` mode, derive the date range from the artifacts' own timest
 | LOW | [specific action] | [owner] | optional | — |
 ```
 
-**Present to user:** show the Action Items table only, plus the report path. The user reads the full report in `docs/retros/`.
+**Present to user:** show the Action Items table only, plus the report path. The user reads the full report in the stream's `retro/` folder.
 
 Then **stop.** Do not open the action items as work — the user decides what gets picked up.
 

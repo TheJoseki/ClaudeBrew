@@ -65,13 +65,13 @@ Exemptions (defined in `${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py` as `EXE
 
 | Glob | Why it's exempt |
 |---|---|
-| `docs/specs/*` | SDLC handoff artifacts every stage reads/writes |
+| `docs/streams/*` | SDLC work-stream artifacts every stage reads/writes |
 | `.claude/*` | Skills, settings, hooks — harness config, never the product |
 | `*.md` | Documentation, at any depth |
 | `.gitignore`, `.worktreeinclude` | Repo/worktree configuration |
 
 The exemptions are **scope, not an opt-out**: they encode "what is not feature
-code". The load-bearing reason they exist — without `docs/specs/*` and
+code". The load-bearing reason they exist — without `docs/streams/*` and
 `.claude/*`, the hook would block the `brainstorming` stage from writing its own
 artifact on the base branch, breaking the pipeline it is meant to protect.
 

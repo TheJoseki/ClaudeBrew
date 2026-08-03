@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "I approved the brainstorm for the houseplant watering tracker. Let's start building it.",
-      "expected_output": "Recognizes the transition to implementation. Does NOT begin coding on main. Locates the approved docs/specs/brainstorms/BRAINSTORM-houseplant-watering-tracker.md, derives the branch name (e.g. houseplant-watering-tracker), confirms only the NAME with the user (never whether to branch), carries the approved spec across (commit-first by default), calls EnterWorktree to switch into .claude/worktrees/<slug> on the feature branch, writes docs/specs/worktrees/WORKTREE-houseplant-watering-tracker.md, reports the real gate state (if the opt-in gate is registered, harness denial is active; if not, isolation is advisory and /cbr:setup would install it), and STOPS — does not auto-invoke the requirement stage.",
+      "expected_output": "Recognizes the transition to implementation. Does NOT begin coding on main. Locates the approved docs/streams/houseplant-watering-tracker-[YYYYMMDD]/brainstorm/BRAINSTORM.md, derives the branch name (e.g. houseplant-watering-tracker), confirms only the NAME with the user (never whether to branch), carries the approved spec across (commit-first by default), calls EnterWorktree to switch into .claude/worktrees/<slug> on the feature branch, writes docs/streams/houseplant-watering-tracker-[YYYYMMDD]/WORKTREE.md, reports the real gate state (if the opt-in gate is registered, harness denial is active; if not, isolation is advisory and /cbr:setup would install it), and STOPS — does not auto-invoke the requirement stage.",
       "files": []
     },
     {

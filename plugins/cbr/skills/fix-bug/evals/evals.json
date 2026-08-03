@@ -5,7 +5,7 @@
     {
       "id": 1,
       "prompt": "An admin gets a 403 when deleting an order that was already soft-deleted. Steps: log in as admin, DELETE /orders/42. Here's the stack trace pointing at the role guard.",
-      "expected_output": "Detects stack, reproduces the failing case with the project's test/type commands, does root-cause analysis (auth guard / soft-delete filter layer), applies a minimal fix without refactoring, verifies the affected test plus a regression run, and writes docs/bug-reports/BUG-[date]-nn.md with root cause and verification.",
+      "expected_output": "Detects stack, reproduces the failing case with the project's test/type commands, does root-cause analysis (auth guard / soft-delete filter layer), applies a minimal fix without refactoring, verifies the affected test plus a regression run, and writes docs/streams/[feature]-[YYYYMMDD]/bug-reports/BUG-[date]-nn.md with root cause and verification.",
       "files": []
     },
     {

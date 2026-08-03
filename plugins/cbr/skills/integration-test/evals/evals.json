@@ -5,13 +5,13 @@
     {
       "id": 1,
       "prompt": "Write integration tests for the order API workflow: create then approve then ship then deliver, and verify RBAC for each role.",
-      "expected_output": "Mode A: detects the E2E/HTTP test framework, reads TEST_VIEWPOINT/TECH/SRS, and creates docs/test-cases/ITC-order.md covering the auth flow (login to logout), the workflow happy path plus rejection/reversal paths, per-role RBAC, admin-only 403, and soft-delete listing exclusion.",
+      "expected_output": "Mode A: detects the E2E/HTTP test framework, reads TEST_VIEWPOINT/TECH/SRS, and creates docs/streams/order-*/test-cases/ITC.md covering the auth flow (login to logout), the workflow happy path plus rejection/reversal paths, per-role RBAC, admin-only 403, and soft-delete listing exclusion.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Run the E2E tests for the checkout browser flow.",
-      "expected_output": "Mode B: greps for the existing docs/test-cases/ITC-checkout.md precondition, runs the E2E/integration suite with the detected framework (e.g. Playwright/Supertest), applies the R1-R5 round gates, and writes docs/test-reports/ITR-checkout-R[n].md.",
+      "expected_output": "Mode B: greps for the existing docs/streams/checkout-*/test-cases/ITC.md precondition, runs the E2E/integration suite with the detected framework (e.g. Playwright/Supertest), applies the R1-R5 round gates, and writes docs/streams/checkout-[YYYYMMDD]/test-reports/ITR-R[n].md.",
       "files": []
     },
     {

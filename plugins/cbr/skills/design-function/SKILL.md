@@ -35,8 +35,8 @@ Do NOT hardcode framework assumptions.
 - `docs/CODING_CONVENTION.md` — Module templates, ORM conventions (if exists)
 - `docs/ARCHITECTURE.md` — System architecture, patterns (if exists)
 - `docs/API_DESIGN.md` — Existing endpoints for reference (if exists)
-- Input SRS: `docs/specs/requirements/SRS-[feature].md`
-- Input SCREEN: `docs/specs/requirements/SCREEN-[feature].md` (if exists)
+- Input SRS: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
+- Input SCREEN: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md` (if exists)
 
 ## Parallel mode (`--parallel`)
 
@@ -64,7 +64,7 @@ Produce the high-level **structure first** — a cheap checkpoint before detaili
 - DB table list (entities + key relations — names only, not full schema)
 - API endpoint list (method + route — signatures come in Step 2)
 
-File: `docs/specs/basic-design/BASIC-[feature-name].md` (template: [`references/basic-design-template.md`](references/basic-design-template.md)).
+File: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (template: [`references/basic-design-template.md`](references/basic-design-template.md)).
 **Stop for G3a user approval** before Step 2 — approving the structure cheaply avoids reworking a full detailed spec. (This is a checkpoint within this skill, not a hand-off; the skill still stops after Step 3 for the user to start the next stage.)
 
 ## Step 2: Design
@@ -88,7 +88,7 @@ File: `docs/specs/basic-design/BASIC-[feature-name].md` (template: [`references/
 
 ## Step 3: Create TECH File (MANDATORY — DO NOT SKIP)
 
-File: `docs/specs/detail-design/TECH-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 
 > **Template**: See [`references/template.md`](references/template.md) for the full output document template.
 
@@ -99,7 +99,7 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 - [ ] Services: soft delete filter, audit columns set
 - [ ] Pagination for all list endpoints
 - [ ] N+1 addressed with eager loading / includes
-- [ ] File `docs/specs/detail-design/TECH-[feature].md` CREATED ✅
+- [ ] File `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` CREATED ✅
 
 ## Verification
 
@@ -114,5 +114,5 @@ File: `docs/specs/detail-design/TECH-[feature-name].md`
 - "Design the UI screens for user management" (use design-screen)
 
 **Expected outputs:**
-- Artifacts: `docs/specs/basic-design/BASIC-[feature].md` (G3a) + `docs/specs/detail-design/TECH-[feature].md` (G3b)
+- Artifacts: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (G3a) + `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` (G3b)
 - Quality gate: All endpoints have auth guards, DTOs, and pagination; N+1 addressed

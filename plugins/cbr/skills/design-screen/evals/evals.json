@@ -1,17 +1,17 @@
 {
   "skill_name": "design-screen",
-  "notes": "UI/UX screen-design skill (SDLC Stage 3a). Evaluate by checking it runs design intelligence (design-system) first, produces ASCII wireframes with UI-library components from PROJECT.md, i18n keys, role-based visibility, and loading/empty/error states, and writes docs/specs/requirements/SCREEN-[feature].md; positives should fire, the API-design boundary should route to design-function.",
+  "notes": "UI/UX screen-design skill (SDLC Stage 3a). Evaluate by checking it runs design intelligence (design-system) first, produces ASCII wireframes with UI-library components from PROJECT.md, i18n keys, role-based visibility, and loading/empty/error states, and writes docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md; positives should fire, the API-design boundary should route to design-function.",
   "evals": [
     {
       "id": 1,
       "prompt": "Design the UI screens and wireframes for the order management feature.",
-      "expected_output": "Detects the UI library from PROJECT.md/CLAUDE.md, runs design-system design intelligence (style/color/typography), sketches ASCII wireframes per screen with correct library components, specifies role-based visibility, i18n keys, and loading/empty/error states, and writes docs/specs/requirements/SCREEN-order-management.md. Avoids AI anti-patterns (bento, aurora, neon, emoji icons).",
+      "expected_output": "Detects the UI library from PROJECT.md/CLAUDE.md, runs design-system design intelligence (style/color/typography), sketches ASCII wireframes per screen with correct library components, specifies role-based visibility, i18n keys, and loading/empty/error states, and writes docs/streams/order-management-[YYYYMMDD]/requirements/SCREEN.md. Avoids AI anti-patterns (bento, aurora, neon, emoji icons).",
       "files": []
     },
     {
       "id": 2,
       "prompt": "Create the wireframes and component layout spec for the user profile page.",
-      "expected_output": "Produces ASCII wireframes, component hierarchy using the project's UI library, responsive breakpoints (mobile 375px), design tokens table, and i18n keys, saved to docs/specs/requirements/SCREEN-user-profile.md. Does not write frontend code.",
+      "expected_output": "Produces ASCII wireframes, component hierarchy using the project's UI library, responsive breakpoints (mobile 375px), design tokens table, and i18n keys, saved to docs/streams/user-profile-[YYYYMMDD]/requirements/SCREEN.md. Does not write frontend code.",
       "files": []
     },
     {

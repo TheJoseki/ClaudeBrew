@@ -44,7 +44,7 @@ $ARGUMENTS
 
 | Phase | Task | Input | Output | Status |
 |-------|------|-------|--------|--------|
-| Design | Write TECH spec | SRS doc | TECH-[f].md | PENDING |
+| Design | Write TECH spec | SRS doc | TECH.md | PENDING |
 | Implement | Backend service | TECH spec | Service + tests | PENDING |
 | Review | Code review | DEV log | REVIEW report | PENDING |
 | Test | Unit tests | UTC doc | UTR report | PENDING |
@@ -90,7 +90,7 @@ does not run it.
 | All tasks parallel | Sequence dependent tasks |
 | Plan for hypothetical needs | Plan current scope only |
 
-Save plans to: `docs/plans/PLAN-[feature]-[YYYYMMDD].md`
+Save plans to: `docs/streams/[feature]-[YYYYMMDD]/plan/PLAN.md` (the feature's work-stream folder; filename drops the slug — the folder carries it).
 
 ---
 

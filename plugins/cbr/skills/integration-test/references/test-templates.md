@@ -4,15 +4,15 @@
 
 ## ITC Document Template (Mode A Output)
 
-File: `docs/test-cases/ITC-[feature-name].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 
 ```markdown
 # Integration Test Cases: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Author**: integration-test
-**Input TECH**: docs/specs/detail-design/TECH-[feature].md
-**Input SRS**: docs/specs/requirements/SRS-[feature].md
+**Input TECH**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
+**Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **HTTP Test Library**: [detected from PROJECT.md]
 **E2E Framework**: [Playwright / Cypress / Supertest — detected]
 **Complexity**: Small / Medium / Large
@@ -89,7 +89,7 @@ File: `docs/test-cases/ITC-[feature-name].md`
 
 ## ITR Document Template (Mode B Output)
 
-File: `docs/test-reports/ITR-[feature]-R[n].md`
+File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`
 
 ```markdown
 # Integration Test Report: [Feature Name] — Round R[n]
@@ -97,7 +97,7 @@ File: `docs/test-reports/ITR-[feature]-R[n].md`
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
 **Author**: integration-test
-**ITC Document**: docs/test-cases/ITC-[feature].md
+**ITC Document**: docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md
 **Scripts**: tests/e2e/[feature].spec.ts, tests/integration/[feature].test.ts
 
 ## Summary
