@@ -75,10 +75,12 @@ def run_main(mod, stdin_str="{}", project_dir=None, use_env=True):
 
 
 def active_plan_tree(d, slug="payment", with_specs=True):
-    write(d, f"docs/plans/PLAN-{slug}-20260801.md", "---\nstatus: ACTIVE\n---\n")
+    # Canonical stream tree: an in-flight stream (gates not all-pass) is the active feature.
+    write(d, f"docs/streams/{slug}-20260801/STREAM.md", "---\nstatus: in-progress\n---\n")
+    write(d, f"docs/streams/{slug}-20260801/plan/PLAN.md", "# Plan\n")
     if with_specs:
-        write(d, f"docs/specs/requirements/SRS-{slug}.md", "# S\n## Scope\nx\n")
-        write(d, f"docs/specs/detail-design/TECH-{slug}.md", "# T\n## Methods\na\n## DTO\nb\n")
+        write(d, f"docs/streams/{slug}-20260801/requirements/SRS.md", "# S\n## Scope\nx\n")
+        write(d, f"docs/streams/{slug}-20260801/design/TECH.md", "# T\n## Methods\na\n## DTO\nb\n")
 
 
 # --- session-init render --------------------------------------------------- #
@@ -216,7 +218,7 @@ def _feature():
         "gates": {"G4": "pending"},
         "nextAction": "/cbr:review-code payment",
         "artifacts": [
-            {"type": "TECH", "path": "docs/specs/detail-design/TECH-payment.md",
+            {"type": "TECH", "path": "docs/streams/payment-20260801/design/TECH.md",
              "sections": [{"title": "Methods", "lines": "3-5"}]},
         ],
     }
@@ -224,7 +226,7 @@ def _feature():
 
 def test_sc_render_reviewer():
     out = SC.render("reviewer", "payment", _feature())
-    check("Next gate action" in out and "VERDICT-payment" in out and "sections:" in out, out)
+    check("Next gate action" in out and "VERDICT-G" in out and "sections:" in out, out)
 
 
 def test_sc_render_explore_minimal():

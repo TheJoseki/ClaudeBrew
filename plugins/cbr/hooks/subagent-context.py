@@ -51,12 +51,13 @@ def feature_state(project_dir):
 def render(agent_type, slug, feature):
     """Compose the additionalContext string (relevance-based)."""
     lines = [f"cbr active feature: {slug or 'none'}",
-             "Artifacts under docs/: specs/, reviews/, security/, test-reports/"]
+             "Artifacts under docs/streams/<slug>-<YYYYMMDD>/ "
+             "(requirements/ design/ plan/ reviews/ security/ test-reports/ retro/ …)"]
     if agent_type in GATE_AGENTS and feature:
         if feature.get("nextAction"):
             lines.append(f"Next gate action: {feature['nextAction']}")
         lines.append(
-            f"Gate verdict -> docs/{{reviews,security,test-reports}}/VERDICT-{slug}-G<n>.json "
+            f"Gate verdict -> docs/streams/{slug}-<YYYYMMDD>/{{reviews,security,test-reports}}/VERDICT-G<n>.json "
             "per ${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json; validate before writing."
         )
         for art in feature.get("artifacts", []):
