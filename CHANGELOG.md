@@ -4,6 +4,22 @@ All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This p
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-03
+
+Canonical stream-first artifact layout. **Breaking layout change** (minor bump, pre-1.0).
+
+### Changed
+- **`docs/streams/<slug>-<YYYYMMDD>/` is now the single canonical home for every per-feature SDLC artifact**, retiring the type-first `docs/{specs,reviews,plans,work-logs,security,test-reports,test-cases,bug-reports,retros,handoffs}/` scheme. Identity moved from the filename into the **folder**: sub-folder = type, filename drops the slug (`docs/specs/detail-design/TECH-payment.md` → `docs/streams/payment-20260801/design/TECH.md`); time-series artifacts keep their date/round (`REVIEW-<date>.md`, `UTR-R<n>.md`).
+- **`hooks/lib/sdlc_state.py` rewritten folder-based** — active feature and gate progress (G1–G8) are *derived* from the stream folder (in-flight, gate not all-pass, not archived), not from a filename or a `status:` flag. Fixed a slug prefix-collision in stream resolution (`payment-*` no longer matches `payment-export-*`).
+- **Re-pathed the whole suite to the canonical layout**: 17 skills + 2 capability agents (writes use `docs/streams/[feature]-[YYYYMMDD]/…`, reads glob `docs/streams/[feature]-*/…`), the lifecycle/context hooks (`session-init`, `subagent-context`, `compact-context-saver`), the `enforce-worktree` exempt list (`docs/specs/*` → `docs/streams/*`, now covering non-md stream assets), and the `STREAM.md` manifest template (stream-relative sub-paths).
+- `sdlc-conventions.md` artifact-path table + Artifact-Lifecycle table rewritten stream-first; every retired prefix maps to a canonical destination. Project-wide ADRs/risks stay at `docs/` root.
+
+### Added
+- **Canonical-paths gate** (`evals/test_canonical_paths.py`) — fails any skill/agent that reintroduces a retired type-first `docs/…/` path. Makes the layout stick the same way the English-only and release-docs gates do.
+
+### Notes
+- Pre-1.0 with no consumer projects, so this breaking change ships **with no in-place migrator** — there is no legacy artifact data to relocate. A migrator can be added later if a real consumer with type-first artifacts appears.
+
 ## [0.4.1] — 2026-08-03
 
 ### Changed
