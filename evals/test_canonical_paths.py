@@ -10,9 +10,12 @@ skill/agent prose still references a retired type-first path — so the layout i
 documented (sibling of the `release-docs` / `english-docs` gates).
 
 Allowed `docs/` roots: `docs/streams/` (canonical per-feature), `docs/decisions/` + `docs/risks/`
-(project-wide), `docs/_templates/`, and bare project reference files (`docs/PROJECT.md`, …). Scoped to
-`plugins/cbr/skills/` + `plugins/cbr/agents/` prose (SKILL.md, references/*.md, evals/*.json). Rules are
-governance authored directly and are checked by hand during the migration.
+(project-wide), `docs/_templates/`, and bare project reference files (`docs/PROJECT.md`, …). Scans the whole
+shipped prose surface — `plugins/cbr/skills/` + `agents/` + `rules/` + `docs/` (SKILL.md, references/*.md,
+evals/*.json, rule bodies, doc templates). Rules are *always-loaded* every session, so a stale path there is
+more load-bearing than one in a skill; hand-checking them was the blind spot that let 5 slip through, so the
+gate now scans them deterministically. (Hooks are Python and already covered by their own unit tests, which
+assert canonical trees — no need to scan them here too.)
 
 NOTE: this gate is RED-by-design until the skill migration (plan phase 03) completes — that is its job:
 its output IS the migration work-queue. It goes green only when the last skill drops the last type-first path.
@@ -23,7 +26,9 @@ import sys
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SCAN = [os.path.join(_ROOT, "plugins", "cbr", "skills"),
-         os.path.join(_ROOT, "plugins", "cbr", "agents")]
+         os.path.join(_ROOT, "plugins", "cbr", "agents"),
+         os.path.join(_ROOT, "plugins", "cbr", "rules"),
+         os.path.join(_ROOT, "plugins", "cbr", "docs")]
 
 # Retired type-first per-feature artifact dirs (now under docs/streams/<id>/…).
 _RETIRED = re.compile(

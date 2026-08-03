@@ -43,36 +43,9 @@ _STREAM_SPECS = (
 )
 _LARGE_SPEC_TYPES = {"SRS", "BASIC", "TECH"}
 
-_DATE_RE = re.compile(r"-\d{8}$")           # -YYYYMMDD
-_GATE_RE = re.compile(r"-G\d[a-z]?$")       # -G4, -G5a
-_BATCH_RE = re.compile(r"-B\d+$")           # -B2
-_ROUND_RE = re.compile(r"-R\d+$")           # -R3
 _HEADER_RE = re.compile(r"^(#{2,3})\s+(.+?)\s*$")
 _STREAM_DIR_RE = re.compile(r"^(.+)-\d{8}$")                       # <slug>-<YYYYMMDD>
 _ARCHIVED_RE = re.compile(r"^status:\s*[\"']?(archived|abandoned)\b", re.MULTILINE)
-
-
-def slug_from_filename(name):
-    """Extract a feature slug from a *legacy type-first* filename. Kept only for the
-    type-first -> stream migrator; the runtime derives slugs from stream folders.
-
-    Strips the uppercase TYPE- prefix and the trailing tokens (gate/batch/round/date).
-    Returns None when the name has no TYPE- prefix.
-    """
-    stem = os.path.basename(name)
-    for ext in (".md", ".json"):
-        if stem.endswith(ext):
-            stem = stem[: -len(ext)]
-            break
-    parts = stem.split("-", 1)
-    if len(parts) != 2 or not parts[0].isupper() or not parts[0].isalpha():
-        return None
-    stem = parts[1]
-    stem = _GATE_RE.sub("", stem)
-    stem = _BATCH_RE.sub("", stem)
-    stem = _ROUND_RE.sub("", stem)
-    stem = _DATE_RE.sub("", stem)
-    return stem or None
 
 
 def slug_from_stream_dir(name):

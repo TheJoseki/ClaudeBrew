@@ -64,7 +64,7 @@ When estimating full feature lifecycle (not just implementation):
 
 | Trigger | Who Estimates | Output |
 |---------|--------------|--------|
-| New feature request | `estimate` | `docs/estimates/EST-[feature]-[YYYYMMDD].md` |
+| New feature request | `estimate` | `docs/streams/[feature]-[YYYYMMDD]/estimate/EST-[YYYYMMDD].md` |
 | Scope change during development | `estimate` | Update existing EST |
 | EPIC decomposition into WAVEs | `estimate` | EST per WAVE |
 | Sprint planning | `estimate` | Sprint capacity check |
@@ -119,4 +119,4 @@ After feature delivery (G8 pass), `estimate` MUST record:
 | Rework rounds | X | X | — |
 ```
 
-Feed variance back into the next `docs/estimates/EST-*.md` for calibrating future estimates.
+Feed variance back into the next `docs/streams/[feature]-*/estimate/EST-*.md` for calibrating future estimates.

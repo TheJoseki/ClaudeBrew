@@ -40,24 +40,6 @@ def sd(slug, date="20260801"):
     return f"docs/streams/{slug}-{date}"
 
 
-# --- slug_from_filename (kept for the type-first migrator) ------------------- #
-def test_slug_from_filename():
-    cases = {
-        "SRS-payment.md": "payment",
-        "TECH-user-auth.md": "user-auth",
-        "PLAN-user-auth-20260801.md": "user-auth",
-        "VERDICT-payment-G4.json": "payment",
-        "VERDICT-payment-B2-G4.json": "payment",
-        "DEV-payment-B2.md": "payment",
-        "UTR-payment-R3.md": "payment",
-        "README.md": None,        # no hyphen
-        "foo-bar.md": None,       # prefix not uppercase
-    }
-    for name, want in cases.items():
-        got = S.slug_from_filename(name)
-        check(got == want, f"slug_from_filename({name!r}) = {got!r}, want {want!r}")
-
-
 def test_slug_from_stream_dir():
     check(S.slug_from_stream_dir("docs/streams/payment-20260801") == "payment", "simple slug")
     check(S.slug_from_stream_dir("user-auth-20260801") == "user-auth", "hyphenated slug")

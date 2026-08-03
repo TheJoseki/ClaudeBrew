@@ -68,7 +68,7 @@ For EPIC plans: separate file at `docs/risks/RISK-[epic-name].md`.
 
 **Trigger**: Risk materializes OR gate fails ≥2 times OR 3-Strike escalation.
 
-**Artifact path**: `docs/cars/CAR-[feature]-[topic]-[YYYYMMDD].md`
+**Artifact path**: `docs/streams/[feature]-[YYYYMMDD]/cars/CAR-[topic]-[YYYYMMDD].md`
 
 ### CAR Template
 

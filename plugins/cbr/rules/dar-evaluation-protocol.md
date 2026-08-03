@@ -36,7 +36,7 @@ After completing → record the outcome inline in the stage artifact, tagged `So
 
 ## 3. Full DAR (separate artifact)
 
-For critical/irreversible decisions. Artifact path: `docs/dars/DAR-[feature]-[topic]-[YYYYMMDD].md`
+For critical/irreversible decisions. Artifact path: `docs/streams/[feature]-[YYYYMMDD]/dars/DAR-[topic]-[YYYYMMDD].md`
 
 ### Full DAR Template
 
@@ -97,7 +97,7 @@ Pick 3-5 relevant criteria per DAR. Weights MUST sum to 1.0.
 
 ## 5. Integration Rules
 
-- Full DAR → always writes an ADR at `docs/specs/decisions/ADR-[topic]-[YYYYMMDD].md`
+- Full DAR → always writes an ADR at `docs/streams/[feature]-[YYYYMMDD]/design/decisions/ADR-[topic]-[YYYYMMDD].md` (stream-scoped; a decision spanning streams goes to project-wide `docs/decisions/ADR-[topic]-[YYYYMMDD].md`)
 - Quick DAR → recorded inline in the stage artifact that raised it (SRS, TECH, work log)
 - If a DAR revisits a previous decision → mark the old ADR SUPERSEDED and reference its ID from the new one
 - Before implementation starts, verify every NEEDS RESOLUTION decision has a DAR
