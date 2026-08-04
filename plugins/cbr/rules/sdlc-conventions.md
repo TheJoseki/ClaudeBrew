@@ -118,8 +118,10 @@ likewise auto-created.
 ## Work-Stream Grouping
 
 Each feature's SDLC artifacts belong to one **work-stream**. `brainstorming` declares the stream once at
-`docs/streams/[slug]-[YYYYMMDD]/STREAM.md` (the manifest), and every per-feature artifact carries a
-`stream: [slug]-[YYYYMMDD]` frontmatter field — a persistent cross-artifact identity carrier.
+`docs/streams/[slug]-[YYYYMMDD]/STREAM.md` (the manifest) for the greenfield flow; a brownfield stream with
+no brainstorm is opened **stream-light** by `plan-writing` (see *Stream openers & lanes* below). Every
+per-feature artifact carries a `stream: [slug]-[YYYYMMDD]` frontmatter field — a persistent cross-artifact
+identity carrier.
 
 - **The stream folder IS the layout** — artifacts live under `docs/streams/[slug]-[YYYYMMDD]/` per the table
   above; there is no type-first layout. The folder name carries the slug; `hooks/lib/sdlc_state.py` derives
@@ -135,8 +137,29 @@ Each feature's SDLC artifacts belong to one **work-stream**. `brainstorming` dec
 **Upkeep protocol (MANDATORY, every stage skill).** When a stage skill writes its output artifact it must:
 (1) stamp `stream: [id]` in that artifact's frontmatter; (2) append/update the artifact's row in the
 stream's `STREAM.md` membership table; (3) update the task-board status for its phase. `brainstorming`
-creates `STREAM.md` from `docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
+(greenfield) or `plan-writing` (brownfield, stream-light) creates `STREAM.md` from
+`docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
 Status zone — `handoff` / `session-init` regenerate it.
+
+### Stream openers & lanes (greenfield vs stream-light)
+
+A work-stream has two possible openers, both scaffolding `STREAM.md` from `docs/_templates/STREAM.md`:
+
+- **`brainstorming` (greenfield lane).** The spec-first front door — opens the stream, then the
+  `analyze-requirement → design → …` chain fills G1–G8 in order.
+- **`plan-writing` (brownfield, stream-light lane).** When maintenance work starts on an existing
+  codebase with **no** stream, `plan-writing` opens one directly and writes `plan/PLAN.md` — **without**
+  writing an SRS/design or forcing G1–G3. Its Step-1 **input-contract** first detects the source of truth
+  to plan from (priority `requirements/SRS.md → brainstorm/BRAINSTORM.md → research/RES-*.md → code`; it
+  **asks the user** when several are present, and **refuses to plan on nothing**).
+
+`lane:` in `STREAM.md` frontmatter records which — `greenfield` (default) or `brownfield`. It is
+**descriptive metadata only**: gate authority stays with the `hooks/lib/sdlc_state.py` glob, never the
+marker (`lane:` is not read by any hook — it does not affect `resolve_active_feature` or the archived
+flag). In a stream-light stream the design gates that never ran read `pending`, which is **benign** — the
+stream is simply early on the greenfield ladder, not in a gap. (The derived `Next:` hint may point at
+`analyze-requirement` for the same reason; it is a suggestion, and a brownfield stream is free to skip
+straight to `implement-feature`.)
 
 ## Artifact Lifecycle
 
@@ -149,7 +172,7 @@ is a gap.
 
 | Artifact | Created by | Updated by | Consumed by | Closed at |
 |----------|-----------|-----------|-------------|-----------|
-| STREAM.md | `brainstorming` | every stage (row + board) | `handoff`, `session-init` | G8 |
+| STREAM.md | `brainstorming` (greenfield) / `plan-writing` (brownfield stream-light) | every stage (row + board) | `handoff`, `session-init` | G8 |
 | BRAINSTORM | `brainstorming` | — | `analyze-requirement` | G1 |
 | SRS | `analyze-requirement` | `analyze-requirement` | `design-screen`, `design-function`, tests | G1 |
 | SCREEN | `design-screen` | `design-screen` | `design-function`, `implement-feature` | G2 |

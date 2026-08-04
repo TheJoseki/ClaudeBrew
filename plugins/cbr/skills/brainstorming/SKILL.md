@@ -178,7 +178,8 @@ typed artifact. Pick a short kebab-case `<slug>` and today's date `<YYYYMMDD>`, 
    stream identity every later artifact inherits).
 2. Scaffold its manifest `docs/streams/<slug>-<YYYYMMDD>/STREAM.md` from
    `docs/_templates/STREAM.md` — the stream's index + task board. `brainstorming`
-   owns creating it; later stages only append their own rows.
+   creates it for the greenfield flow; later stages only append their own rows. (A
+   brownfield stream with no brainstorm is opened stream-light by `plan-writing` instead.)
 3. Write the brainstorm to
    `docs/streams/<slug>-<YYYYMMDD>/brainstorm/BRAINSTORM.md` following
    `references/artifact-template.md` exactly — its field list is the **contract** the
