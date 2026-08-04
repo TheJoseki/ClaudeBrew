@@ -4,6 +4,19 @@ All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This p
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-08-04
+
+Brainstorming (SDLC Stage 1) rewritten from a rigid 9-phase machine into **invariants + an adaptive toolbox of moves**, so it brainstorms like a person. Fluid process, **unchanged output-contract** — the stream artifact write is untouched.
+
+### Changed
+- **`brainstorming/SKILL.md` restructured** around 7 invariants + a move toolbox the model selects by judgment (no fixed phase order; backtracking allowed). Adds the missing **divergent** motion (generate widely, judge later) and **adaptive depth** (rigor dialed to reversibility; a sub-threshold question gets a recommendation with no stream opened). The artifact + `stream:` id + `STREAM.md` write, the hard gate (no build / no cascade before approval), and never-guess are all preserved. Adds an explicit scope + untrusted-content (prompt-injection) note for the research move.
+- Reworked references: `clarify-loop.md` (clarify is a move, not a sequence-lock), `dar-analysis.md` (fires only for one-way-doors), `artifact-template.md` (adds the required `stream:` frontmatter; captures the divergent option range + what-would-change-my-mind), `teammate-mode.md` (lenses spawn from `cbr:strategist`).
+
+### Added
+- **`problem-first.md`** move — invert a proposed solution back to its unstated problem (≥3 problem framings before solution framings); the counter to solution-jumping.
+- **`moves.md`** — the diverge / steelman-then-attack / converge craft, plus the convergence test.
+- **`strategist` capability agent** (pool 4→5; `model: sonnet`, non-gate) — CTO-level divergence + adversarial critique; spawned inline by `brainstorming` (returns findings as its message, writes no artifact) and usable as a team lens.
+
 ## [0.5.0] — 2026-08-03
 
 Canonical stream-first artifact layout. **Breaking layout change** (minor bump, pre-1.0).

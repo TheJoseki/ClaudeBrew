@@ -14,9 +14,8 @@ user did not fill?" If yes, that blank becomes a question.
 
 ## Step 1 — Enumerate uncertainties
 
-After reading context (Phase 1) and researching (Phase 2), list — in writing, for
-yourself — every item in these five buckets. Naming them is what makes them
-askable.
+After exploring context and researching, list — in writing, for yourself — every
+item in these five buckets. Naming them is what makes them askable.
 
 | Bucket | Prompt to find them |
 |---|---|
@@ -45,10 +44,15 @@ Two rules make "ask about everything" tolerable:
 Order questions so that answers which unlock other questions come first. If an
 answer would make later questions moot, ask it in an earlier round.
 
-## Step 3 — Loop until clean
+## Step 3 — Loop until clean (but you may interleave)
 
-Re-enumerate after each round — answers often reveal new uncertainties. Stop only
-when no named uncertainty remains open. Then move to synthesis (Phase 5).
+Re-enumerate after each round — answers often reveal new uncertainties. Clarifying
+is a **move, not a gate**: you do not have to close every uncertainty before you may
+diverge or sketch. Park an uncertainty, generate an option, and let the option
+resolve the uncertainty — that is how a person brainstorms. The one hard rule is
+never-guess at **convergence**: no named uncertainty may still be open (silently
+assumed) when you write the artifact. Anything deliberately deferred goes to the
+artifact's §7 (open questions), which is different from an unresolved guess.
 
 ## What good questions look like
 
@@ -113,7 +117,7 @@ If the new input replaces or substantially changes the idea (not just one
 answer), follow the **"When the user steers"** protocol in SKILL.md: detect it,
 then confirm whether it is a **replacement** (supersede the artifact, restart for
 the new idea), a **branch** (explore alongside / DAR the two), or a
-**refinement** (update in place, re-run affected phases). Apply never-guess to
+**refinement** (update in place, re-run affected moves). Apply never-guess to
 *which kind of pivot it is* — do not assume.
 
 ## When the user overrides the threshold

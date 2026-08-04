@@ -13,9 +13,10 @@ https://code.claude.com/docs/en/agent-teams
 
 ## When to use team mode
 
-Recommend it (Phase 0) when the problem is **broad, ambiguous, high-stakes, or
-spans multiple domains** — where parallel exploration and debate beat one line of
-reasoning. For narrow or well-bounded requests, single mode is cheaper and just
+Recommend it when the problem is **broad, ambiguous, high-stakes, or spans
+multiple domains** — where parallel exploration and debate beat one line of
+reasoning. It is the heavy end of the "multi-lens challenge" move; for most cases a
+few stateless `cbr:strategist` spawns are cheaper and enough. For narrow or well-bounded requests, single mode is cheaper and just
 as good. Teammates cost significantly more tokens, so always show your reasoning
 and get the user's confirmation before spawning them.
 
@@ -31,9 +32,9 @@ concerns and can challenge each other. A strong default trio for brainstorming:
 
 Add a **domain expert** when the topic needs specialized knowledge (e.g.
 payments, healthcare, ML). Keep it to 3-5 teammates — the docs note diminishing
-returns and rising coordination cost beyond that. If a reusable
-[subagent definition](https://code.claude.com/docs/en/sub-agents) fits a role,
-spawn the teammate from it.
+returns and rising coordination cost beyond that. Spawn the lens teammates from the
+`cbr:strategist` agent (the divergence/critique persona); use `general-purpose` for a
+role that needs broader tools or to write files.
 
 ## How the lead orchestrates
 
@@ -45,12 +46,12 @@ The lead is the session running this skill. The concrete tool lifecycle below is
 2. **Spawn the roles** with the `Agent` tool, one call per teammate, all in one
    message so they run concurrently. Set `team_name`, a role `name` (e.g.
    `product-ux`, `architect`, `devils-advocate`), and `subagent_type`
-   (`general-purpose` for teammates that need web/Context7 research; read-only
-   `Explore` works for pure research roles but can't write files). Give each a
-   **self-contained spawn prompt** — teammates do NOT inherit the lead's
-   conversation history, so include the problem statement, the relevant context
-   from Phase 1, the findings/URLs from Phase 2, and the specific lens that
-   teammate owns. Spawning is **asynchronous**: the call returns "the agent is
+   (`cbr:strategist` for the lens roles; `general-purpose` for a teammate that needs
+   broader tools or to write files; read-only `Explore` works for pure research roles
+   but can't write files). Give each a **self-contained spawn prompt** — teammates do
+   NOT inherit the lead's conversation history, so include the problem statement, the
+   relevant context you gathered, the research findings/URLs, and the specific lens
+   that teammate owns. Spawning is **asynchronous**: the call returns "the agent is
    now running", and each teammate's brief arrives automatically as a new turn
    when it finishes. **Wait, do not poll** — this is harness-tracked work; a
    timer-based poll just burns tokens.

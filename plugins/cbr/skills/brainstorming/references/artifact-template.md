@@ -13,6 +13,10 @@ filename drops it).
 ## Template
 
 ```markdown
+---
+stream: <slug>-<YYYYMMDD>          # persistent cross-artifact identity (required)
+---
+
 # Brainstorm: <Topic>
 
 - **Date:** YYYY-MM-DD
@@ -54,15 +58,20 @@ Questions that do NOT need to be answered to finish brainstorming, but that the
 `requirement` stage MUST close. This is the explicit to-do list handed to Stage 2.
 
 ## 8. Considered approaches & decisions
-For each significant decision, a Decision Record (see dar-analysis.md):
-- the decision and the alternatives considered,
-- the DAR criteria, weights, and scores (or a note that the choice was minor and
-  reversible, so DAR was skipped),
-- the chosen option and the rationale.
+The audit trail of the divergent motion — what was on the table, not just what won:
+- **Problem framings** (when problem-first inversion ran): the ≥3 framings explored
+  and which one was adopted (see problem-first.md).
+- **Options generated** (the divergent range — obvious / minimal / inverted / wild),
+  each with a one-line essence, so the reasoning is reconstructable.
+- For each significant decision, a **Decision Record** (see dar-analysis.md): the
+  decision and alternatives considered; the DAR criteria, weights, and scores (or a
+  note that the choice was minor and reversible, so DAR was skipped); the chosen
+  option and rationale.
 
 ## 9. Recommended approach
-The synthesized direction: which approaches won and how they fit together. This
-is the spine the requirement stage elaborates.
+The synthesized direction: which approaches won and how they fit together — the spine
+the requirement stage elaborates. State **what would change this recommendation** (the
+condition under which you would switch), so downstream stages know what to watch.
 
 ## 10. Risks & mitigations
 Each known risk with: likelihood, impact, and a mitigation or contingency.
@@ -79,8 +88,8 @@ constraints, the open questions to prioritize, and anything fragile.
 
 ## Quality bar
 
-Before this artifact is shown for approval (Phase 7), it must contain **zero**
-placeholders, **zero** unlabeled assumptions, and **zero** uncertainties that
-were named in the clarify loop but never resolved. An open question deliberately
+Before this artifact is shown for approval, it must contain **zero** placeholders,
+**zero** unlabeled assumptions, and **zero** uncertainties that were named while
+clarifying but never resolved. An open question deliberately
 deferred to Stage 2 belongs in §7 — that is different from an unresolved
 uncertainty, which is a defect.
