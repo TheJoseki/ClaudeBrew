@@ -1,7 +1,7 @@
 # API Design — [PROJECT_NAME]
 
 > Created/updated by `architecture` / `design-function`; verdict by fresh `cbr:reviewer` + user.
-> Copy from `docs/_templates/API_DESIGN.md` to `docs/API_DESIGN.md` and fill in per project.
+> Copy this template to `docs/API_DESIGN.md` and fill in per project.
 > **Per-endpoint catalog only.** Cross-cutting patterns (auth, errors, pagination, status codes, RBAC) live in `docs/ARCHITECTURE.md` — do not duplicate here.
 > **Backend**: [BACKEND — e.g. NestJS / Django / Rails / FastAPI] · **Auth**: [AUTH_SCHEME — e.g. JWT / session cookie / OAuth2] · **Base URL**: [API_PREFIX — e.g. /api/v1/ / /api/ / none]
 

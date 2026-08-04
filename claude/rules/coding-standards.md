@@ -4,7 +4,7 @@ description: Universal coding standards — SOLID, Clean Code, OWASP, testing ru
 
 # Coding Standards (Project-Agnostic)
 
-> These apply to all projects using ClaudeBrew. Customize per project by copying `docs/_templates/CODING_RULES.md` → `docs/CODING_RULES.md` in your project.
+> These apply to all projects using ClaudeBrew. Customize per project by copying `{{CBR_ROOT}}/docs/_templates/CODING_RULES.md` → `docs/CODING_RULES.md` in your project.
 
 ## SOLID Principles
 

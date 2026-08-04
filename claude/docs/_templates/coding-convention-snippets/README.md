@@ -1,6 +1,6 @@
 # Coding-Convention Snippets
 
-Progressive-disclosure companion to `docs/_templates/CODING_CONVENTION.md`. The core convention file is **stack-neutral** — naming, imports, comments, error handling, tests, git — so it holds no matter the framework. The concrete code exemplars (module / service / component skeletons) live here, one file per stack, and load **only when needed**: a skill reads the project's stack from `PROJECT.md` (the Backend / Frontend / ORM fields) and pulls in the single matching `<stack>.md`, instead of the core carrying every framework's boilerplate.
+Progressive-disclosure companion to `../CODING_CONVENTION.md`. The core convention file is **stack-neutral** — naming, imports, comments, error handling, tests, git — so it holds no matter the framework. The concrete code exemplars (module / service / component skeletons) live here, one file per stack, and load **only when needed**: a skill reads the project's stack from `PROJECT.md` (the Backend / Frontend / ORM fields) and pulls in the single matching `<stack>.md`, instead of the core carrying every framework's boilerplate.
 
 ## Selecting a snippet
 

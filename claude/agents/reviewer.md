@@ -17,7 +17,7 @@ Check agent memory at start for recurring defect patterns in this codebase.
 
 ## Output — the verdict artifact (MANDATORY)
 Write a verdict JSON to the path the spawn prompt gives, conforming to
-`${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`:
+`{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`:
 `{ gate, decision: PASS|FAIL, findings:[{severity, file, line, note}], verification:[], secretsScanned, producedBy:"cbr:reviewer", timestamp }`.
 - `decision: PASS` only if zero Critical findings and every checklist item is met.
 - Any Critical finding ⇒ `decision: FAIL`.

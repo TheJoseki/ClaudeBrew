@@ -1,10 +1,10 @@
 # Coding Convention — [PROJECT_NAME — e.g. Acme Orders]
 
 > Created/updated by `design-function`; consumed by `implement-feature`, `design-screen`, and `fix-bug`; enforced at the G4 code-review gate by `review-code` + a fresh `cbr:reviewer` verdict.
-> Copy from `docs/_templates/CODING_CONVENTION.md` to `docs/CODING_CONVENTION.md` and fill in per project.
+> Copy this template to `docs/CODING_CONVENTION.md` and fill in per project.
 > Reference: `docs/CODING_RULES.md` (enforcement rules), `docs/ARCHITECTURE.md` (system design).
 
-This file is the **stack-neutral** core — naming, import order, comments, error handling, tests, and git conventions that hold regardless of framework. **For code exemplars** (module / service / component skeletons), load `docs/_templates/coding-convention-snippets/<stack>.md` matching the stack detected in `PROJECT.md` (progressive disclosure — see that folder's `README.md`).
+This file is the **stack-neutral** core — naming, import order, comments, error handling, tests, and git conventions that hold regardless of framework. **For code exemplars** (module / service / component skeletons), load `coding-convention-snippets/<stack>.md` matching the stack detected in `PROJECT.md` (progressive disclosure — see that folder's `README.md`).
 
 ---
 
@@ -116,4 +116,4 @@ Committed code carries no bare `TODO` / `FIXME` / debug print unless it names an
 | Test name pattern | [e.g. test_<action>_<scenario>_<expected>] |
 | Commit format | [e.g. Conventional Commits] |
 
-> Code exemplars are **not** in this file. Load `docs/_templates/coding-convention-snippets/<stack>.md` for module / service / component skeletons to copy and adapt to the stack in `PROJECT.md`.
+> Code exemplars are **not** in this file. Load `coding-convention-snippets/<stack>.md` for module / service / component skeletons to copy and adapt to the stack in `PROJECT.md`.

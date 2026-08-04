@@ -185,7 +185,7 @@ Scripts resolve `data/` relative to themselves, so run them from any directory.
 
 ```bash
 # Full design-system recommendation for a product
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py \
   "<product_type> <industry> <keywords>" --design-system -p "Project Name"
 ```
 
@@ -199,19 +199,19 @@ python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
 
 **Domain searches:**
 ```bash
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<keyword>" --domain <domain>
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "<keyword>" --domain <domain>
 # Domains: style | color | chart | landing | product | ux | typography | icons |
 #          react | web | google-fonts
 ```
 
 **Stack-specific guidelines:**
 ```bash
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<keyword>" --stack react-native
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "<keyword>" --stack react-native
 ```
 
 **Persisting a design system** (Master + Overrides pattern):
 ```bash
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "<query>" \
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "<query>" \
   --design-system --persist -p "Project Name" [--page "dashboard"]
 ```
 Writes `design-system/<project-slug>/MASTER.md` as the global source of truth,

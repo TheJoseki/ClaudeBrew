@@ -78,7 +78,7 @@ Workers are always `cbr:developer`. **Never spawn `cbr:tester` as a parallel
 worker** — it is reserved for the Mode B gate, where its value is that it did
 not author what it runs.
 
-> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/skills/implement-feature/references/parallel-mode.md`
 
 Mode A ends at the UTC document. It does **not** roll on into Mode B — the user
 decides when the gate runs.
@@ -131,7 +131,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
     (template: [`references/utc-template.md`](references/utc-template.md))
   - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`, conforming
-    to `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
+    to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
     `gate: "G6"` and `producedBy: "cbr:tester"`.
 - **Evidence requirement**: `verification` MUST hold the actual command(s) run
   and their result — G6 blocks without at least one `result: "pass"` entry.
@@ -141,7 +141,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 ### Step 2 — Validate
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G6 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G6 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no

@@ -12,19 +12,19 @@
 ## Run the design-system search (MANDATORY)
 
 ```bash
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py \
   "[product_type] [industry] [style_keywords]" --design-system -p "[Project Name]"
 ```
 
-Example: `python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "admin dashboard hr management minimal enterprise" --design-system -p "HRM Portal"`
+Example: `python {{CBR_ROOT}}/skills/design-system/scripts/search.py "admin dashboard hr management minimal enterprise" --design-system -p "HRM Portal"`
 
 Outputs: color palette, typography pairing, component library recommendations, spacing system, icon style.
 
 **Additional domain searches:**
 ```bash
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[product_type]" --domain ux
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[style_keywords]" --domain typography
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "[product_type]" --domain color
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "[product_type]" --domain ux
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "[style_keywords]" --domain typography
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "[product_type]" --domain color
 ```
 
 If Python is unavailable → use the `design-system` skill's Product Type → Style Guide

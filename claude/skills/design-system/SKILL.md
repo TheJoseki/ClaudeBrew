@@ -69,11 +69,11 @@ directory.
 
 ```bash
 # Complete design-system recommendation (style + palette + fonts + effects)
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py \
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py \
   "healthcare patient dashboard" --design-system -p "Project Name"
 
 # Targeted lookup
-python ${CLAUDE_PLUGIN_ROOT}/skills/design-system/scripts/search.py "saas dashboard" --domain product
+python {{CBR_ROOT}}/skills/design-system/scripts/search.py "saas dashboard" --domain product
 ```
 
 Domains: `style` `color` `chart` `landing` `product` `ux` `typography` `icons`

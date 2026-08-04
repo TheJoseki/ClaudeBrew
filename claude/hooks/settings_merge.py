@@ -7,10 +7,9 @@ merges the registration into the *user's* .claude/settings.json when they opt in
 
 Usage:  python settings_merge.py <settings.json path> <absolute enforce-worktree.py path>
 
-The hook path MUST be absolute. An installed plugin lives under
-~/.claude/plugins/cache/<marketplace>/cbr/..., and neither ${CLAUDE_PLUGIN_ROOT}
-nor ${CLAUDE_PROJECT_DIR} resolves inside user settings.json — so /cbr:setup
-resolves the real installed path and passes it here. This is a pure function over
+The hook path MUST be absolute. A ${CLAUDE_PROJECT_DIR}-anchored or relative path
+does not resolve inside a user's settings.json at load time — so the caller
+resolves the real installed absolute path and passes it here. This is a pure function over
 a settings dict (plus a thin CLI) so it is unit-testable without running the skill.
 """
 import json

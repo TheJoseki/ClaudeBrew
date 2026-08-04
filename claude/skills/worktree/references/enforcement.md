@@ -61,7 +61,7 @@ worktree …`, the skill's own setup) must run on the base branch.
 The hook denies an edit only when **all** are true: current branch is a base
 branch (`main`/`master`), and the target path is **not** in the exemption set.
 
-Exemptions (defined in `${CLAUDE_PLUGIN_ROOT}/hooks/enforce-worktree.py` as `EXEMPT_GLOBS`):
+Exemptions (defined in `{{CBR_ROOT}}/hooks/enforce-worktree.py` as `EXEMPT_GLOBS`):
 
 | Glob | Why it's exempt |
 |---|---|
@@ -135,10 +135,10 @@ So registration is **opt-in**. `/cbr:setup` merges an entry into the **user's**
 
 Two things to note about this entry:
 
-- **The path is absolute, and must be.** Inside a *user* `settings.json`, neither
-  `${CLAUDE_PLUGIN_ROOT}` nor `${CLAUDE_PROJECT_DIR}` resolves — those expand only
-  in a plugin/hook context, not in the user's settings. `/cbr:setup` therefore
-  resolves a concrete absolute path. It **copies** `enforce-worktree.py` to a
+- **The path is absolute, and must be.** Inside a *user* `settings.json`, a
+  `${CLAUDE_PROJECT_DIR}`-anchored or repo-relative path does not resolve — the
+  harness runs the hook with no reliable CWD, not from the user's settings dir.
+  The install step therefore resolves a concrete absolute path. It **copies** `enforce-worktree.py` to a
   stable location it controls (`~/.claude/cbr/hooks/enforce-worktree.py`) and
   registers that, rather than baking in the glob-resolved plugin cache path
   (`~/.claude/plugins/cache/<marketplace>/cbr/hooks/...`). The trade-off: the

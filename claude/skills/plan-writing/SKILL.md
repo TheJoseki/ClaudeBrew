@@ -108,7 +108,7 @@ live in **`references/input-contract.md`**.
 - **No stream exists** (brownfield: planning from code in a repo CBR has not been run on) →
   **open one stream-light**:
   1. Pick a short kebab-case `<slug>` + today's date; create `docs/streams/<slug>-<YYYYMMDD>/`.
-  2. Scaffold `STREAM.md` from `docs/_templates/STREAM.md`; set **`lane: brownfield`** in its
+  2. Scaffold `STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md`; set **`lane: brownfield`** in its
      frontmatter (the stream-light marker) and fill the title / slug / date placeholders. **Prune
      the membership rows for stages this brownfield stream skips** (SRS, SCREEN, BASIC, TECH, …) —
      keep the PLAN row and the stages you actually expect — so the manifest doesn't advertise

@@ -5,7 +5,7 @@
 > **Applies to**: All agents (human & AI) working on this codebase
 > Created/updated by `design-function`; enforced by `review-code` + fresh `cbr:reviewer` verdict + user.
 > Framework specifics are PROJECT.md-driven — fill each `[… — e.g. …]` slot from your stack.
-> Copy from `docs/_templates/CODING_RULES.md` to `docs/CODING_RULES.md` and fill in per project.
+> Copy this template to `docs/CODING_RULES.md` and fill in per project.
 
 ## 1. Golden Rules (Customize per project)
 | # | Rule | Severity |

@@ -76,7 +76,7 @@ Workers are always `cbr:developer`. **Never spawn `cbr:tester` as a parallel
 worker** — it is reserved for the Mode B gate, where its value is that it did
 not author what it runs.
 
-> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/skills/implement-feature/references/parallel-mode.md`
 
 Mode A ends at the ITC document. It does **not** roll on into Mode B — the user
 decides when the gate runs.
@@ -132,7 +132,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`
     (template: [`references/itr-template.md`](references/itr-template.md))
   - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json`, conforming
-    to `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
+    to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
     `producedBy: "cbr:tester"` and **`gate: "G7"` exactly** — the API/E2E split
     is reported inside the ITR, never as a `G7a`/`G7b` gate value, which the
     validator rejects.
@@ -144,7 +144,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 ### Step 2 — Validate
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G7 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G7 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no

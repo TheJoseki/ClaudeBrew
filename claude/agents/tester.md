@@ -17,7 +17,7 @@ Check agent memory at start for this project's test runner, flaky tests, and set
 
 ## Output — the verdict artifact (MANDATORY)
 Write a verdict JSON to the path the spawn prompt gives, conforming to
-`${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`:
+`{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`:
 `{ gate, decision: PASS|FAIL, findings:[...], verification:[{cmd, result:pass|fail}], secretsScanned, producedBy:"cbr:tester", timestamp }`.
 - `decision: PASS` only if the suite is green (100% of the targeted tests pass).
 - **`verification` MUST contain the actual test command(s) and their result** — G6/G7 block without ≥1 `result: "pass"` entry.

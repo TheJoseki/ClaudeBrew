@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/protect-files.py\""
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/protect-files.py\" read"
+            "command": "python \"{{CBR_ROOT}}/hooks/protect-files.py\" read"
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-bash.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/guard-bash.py\""
           }
         ]
       },
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-webfetch.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/guard-webfetch.py\""
           }
         ]
       }
@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/compact-context-saver.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/compact-context-saver.py\""
           }
         ]
       }
@@ -54,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/session-init.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/session-init.py\""
           }
         ]
       }
@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/subagent-context.py\""
+            "command": "python \"{{CBR_ROOT}}/hooks/subagent-context.py\""
           }
         ]
       }
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-reminder.sh\""
+            "command": "bash \"{{CBR_ROOT}}/hooks/post-edit-reminder.sh\""
           }
         ]
       }

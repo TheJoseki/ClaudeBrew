@@ -2,7 +2,7 @@
 
 > Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr:tester` + user.
 > Methodology: ISTQB CTFL · ISO/IEC 25010.
-> Copy `docs/_templates/TEST_VIEWPOINT.md` → `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. Gate G3c requires zero remaining placeholder brackets.
+> Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. Gate G3c requires zero remaining placeholder brackets.
 
 ---
 

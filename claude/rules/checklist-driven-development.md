@@ -4,7 +4,7 @@ description: Mandates checklist usage at coding and review stages. Enforces self
 
 # Checklist-Driven Development
 
-> Mandates that checklists are USED (not just exist) at every coding and review stage. Templates exist in `docs/_templates/` — this file enforces their usage.
+> Mandates that checklists are USED (not just exist) at every coding and review stage. Templates ship at `{{CBR_ROOT}}/docs/_templates/` — this file enforces their usage.
 
 ## 1. Checklist Lifecycle
 
@@ -20,7 +20,7 @@ Any stage (discovery)            → Updates checklist when new pattern found
 | Rule | Detail |
 |------|--------|
 | Who creates | `design-function` at Step D1 (after the TECH spec, before implementation) |
-| Template | `docs/_templates/CODING-CHECKLIST.md` |
+| Template | `{{CBR_ROOT}}/docs/_templates/CODING-CHECKLIST.md` |
 | Customization | ALL `[PROJECT_SPECIFIC]` placeholders replaced with actual values from PROJECT.md |
 | Location | `docs/CODING-CHECKLIST.md` (project root docs/, one per project) |
 | Update trigger | New feature adds new patterns not in checklist → `design-function` adds a section |

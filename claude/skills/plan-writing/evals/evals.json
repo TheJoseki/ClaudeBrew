@@ -11,7 +11,7 @@
     {
       "id": 2,
       "prompt": "This existing repo has no CBR docs. Plan the work to add pagination to the existing product-list API.",
-      "expected_output": "brownfield code-only. Step 1 finds no SRS/brainstorm/research; the source of truth is the code, so it scouts the relevant modules (Glob/Grep) before decomposing. Since no stream exists, it OPENS ONE STREAM-LIGHT: creates docs/streams/<slug>-<YYYYMMDD>/, scaffolds STREAM.md from docs/_templates/STREAM.md with lane: brownfield, copies the derived Gate Status zone verbatim (authors no gate values), and does NOT write an SRS/design or force G1-G3. Writes plan/PLAN.md with tasks naming real files. Ends and stops (no cascade to implement-feature).",
+      "expected_output": "brownfield code-only. Step 1 finds no SRS/brainstorm/research; the source of truth is the code, so it scouts the relevant modules (Glob/Grep) before decomposing. Since no stream exists, it OPENS ONE STREAM-LIGHT: creates docs/streams/<slug>-<YYYYMMDD>/, scaffolds STREAM.md from the shipped STREAM template with lane: brownfield, copies the derived Gate Status zone verbatim (authors no gate values), and does NOT write an SRS/design or force G1-G3. Writes plan/PLAN.md with tasks naming real files. Ends and stops (no cascade to implement-feature).",
       "files": []
     },
     {

@@ -14,7 +14,7 @@ description: SDLC quality gates, artifact paths, and skill conventions. Always l
 | G2 | UI Design | All screen states defined (default/load/empty/error) | User approval | — |
 | G3a | Basic Design (BD) | Module structure, DB table list, API endpoint list | User approval | — |
 | G3b | Detail Design (DD) | ORM schema, service methods, DTOs complete | User approval | — |
-| G3c | Test Viewpoint | `docs/TEST_VIEWPOINT.md` (copied from `docs/_templates/TEST_VIEWPOINT.md`, customized, no placeholders) + test layers defined | User approval | — |
+| G3c | Test Viewpoint | `docs/TEST_VIEWPOINT.md` (copied from `{{CBR_ROOT}}/docs/_templates/TEST_VIEWPOINT.md`, customized, no placeholders) + test layers defined | User approval | — |
 | G3d | Design Review | 16-item checklist PASS (0 Critical, 0 Major), full SRS→BASIC→TECH traceability verified | Review verdict + user | — |
 | G4 | Code Review | 0 Critical findings, ≤2 Major (must fix) | `review-code` verdict (cbr:reviewer) + user | `gate: "G4"` |
 | G5a | Initial Security Scan | 0 Critical, 0 High OWASP findings — scan after implementation complete | `vulnerability-scanner` verdict (cbr:reviewer) + user | `gate: "G5a"` |
@@ -30,8 +30,8 @@ description: SDLC quality gates, artifact paths, and skill conventions. Always l
 writes it and the *user* decides whether the gate opens. No agent auto-passes a gate, and
 no skill advances past its own gate on the strength of a verdict it collected.
 
-**Only four gates are machine-validated.** `hooks/verdict-gate.py` and
-`schemas/verdict-artifact.schema.json` accept exactly four `gate` values — **G4, G5a, G6,
+**Only four gates are machine-validated.** `{{CBR_ROOT}}/hooks/verdict-gate.py` and
+`{{CBR_ROOT}}/schemas/verdict-artifact.schema.json` accept exactly four `gate` values — **G4, G5a, G6,
 G7** — so only those four have a JSON verdict artifact:
 
 - **G7a and G7b both report under `gate: "G7"`.** They are sub-criteria (API vs. E2E), not
@@ -47,7 +47,7 @@ The remaining gates are plain user approvals with no verdict at all.
 Each verdict is written **beside its own gate's report, inside the stream** — `<stream>/reviews/` next to
 the REVIEW, `<stream>/security/` next to the SEC report, `<stream>/test-reports/` next to the UTR/ITR — so a
 gate's evidence and its verdict never drift apart. Every one is validated by
-`hooks/verdict-gate.py --gate <G> --artifact <path>` before the user is asked to decide.
+`{{CBR_ROOT}}/hooks/verdict-gate.py --gate <G> --artifact <path>` before the user is asked to decide.
 
 ## Artifact Paths (Canonical — stream-first)
 
@@ -100,13 +100,14 @@ stream root `docs/streams/<slug>-<YYYYMMDD>/` unless they start with `docs/`.
 | `design-function` | Coding Checklist | `docs/CODING-CHECKLIST.md` (created once per project) |
 | `architecture` | Project-wide ADR | `docs/decisions/ADR-[topic]-[YYYYMMDD].md` (a decision spanning streams) |
 | user / relevant skill | Risk Register (EPIC) | `docs/risks/RISK-[epic-name].md` |
-| Any skill | Reference Templates | `docs/_templates/[NAME].md` (on-demand loading) |
+| Any skill | Reference Templates | `{{CBR_ROOT}}/docs/_templates/[NAME].md` (on-demand loading) |
 | Each pool agent (self) | Agent Memory | `.claude/agent-memory/<agent-name>/MEMORY.md` (native auto-managed) |
 
 Project-level reference docs (`PROJECT.md`, `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`,
 `API_DESIGN.md`, `TEST_VIEWPOINT.md`, `CODE-REVIEW-CHECKLIST.md`) also live at `docs/` root, seeded from
-`docs/_templates/`. **These and the project-level table above stay at `docs/` root — never relocate a
-project-level doc into a stream folder** (G3c reads `docs/TEST_VIEWPOINT.md` there).
+the shipped templates at `{{CBR_ROOT}}/docs/_templates/`. **The per-project instantiated copies stay at
+`docs/` root — never relocate a project-level doc into a stream folder** (G3c reads `docs/TEST_VIEWPOINT.md`
+there). Only those copies are edited; the shipped source templates stay read-only at `{{CBR_ROOT}}/docs/_templates/`.
 
 **Auto-create rule**: Never fail because a directory is missing — create it. A stream folder
 `docs/streams/<slug>-<YYYYMMDD>/` contains, on demand: `brainstorm/`, `requirements/`, `design/`
@@ -131,19 +132,19 @@ identity carrier.
   stays with the glob (`hooks/lib/sdlc_state.py`); never hand-edit the gate zone**, and it is never a
   second source of truth.
 - **Project-level reference docs stay at `docs/` root** (one per project, NOT under a stream), seeded from
-  `docs/_templates/`: `PROJECT.md`, `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`,
+  `{{CBR_ROOT}}/docs/_templates/`: `PROJECT.md`, `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`,
   `API_DESIGN.md`, `TEST_VIEWPOINT.md`, `CODING-CHECKLIST.md`, `CODE-REVIEW-CHECKLIST.md`.
 
 **Upkeep protocol (MANDATORY, every stage skill).** When a stage skill writes its output artifact it must:
 (1) stamp `stream: [id]` in that artifact's frontmatter; (2) append/update the artifact's row in the
 stream's `STREAM.md` membership table; (3) update the task-board status for its phase. `brainstorming`
 (greenfield) or `plan-writing` (brownfield, stream-light) creates `STREAM.md` from
-`docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
+`{{CBR_ROOT}}/docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
 Status zone — `handoff` / `session-init` regenerate it.
 
 ### Stream openers & lanes (greenfield vs stream-light)
 
-A work-stream has two possible openers, both scaffolding `STREAM.md` from `docs/_templates/STREAM.md`:
+A work-stream has two possible openers, both scaffolding `STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md`:
 
 - **`brainstorming` (greenfield lane).** The spec-first front door — opens the stream, then the
   `analyze-requirement → design → …` chain fills G1–G8 in order.
@@ -191,8 +192,8 @@ is a gap.
 | BUG | `fix-bug` | `fix-bug` | `unit-test`, `integration-test` | on fix |
 | RETRO | `retro` | — | next stream | post-G8 |
 
-Reference templates in `docs/_templates/` are created once (seeded to their project-level location) and
-updated by the skill that owns them; they are not per-stream artifacts.
+Reference templates ship at `{{CBR_ROOT}}/docs/_templates/`; a per-project copy is seeded once to its
+`docs/`-root location and updated by the skill that owns it — they are not per-stream artifacts.
 
 Gate verdicts (VERDICT-G4/G5a/G6/G7) are authored by the fresh pool agent (`cbr:reviewer`/`cbr:tester`)
 the stage skill spawns — the skill owns the gate; the pool agent writes the verdict.

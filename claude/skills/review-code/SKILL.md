@@ -56,7 +56,7 @@ This skill decides **what** is judged. A freshly spawned `cbr:reviewer` decides
 checklist, then hand it over in Step 3.
 
 The checklist is the dimensions below **plus** the full tech-lead list at
-`${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-checklist.md`.
+`references/leader-review-checklist.md`.
 Pass both to the reviewer by path; do not paste them into the prompt.
 
 ### Security (CRITICAL — any finding blocks the gate)
@@ -116,7 +116,7 @@ your own review is the failure mode this step exists to prevent.
   - Findings report → `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md`
     (template: [`references/template.md`](references/template.md))
   - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json`, conforming to
-    `${CLAUDE_PLUGIN_ROOT}/schemas/verdict-artifact.schema.json`, with
+    `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
     `gate: "G4"` and `producedBy: "cbr:reviewer"`. A reviewer runs no build or
     test commands, so `verification` stays `[]`.
 - **Posture**: assume the code was AI-written; look for what breaks, not for
@@ -125,7 +125,7 @@ your own review is the failure mode this step exists to prevent.
 **3.2 — Validate the verdict** (never trust it unchecked):
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/hooks/verdict-gate.py" --gate G4 --artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G4 --artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json
 ```
 
 In batch mode, validate that batch's verdict instead —
@@ -177,7 +177,7 @@ BATCH: Batch-N
 INPUT: docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md  ← scope list of files for this batch only
 SCOPE: Review only files in DEV-BN work log, not previous batches
 OUTPUT: docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md + docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-G4.json
-Checklist: ${CLAUDE_PLUGIN_ROOT}/skills/review-code/references/leader-review-checklist.md
+Checklist: references/leader-review-checklist.md
 ```
 
 ## Verification

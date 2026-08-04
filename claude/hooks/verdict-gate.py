@@ -3,7 +3,7 @@
 
 A gate-owning skill (review-code, vulnerability-scanner, unit-test,
 integration-test) spawns a fresh reviewer/tester agent, which writes a verdict
-artifact (schema: plugins/cbr/schemas/verdict-artifact.schema.json). The skill
+artifact (schema: schemas/verdict-artifact.schema.json). The skill
 then runs this validator BEFORE its user-facing AskUserQuestion:
 
     python verdict-gate.py --gate <G4|G5a|G6|G7> --artifact <path>

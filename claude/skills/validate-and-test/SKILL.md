@@ -50,13 +50,13 @@ Or run the bundled detector, which prints the correct lint + type-check commands
 for the current directory:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/validate-and-test/scripts/detect_stack.sh"
+bash "{{CBR_ROOT}}/skills/validate-and-test/scripts/detect_stack.sh"
 ```
 
 Machine-readable form, to run the commands it found:
 
 ```bash
-eval "$(bash "${CLAUDE_PLUGIN_ROOT}/skills/validate-and-test/scripts/detect_stack.sh" --export)"
+eval "$(bash "{{CBR_ROOT}}/skills/validate-and-test/scripts/detect_stack.sh" --export)"
 $TYPE_CMD && $LINT_CMD
 ```
 

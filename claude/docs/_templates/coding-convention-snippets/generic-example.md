@@ -1,6 +1,6 @@
 # Generic Example Snippet
 
-> **This is an EXAMPLE to copy and adapt — not a mandate.** It shows the *shape* the stack-neutral `CODING_CONVENTION.md` implies: one feature module, one service, one UI component. The syntax is deliberately pseudo-code — framework decorators, imports, and types are omitted on purpose. Replace `<placeholders>` and the pseudo-syntax with your actual stack (see `PROJECT.md`), then save the result as `docs/_templates/coding-convention-snippets/<stack>.md` for reuse.
+> **This is an EXAMPLE to copy and adapt — not a mandate.** It shows the *shape* the stack-neutral `CODING_CONVENTION.md` implies: one feature module, one service, one UI component. The syntax is deliberately pseudo-code — framework decorators, imports, and types are omitted on purpose. Replace `<placeholders>` and the pseudo-syntax with your actual stack (see `PROJECT.md`), then save the result as `coding-convention-snippets/<stack>.md` (alongside this file) for reuse.
 
 ## 1. Feature module skeleton
 

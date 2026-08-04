@@ -50,7 +50,7 @@ chain itself (schema → service → controller feeds forward; it is a chain, no
 fan-out), and keep cross-cutting decisions — shared entities, the API prefix,
 auth strategy — in this context so workers cannot contradict each other.
 
-> **Procedure**: `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/skills/implement-feature/references/parallel-mode.md`
 > — when to split, disjoint file ownership, the hard File Ownership Rules to
 > restate in every spawn prompt, and how to synthesize.
 

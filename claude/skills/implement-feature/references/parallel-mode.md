@@ -3,7 +3,7 @@
 > Shared by every execution skill (`implement-feature`, `design-screen`,
 > `design-function`, `unit-test` Mode A, `integration-test` Mode A).
 > Other skills reference this file at
-> `${CLAUDE_PLUGIN_ROOT}/skills/implement-feature/references/parallel-mode.md` —
+> `{{CBR_ROOT}}/skills/implement-feature/references/parallel-mode.md` —
 > do not copy it.
 
 Parallel mode is **opt-in**: it runs only when the invocation carries

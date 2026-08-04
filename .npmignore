@@ -20,6 +20,11 @@
 /.claude-plugin/
 /plugins/
 
+# Python bytecode (regenerated when hooks run in dev; must never ship). These are
+# unanchored on purpose — a stray __pycache__ can appear at any depth under claude/hooks/.
+__pycache__/
+*.pyc
+
 # Repo/tooling cruft.
 /.gitignore
 /.coveragerc

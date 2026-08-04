@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://claudebrew/cbr/schemas/verdict-artifact.schema.json",
   "title": "cbr verdict-artifact",
-  "description": "Verdict written by a fresh reviewer/tester agent for an SDLC quality gate (G4/G5a/G6/G7). Validated by plugins/cbr/hooks/verdict-gate.py before the user gate.",
+  "description": "Verdict written by a fresh reviewer/tester agent for an SDLC quality gate (G4/G5a/G6/G7). Validated by hooks/verdict-gate.py before the user gate.",
   "type": "object",
   "required": ["gate", "decision", "findings", "verification", "producedBy"],
   "additionalProperties": true,
