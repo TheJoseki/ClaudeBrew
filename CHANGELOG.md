@@ -4,6 +4,22 @@ All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This p
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-08-04
+
+`plan-writing` rewritten from an orphan `$ARGUMENTS` skill into a **stream-integrated stage** with a mandatory input-contract and a brownfield entry-point — the same **invariants + adaptive moves** house style as the brainstorming rewrite. This gives CBR a coherent way to plan from an **existing codebase** (maintenance), not only from a spec chain.
+
+### Changed
+- **`plan-writing/SKILL.md` rewritten** around 7 invariants + a move toolbox (no `$ARGUMENTS`, no fixed script). The load-bearing new part is a **mandatory Step-1 input-contract**: it detects the source of truth by priority `requirements/SRS.md → brainstorm/BRAINSTORM.md → research/RES-*.md → code`, **asks the user which to plan from when several exist** (user-selectable, never auto-pick), and **refuses to plan on nothing** (points at the scout/`researcher`) rather than fabricating scope. Greenfield is preserved — a present SRS is the top-priority input, so the brainstorm→SRS→plan flow is unchanged. Frontmatter `allowed-tools` expanded to `Read, Grep, Glob, Write, Edit, AskUserQuestion`; `description` stays double-quoted with `TRIGGER:`/`NOT FOR:`. Deep detail pushed to `references/input-contract.md` + `references/plan-structure.md` (SKILL.md < 300 lines).
+- **`plan-writing` is a second stream opener.** When maintenance work starts on a repo with **no** stream, it **opens one stream-light**: creates the stream folder, scaffolds `STREAM.md`, marks `lane: brownfield`, and writes `plan/PLAN.md` **without** an SRS/design or forced G1–G3. Gate authority is unchanged — a stream-light stream's design gates read `pending` (benign), which was **proven against `hooks/lib/sdlc_state.py` before the rewrite** (missing `SRS.md`/`TECH.md` = `pending`, not error; the `lane:` marker is inert to `_stream_archived`/`resolve_active_feature`). No hook change.
+- **Reconciled the "sole opener" prose** across the authority layer now that there are two openers: `sdlc-conventions.md` (new *Stream openers & lanes* subsection + Work-Stream/lifecycle rows), the `STREAM.md` template intro, `brainstorming/SKILL.md`'s stream-scaffold step, and `CLAUDE.md`'s SDLC-engine stage list — all now say `brainstorming` (greenfield) **or** `plan-writing` (brownfield stream-light).
+
+### Added
+- **`lane:` frontmatter marker** in `docs/_templates/STREAM.md` — `greenfield` (default, inherited unchanged by `brainstorming`) or `brownfield` (stream-light). Descriptive metadata only; not read by any hook.
+- **Rewrote `plan-writing/evals/evals.json`** to exercise the input-contract + stream-light: greenfield-no-regression (SRS consumed first), brownfield code-only (plan from code + open stream-light), research-fed (reuse `RES-*`), refuse-on-empty (no fabricated scope), multi-SoT user-selectable (asks which), plus the retained end-to-end-delivery boundary negative.
+
+### Notes
+- Forward-compatible with the greenlit **`explore`/scout skill** (next stream): the input-contract already lists `research/RES-*.md` as a source, so a dedicated scout front-door drops in without a further `plan-writing` change.
+
 ## [0.6.0] — 2026-08-04
 
 Brainstorming (SDLC Stage 1) rewritten from a rigid 9-phase machine into **invariants + an adaptive toolbox of moves**, so it brainstorms like a person. Fluid process, **unchanged output-contract** — the stream artifact write is untouched.
