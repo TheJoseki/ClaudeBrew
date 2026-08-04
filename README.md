@@ -1,6 +1,6 @@
 # ClaudeBrew
 
-<!-- release: 0.5.0 -->
+<!-- release: 0.6.0 -->
 
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
@@ -12,7 +12,7 @@ brainstorming → worktree → requirement → design → implement → review �
 
 Every stage **never guesses** (uncertainty is surfaced, not assumed), is **evidence-backed** (library docs via Context7, prior art via web search, every source cited), and **stops at a hard gate** — it writes its artifact, waits for your approval, and never silently cascades into the next stage.
 
-> **Status:** the full single-layer SDLC suite ships — 25 stage/knowledge skills over a 4-agent capability pool (`researcher`/`developer`/`reviewer`/`tester`), each stage writing a gated artifact. `brainstorming` (Stage 1) and `worktree` (Stage 1.5) are the reference implementations every sibling matches.
+> **Status:** the full single-layer SDLC suite ships — 25 stage/knowledge skills over a 5-agent capability pool (`researcher`/`developer`/`reviewer`/`tester`/`strategist`), each stage writing a gated artifact. `brainstorming` (Stage 1) and `worktree` (Stage 1.5) are the reference implementations every sibling matches.
 
 ## Install
 

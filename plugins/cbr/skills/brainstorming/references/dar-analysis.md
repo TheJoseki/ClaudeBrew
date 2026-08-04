@@ -1,8 +1,8 @@
 # DAR — Decision Analysis & Resolution
 
 DAR is a structured method (from the CMMI process area of the same name) for
-making a defensible choice among alternatives instead of picking by gut. Use it
-in Phase 4 whenever a decision has **real trade-offs** or is **hard to reverse**.
+making a defensible choice among alternatives instead of picking by gut. Reach for
+this move whenever a decision has **real trade-offs** or is **hard to reverse**.
 
 ## When to run DAR (and when not to)
 
