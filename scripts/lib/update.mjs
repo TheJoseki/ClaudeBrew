@@ -74,6 +74,10 @@ export function updateFiles(sourceRoot, target, opts = {}) {
   }
   for (const d of deletes) { try { rmSync(d, { force: true }); } catch { /* best-effort */ } }
 
-  writeManifest(target.claudeDir, buildManifest({ name: manifest.name || "claudebrew", version, scope: target.scope, files: nextFiles }));
+  // Preserve the settings-provenance section: update rewrites the file manifest but must
+  // NOT drop the config provenance uninstall needs to un-merge settings + strip the rules block.
+  const next = buildManifest({ name: manifest.name || "claudebrew", version, scope: target.scope, files: nextFiles });
+  if (manifest.settings) next.settings = manifest.settings;
+  writeManifest(target.claudeDir, next);
   return { action: "update", actions };
 }
