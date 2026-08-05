@@ -16,11 +16,11 @@ description: SDLC quality gates, artifact paths, and skill conventions. Always l
 | G3b | Detail Design (DD) | ORM schema, service methods, DTOs complete | User approval | — |
 | G3c | Test Viewpoint | `docs/TEST_VIEWPOINT.md` (copied from `{{CBR_ROOT}}/docs/_templates/TEST_VIEWPOINT.md`, customized, no placeholders) + test layers defined | User approval | — |
 | G3d | Design Review | 16-item checklist PASS (0 Critical, 0 Major), full SRS→BASIC→TECH traceability verified | Review verdict + user | — |
-| G4 | Code Review | 0 Critical findings, ≤2 Major (must fix) | `review-code` verdict (cbr:reviewer) + user | `gate: "G4"` |
-| G5a | Initial Security Scan | 0 Critical, 0 High OWASP findings — scan after implementation complete | `vulnerability-scanner` verdict (cbr:reviewer) + user | `gate: "G5a"` |
-| G6 | Unit Tests | 100% pass rate, ≤R5 rounds, 100% TECH spec functions covered (Function Coverage Matrix) | `unit-test` verdict (cbr:tester) + user | `gate: "G6"` |
-| G7a | API Integration Tests | All API integration tests pass (100%, ≤R5) on production-equivalent DB, 100% BASIC workflows + TECH API contracts covered (Workflow-API Matrix) | `integration-test` verdict (cbr:tester) + user | `gate: "G7"` |
-| G7b | E2E Browser Tests | All critical user journey E2E tests pass (100%, ≤R5) — **N/A for backend-only projects** | `integration-test` verdict (cbr:tester) + user | `gate: "G7"` |
+| G4 | Code Review | 0 Critical findings, ≤2 Major (must fix) | `review-code` verdict (cbr-reviewer) + user | `gate: "G4"` |
+| G5a | Initial Security Scan | 0 Critical, 0 High OWASP findings — scan after implementation complete | `vulnerability-scanner` verdict (cbr-reviewer) + user | `gate: "G5a"` |
+| G6 | Unit Tests | 100% pass rate, ≤R5 rounds, 100% TECH spec functions covered (Function Coverage Matrix) | `unit-test` verdict (cbr-tester) + user | `gate: "G6"` |
+| G7a | API Integration Tests | All API integration tests pass (100%, ≤R5) on production-equivalent DB, 100% BASIC workflows + TECH API contracts covered (Workflow-API Matrix) | `integration-test` verdict (cbr-tester) + user | `gate: "G7"` |
+| G7b | E2E Browser Tests | All critical user journey E2E tests pass (100%, ≤R5) — **N/A for backend-only projects** | `integration-test` verdict (cbr-tester) + user | `gate: "G7"` |
 | G5b | Pre-Delivery Security Re-scan | Re-scan after all bug fixes: 0 Critical, 0 High confirmed clean | `vulnerability-scanner` re-scan + user | — (reuses the G5a shape) |
 | G8 | Delivery | All gates above green (G5b required before G8) | User sign-off | — |
 
@@ -72,10 +72,10 @@ stream root `docs/streams/<slug>-<YYYYMMDD>/` unless they start with `docs/`.
 | `review-code` | Design Review Report | `reviews/DESIGN-REVIEW-[YYYYMMDD].md` |
 | `review-code` | Review Report | `reviews/REVIEW-[YYYYMMDD].md` |
 | `vulnerability-scanner` | Security Report | `security/SEC-[YYYYMMDD].md` |
-| cbr:reviewer (pool) | Gate Verdict — G4 | `reviews/VERDICT-G4.json` (per-batch: `reviews/VERDICT-B[n]-G4.json`) |
-| cbr:reviewer (pool) | Gate Verdict — G5a | `security/VERDICT-G5a.json` |
-| cbr:tester (pool) | Gate Verdict — G6 | `test-reports/VERDICT-G6.json` |
-| cbr:tester (pool) | Gate Verdict — G7 | `test-reports/VERDICT-G7.json` |
+| cbr-reviewer (pool) | Gate Verdict — G4 | `reviews/VERDICT-G4.json` (per-batch: `reviews/VERDICT-B[n]-G4.json`) |
+| cbr-reviewer (pool) | Gate Verdict — G5a | `security/VERDICT-G5a.json` |
+| cbr-tester (pool) | Gate Verdict — G6 | `test-reports/VERDICT-G6.json` |
+| cbr-tester (pool) | Gate Verdict — G7 | `test-reports/VERDICT-G7.json` |
 | `unit-test` (Mode A) | Test Cases | `test-cases/UTC.md` |
 | `unit-test` (Mode B) | Test Report | `test-reports/UTR-R[n].md` |
 | `integration-test` (Mode A) | Test Cases | `test-cases/ITC.md` |
@@ -195,7 +195,7 @@ is a gap.
 Reference templates ship at `{{CBR_ROOT}}/docs/_templates/`; a per-project copy is seeded once to its
 `docs/`-root location and updated by the skill that owns it — they are not per-stream artifacts.
 
-Gate verdicts (VERDICT-G4/G5a/G6/G7) are authored by the fresh pool agent (`cbr:reviewer`/`cbr:tester`)
+Gate verdicts (VERDICT-G4/G5a/G6/G7) are authored by the fresh pool agent (`cbr-reviewer`/`cbr-tester`)
 the stage skill spawns — the skill owns the gate; the pool agent writes the verdict.
 
 ## Behavior Conventions

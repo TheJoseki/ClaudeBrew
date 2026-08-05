@@ -22,7 +22,7 @@ import sdlc_state  # noqa: E402
 # Agent types that act on SDLC artifacts and get the full gate section.
 GATE_AGENTS = {
     "reviewer", "tester", "developer",
-    "cbr:reviewer", "cbr:tester", "cbr:developer",
+    "cbr-reviewer", "cbr-tester", "cbr-developer",
 }
 
 

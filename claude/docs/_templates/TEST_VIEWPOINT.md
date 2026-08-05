@@ -1,6 +1,6 @@
 # Test Viewpoint — [PROJECT_NAME — e.g. Acme Store]
 
-> Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr:tester` + user.
+> Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr-tester` + user.
 > Methodology: ISTQB CTFL · ISO/IEC 25010.
 > Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. Gate G3c requires zero remaining placeholder brackets.
 
@@ -29,9 +29,9 @@ Which test activity satisfies which quality gate. Pass criteria and deciding aut
 | Gate | Test activity | Pass criteria | Decided by |
 |------|---------------|---------------|------------|
 | G3c | This viewpoint approved | Section 0 filled, all layers defined, zero placeholder brackets | User approval |
-| G6 | Unit tests | 100% pass, ≤R5 rounds, 100% TECH-spec functions covered | `unit-test` verdict (fresh `cbr:tester`) + user |
-| G7a | API integration tests | 100% pass, ≤R5 rounds, all BASIC workflows + TECH API contracts covered | `integration-test` verdict (fresh `cbr:tester`) + user |
-| G7b | E2E browser tests | 100% pass, ≤R5 rounds, all critical journeys covered — N/A for backend-only | `integration-test` verdict (fresh `cbr:tester`) + user |
+| G6 | Unit tests | 100% pass, ≤R5 rounds, 100% TECH-spec functions covered | `unit-test` verdict (fresh `cbr-tester`) + user |
+| G7a | API integration tests | 100% pass, ≤R5 rounds, all BASIC workflows + TECH API contracts covered | `integration-test` verdict (fresh `cbr-tester`) + user |
+| G7b | E2E browser tests | 100% pass, ≤R5 rounds, all critical journeys covered — N/A for backend-only | `integration-test` verdict (fresh `cbr-tester`) + user |
 
 > Verdict-artifact note: G7a and G7b are sub-criteria and both report under `gate: "G7"` in the verdict JSON — writing `"G7a"`/`"G7b"` fails schema validation. Record the API-vs-E2E split inside the integration test report (ITR), not in the `gate` field.
 

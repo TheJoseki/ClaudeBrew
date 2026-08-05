@@ -2,7 +2,7 @@
 """Idempotently register the worktree gate (enforce-worktree.py) as a PreToolUse
 hook in a settings.json.
 
-The worktree gate is OPT-IN: a plugin cannot ship harness settings, so /cbr:setup
+The worktree gate is OPT-IN: a plugin cannot ship harness settings, so claudebrew install
 merges the registration into the *user's* .claude/settings.json when they opt in.
 
 Usage:  python settings_merge.py <settings.json path> <absolute enforce-worktree.py path>

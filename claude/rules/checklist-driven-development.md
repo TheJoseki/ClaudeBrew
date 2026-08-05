@@ -91,7 +91,7 @@ N/A Justifications:
 
 | Aspect | Self-Review (Developer) | Code Review (Reviewer) |
 |--------|------------------------|----------------------|
-| Who | Whoever wrote the code | `review-code`, via a fresh `cbr:reviewer` that did not write it |
+| Who | Whoever wrote the code | `review-code`, via a fresh `cbr-reviewer` that did not write it |
 | When | Before creating work log | After work log submitted |
 | Checklist | CODING-CHECKLIST.md | CODING-CHECKLIST.md + CODE-REVIEW-CHECKLIST.md |
 | Purpose | Catch own mistakes | Catch issues developer missed; verify spec adherence |

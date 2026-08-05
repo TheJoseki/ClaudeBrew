@@ -46,7 +46,7 @@
       "type": "boolean"
     },
     "producedBy": {
-      "description": "Agent/skill that produced this verdict, e.g. cbr:reviewer.",
+      "description": "Agent/skill that produced this verdict, e.g. cbr-reviewer.",
       "type": "string"
     },
     "timestamp": { "type": "string" }

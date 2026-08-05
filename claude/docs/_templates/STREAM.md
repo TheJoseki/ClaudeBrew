@@ -55,5 +55,5 @@ Status is mutated by the stage skill that owns the work (direct markdown edit â€
 
 ```
 [slug]: G1 pending | G3 pending | G4 pending | G5a pending | G6 pending | G7 pending
-Next: [/cbr:<next-stage> <slug>]
+Next: [/cbr-<next-stage> <slug>]
 ```

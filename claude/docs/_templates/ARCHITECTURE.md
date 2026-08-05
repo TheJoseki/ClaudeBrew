@@ -1,6 +1,6 @@
 # Architecture — [PROJECT_NAME]
 
-> Created/updated by `architecture` / `design-function`; verdict by fresh `cbr:reviewer` + user.
+> Created/updated by `architecture` / `design-function`; verdict by fresh `cbr-reviewer` + user.
 > Copy this template to `docs/ARCHITECTURE.md` and fill in per project.
 > **Single source of truth for the cross-cutting API contract** (auth flow, error shape, pagination, status codes, RBAC) — see the *API Contract* section below. The per-endpoint catalog lives in `docs/API_DESIGN.md`; do not restate these patterns there.
 

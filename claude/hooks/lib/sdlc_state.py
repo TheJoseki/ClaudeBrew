@@ -169,7 +169,7 @@ def infer_gate_progress(project_dir, slug):
     for g in GATE_ORDER:
         if gates[g] != "pass":
             skill = "fix-bug" if gates[g] == "fail" else GATE_SKILL[g]
-            next_action = f"/cbr:{skill} {slug}"
+            next_action = f"/cbr-{skill} {slug}"
             break
 
     icon = {"pass": "PASS", "fail": "FAIL", "partial": "PARTIAL", "pending": "pending"}

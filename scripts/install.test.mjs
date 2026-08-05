@@ -44,11 +44,11 @@ test("install provisions payload, bakes tokens, writes metadata", () => {
     assert.ok(res.installed > 200, `expected >200 files, got ${res.installed}`);
 
     assert.ok(existsSync(path.join(target.claudeDir, "hooks", "verdict-gate.py")), "hook file landed");
-    assert.ok(existsSync(path.join(target.claudeDir, "skills", "brainstorming", "SKILL.md")), "skill landed");
+    assert.ok(existsSync(path.join(target.claudeDir, "skills", "cbr-brainstorming", "SKILL.md")), "skill landed");
     assert.ok(existsSync(path.join(target.claudeDir, "metadata.json")), "metadata written");
 
     // A file that carried a token is now baked to the absolute cbrRoot.
-    const reviewer = readFileSync(path.join(target.claudeDir, "agents", "reviewer.md"), "utf8");
+    const reviewer = readFileSync(path.join(target.claudeDir, "agents", "cbr-reviewer.md"), "utf8");
     assert.ok(reviewer.includes(`${target.cbrRoot}/schemas/`), "token baked to absolute cbrRoot");
 
     // ZERO tokens survive anywhere in the installed tree.
@@ -82,17 +82,17 @@ test("update preserves a user-edited managed file (skip + report, no clobber)", 
   const { cwd, target } = freshTarget();
   try {
     installFiles(SRC, target);
-    const skillPath = path.join(target.claudeDir, "skills", "brainstorming", "SKILL.md");
+    const skillPath = path.join(target.claudeDir, "skills", "cbr-brainstorming", "SKILL.md");
     const edited = readFileSync(skillPath, "utf8") + "\n<!-- USER EDIT -->\n";
     writeFileSync(skillPath, edited);
 
     const res = updateFiles(SRC, target);
-    assert.ok(res.actions.skipped.includes("skills/brainstorming/SKILL.md"), "user-edited file skipped");
+    assert.ok(res.actions.skipped.includes("skills/cbr-brainstorming/SKILL.md"), "user-edited file skipped");
     assert.equal(readFileSync(skillPath, "utf8"), edited, "user edit preserved");
 
     // --force overwrites it.
     const forced = updateFiles(SRC, target, { force: true });
-    assert.ok(forced.actions.updated.some((u) => u.startsWith("skills/brainstorming/SKILL.md")), "force overwrote");
+    assert.ok(forced.actions.updated.some((u) => u.startsWith("skills/cbr-brainstorming/SKILL.md")), "force overwrote");
     assert.ok(!readFileSync(skillPath, "utf8").includes("USER EDIT"), "force restored shipped content");
   } finally { cleanup(cwd); }
 });
@@ -132,11 +132,11 @@ test("uninstall preserves a user-edited tracked file (hash-aware); --force remov
   const { cwd, target } = freshTarget();
   try {
     installFiles(SRC, target);
-    const skillPath = path.join(target.claudeDir, "skills", "brainstorming", "SKILL.md");
+    const skillPath = path.join(target.claudeDir, "skills", "cbr-brainstorming", "SKILL.md");
     writeFileSync(skillPath, readFileSync(skillPath, "utf8") + "\n<!-- USER EDIT -->\n");
     updateFiles(SRC, target); // skips the edit, keeps it tracked
     const res = uninstallFiles(target);
-    assert.ok(res.kept.includes("skills/brainstorming/SKILL.md"), "edited file reported kept");
+    assert.ok(res.kept.includes("skills/cbr-brainstorming/SKILL.md"), "edited file reported kept");
     assert.ok(existsSync(skillPath), "edited file survives uninstall");
     assert.ok(existsSync(path.join(target.claudeDir, "metadata.json")), "manifest retained while a kept file remains");
     const forced = uninstallFiles(target, { force: true });

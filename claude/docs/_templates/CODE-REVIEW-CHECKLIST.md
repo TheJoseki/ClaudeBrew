@@ -1,6 +1,6 @@
 # Code Review Checklist — Two-Pass Methodology
 
-> Run by `review-code` and the fresh `cbr:reviewer` gate agent (two-pass methodology).
+> Run by `review-code` and the fresh `cbr-reviewer` gate agent (two-pass methodology).
 
 ## Pass 1: CRITICAL (must fix before merge)
 

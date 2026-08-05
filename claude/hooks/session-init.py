@@ -2,7 +2,7 @@
 """SessionStart hook (startup|resume|clear|compact) — inject cbr SDLC state + cache.
 
 At session start this reconstructs a cheap, gate-aware SDLC summary from committed
-docs/ artifacts (the automatic version of what /cbr:handoff does by hand) and injects
+docs/ artifacts (the automatic version of what /cbr-handoff does by hand) and injects
 it as plain stdout text. It also writes .claude/sdlc-index.json — a per-session CACHE
 (not an authority) that subagent-context.py reads to avoid re-globbing docs/.
 
