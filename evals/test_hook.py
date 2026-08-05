@@ -17,7 +17,7 @@ import tempfile
 # the repo root (parent of evals/) into the plugin's hooks/ directory.
 HOOK = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugins", "cbr", "hooks", "enforce-worktree.py",
+    "claude", "hooks", "enforce-worktree.py",
 )
 
 

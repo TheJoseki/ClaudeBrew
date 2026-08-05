@@ -148,11 +148,11 @@ var and `teammateMode`) — harness-level keys the installer ships and merges di
 
 ## 5. Windows execution notes
 
-`settings_merge.py` registers the hook as the command string `python "<abs
-path>"` — the interpreter `python` must be on `PATH`. This is why `claudebrew install --gate`
-runs a `python`/`py -3` availability doctor before registering and warns if
-neither resolves: a registration whose interpreter is missing makes the harness
-treat the hook as non-blocking, so the gate would be silently off. The quoted
+The installer registers the hook as the command string `<python> "<abs path>"`,
+where `<python>` is the interpreter its doctor resolved. This is why `claudebrew
+install` runs a `python`/`py -3` availability doctor and **fails the install** if
+none resolves: a registration whose interpreter is missing makes the harness treat
+the hook as non-blocking, so the gate would be silently off. The quoted
 absolute path tolerates spaces (e.g. `C:\Users\...`). Python keeps the gate
 cross-platform and matches the repo's existing helper convention.
 

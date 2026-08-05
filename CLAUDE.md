@@ -1,6 +1,13 @@
 # CLAUDE.md
 
-<!-- release: 0.7.0 -->
+<!-- release: 0.8.0 -->
+
+> **Packaging (0.8.0 re-platform):** ClaudeBrew moved from a Claude Code **plugin/marketplace** to a
+> standalone **`npx claudebrew` npm installer** that provisions the payload into the user's `.claude/`.
+> The payload is authored under **`claude/`** (not `plugins/cbr/`); the installer CLI lives in `bin/` +
+> `scripts/lib/`; `package.json` is the version source of truth. The install/develop/ship command blocks
+> below are current; some deeper architecture narrative further down still describes the plugin era and is
+> being migrated — trust `plans/260804-2315-cbr-re-platform-plugin-to-npm-installer-cli/` and the code.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -40,18 +47,19 @@ ClaudeBrew/                          # repo root = marketplace catalog + dev wor
 
 Everything under `plugins/cbr/` is copied wholesale into each user's `~/.claude/plugins/cache` on install, so **nothing dev-only lives there** — evals, examples, and this CLAUDE.md stay at the repo root, outside the shipped unit. Installed skills are namespaced, e.g. `/cbr:brainstorming`, `/cbr:worktree`, `/cbr:implement-feature`, `/cbr:review-code`, `/cbr:setup`.
 
-**Users install** (the marketplace's relative `source` requires a git add, not a raw `marketplace.json` URL):
+**Users install** (no plugin, no marketplace):
 ```
-/plugin marketplace add TheJoseki/ClaudeBrew
-/plugin install cbr@claudebrew
-/cbr:setup           # applies the harness-level settings a plugin can't ship (see below)
+npx claudebrew install       # provisions .claude/, merges settings, writes the CLAUDE.local.md rules block
+claudebrew install --gate    # also register the opt-in base-branch worktree gate
 ```
+Python 3 is a hard prerequisite (every hook is Python); the installer's doctor fails the install if none resolves. Project scope merges into the gitignored `settings.local.json` by default (`--shared` for the tracked `settings.json`); `--scope user` targets `~/.claude/`.
 
-**Develop** with the plugin loaded in place, then `/reload-plugins` after edits:
+**Develop** by dogfooding the payload into this repo's own `.claude/`, re-run after edits:
 ```
-claude --plugin-dir ./plugins/cbr
+node bin/claudebrew.mjs install --dev   # copy claude/ -> .claude/ (the same tree a real install lays down)
+node --test scripts/*.test.mjs          # installer unit + integration tests
 ```
-Validate before committing: `claude plugin validate ./plugins/cbr` (the plugin) and `claude plugin validate .` (the marketplace). **Ship** by bumping `version` in `plugins/cbr/.claude-plugin/plugin.json` (leave `version` out of the marketplace entry so there's one source of truth), updating `CHANGELOG.md`, **stamping the `<!-- release: X.Y.Z -->` anchor in `CLAUDE.md` and `README.md`** (which forces you to open and review both for the release), and pushing to GitHub; users pull it via `/plugin marketplace update` → `/plugin update`. **`evals/test_release_docs.py` enforces this** (ported from clawform's packaging tests): a version bump with no matching `## [X.Y.Z]` CHANGELOG section, or a stale `CLAUDE.md`/`README.md` anchor, fails the release-docs gate. It is a *touch-forcing* gate, not a semantic-freshness one — it makes shipping stale docs a hard failure, not a hope.
+Validate before committing: `python evals/test_replatform_invariants.py` (structural: no plugin-isms, tokens present, Python-only hooks) and the retargeted gate suite. **Ship** by bumping `version` in `package.json` (the single source of truth — `plugin.json` is retired), updating `CHANGELOG.md`, **stamping the `<!-- release: X.Y.Z -->` anchor in `CLAUDE.md` and `README.md`** (which forces you to open and review both for the release), and publishing to npm / pushing to GitHub; users pull it via `claudebrew update`. **`evals/test_release_docs.py` enforces this**: a version bump with no matching `## [X.Y.Z]` CHANGELOG section, or a stale `CLAUDE.md`/`README.md` anchor, fails the release-docs gate. It is a *touch-forcing* gate, not a semantic-freshness one — it makes shipping stale docs a hard failure, not a hope.
 
 **A plugin cannot ship harness settings.** A plugin's own `settings.json` only honors `agent`/`subagentStatusLine`, so the agent-teams env var, `teammateMode`, and `worktree.baseRef` cannot live in the package — the `/cbr:setup` skill merges them into the *user's* `.claude/settings.json` post-install. This repo's own `.claude/settings.json` already carries them, for dogfooding.
 

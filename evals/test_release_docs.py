@@ -3,19 +3,17 @@
 
 Run: python evals/test_release_docs.py
 
-Ported from clawform's tests/packaging/* (version-sync / english-docs): the lesson
-is that CHANGELOG, CLAUDE.md and README drift silently across releases unless a
-test forces the touch. This is a *touch-forcing* gate, not a semantic-freshness
-one — it cannot prove the prose is current, but it makes bumping the version
-without opening each doc mechanically impossible:
+A *touch-forcing* gate (not a semantic-freshness one): it cannot prove the prose is
+current, but it makes bumping the version without opening each doc mechanically
+impossible.
 
-  - `plugin.json` version is plain semver;
+  - package.json version is plain semver (the single source of truth since the
+    re-platform retired plugin.json);
   - CHANGELOG.md has a `## [<version>]` section (forces release notes on a bump);
   - CLAUDE.md and README each carry `<!-- release: <version> -->` equal to it
     (a version bump changes the required anchor -> forces opening both files);
-  - README carries the install invariants and none of the statements a past
-    release already made false;
-  - the marketplace entry pins no version (cbr single-sources it in plugin.json).
+  - README describes the `npx claudebrew` install flow and none of the plugin-era
+    statements a past release already made false.
 
 Exit non-zero if any check fails.
 """
@@ -39,7 +37,7 @@ def read(rel):
 
 
 def version():
-    return json.loads(read("plugins/cbr/.claude-plugin/plugin.json"))["version"]
+    return json.loads(read("package.json"))["version"]
 
 
 def test_version_is_semver():
@@ -67,22 +65,20 @@ def test_release_anchor_in_readme():
 
 def test_readme_install_invariants():
     r = read("README.md")
-    check("/plugin marketplace add" in r and "/plugin install cbr@" in r and "/cbr:setup" in r,
-          "README lost an install step (marketplace add / plugin install / cbr:setup)")
+    check("npx claudebrew install" in r,
+          "README lost the install command (`npx claudebrew install`)")
+    check("claudebrew update" in r and "claudebrew uninstall" in r,
+          "README must document `claudebrew update` and `claudebrew uninstall`")
 
 
-def test_readme_no_stale_claims():
+def test_readme_no_plugin_era_claims():
     r = read("README.md")
+    check("/plugin marketplace" not in r and "cbr@claudebrew" not in r,
+          "README still describes the retired plugin/marketplace install flow")
+    check("/cbr:setup" not in r,
+          "README still references /cbr:setup — its job moved into the installer")
     check("remaining stages are in progress" not in r,
           "README still claims 'remaining stages are in progress' — the single-layer suite shipped")
-    check("docs/specs/YYYY-MM-DD-" not in r,
-          "README uses the old artifact-path scheme — see the canonical table in sdlc-conventions.md")
-
-
-def test_marketplace_pins_no_version():
-    mp = read(os.path.join(".claude-plugin", "marketplace.json"))
-    check('"version"' not in mp,
-          "marketplace.json must not pin a version — single-source it in plugins/cbr/.claude-plugin/plugin.json")
 
 
 def main():
@@ -97,7 +93,7 @@ def main():
         for f in _FAILURES:
             print("  -", f)
         sys.exit(1)
-    print(f"OK — {len(tests)} release-docs checks passed")
+    print(f"OK - {len(tests)} release-docs checks passed")
 
 
 if __name__ == "__main__":

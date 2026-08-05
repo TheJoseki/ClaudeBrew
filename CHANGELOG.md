@@ -1,8 +1,30 @@
 # Changelog
 
-All notable changes to ClaudeBrew (the `cbr` plugin) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
+All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.8.0] — 2026-08-05
+
+**Re-platform: Claude Code plugin → standalone `npx claudebrew` npm installer.** ClaudeBrew is no longer a marketplace plugin; a zero-runtime-dependency Node CLI provisions the skills/agents/rules/hooks into the user's `.claude/`, merges harness settings, and writes a managed rules block into project memory. One-way-door, suite-wide.
+
+### Migration
+- **The plugin install flow is retired** (`/plugin marketplace add … → /plugin install cbr@claudebrew → /cbr:setup`). Install with **`npx claudebrew install`**. `/cbr:setup` is gone — its job (settings merge, rules loading, opt-in worktree gate, Python doctor) is now the installer's.
+- **Skills/agents renamed `cbr:<name>` → `cbr-<name>`** (the personal-skill namespace form). Invoke `/cbr-brainstorming`, `/cbr-worktree`, etc.
+- **Python 3 is now a hard prerequisite** — every hook is Python (the one bash hook was ported). The installer fails loudly if no interpreter resolves.
+
+### Changed
+- **Payload moved `plugins/cbr/` → `claude/`** (installed as `.claude/`); `marketplace.json` + `plugin.json` dropped; **`package.json` is the single version source of truth**.
+- **Two-tier path resolution:** intra-skill refs are skill-relative; residual refs (schema, hooks, cross-skill, Bash-invoked scripts, template sources) carry a `{{CBR_ROOT}}` token the installer bakes to an absolute path at install — **dissolving the `docs/_templates/` seeding gap**. Zero `${CLAUDE_PLUGIN_ROOT}` remain.
+- **Settings ship in-package** (`claude/settings.json`) and are deep-merged (fail-closed, provenance-tracked), not applied by a second step. The worktree gate is opt-in (`claudebrew install --gate`, default off).
+- **Rules load via a managed relative `@`-import block** in `CLAUDE.local.md` (project, gitignored per-machine) or `~/.claude/CLAUDE.md` (user scope).
+
+### Added
+- **`claudebrew install | update | uninstall`** backed by a hash manifest: `update` preserves user edits (skips + reports; `--force` overrides); `uninstall` un-merges settings, strips the rules block, and removes files, leaving a sibling `worktrees/` and user files untouched.
+- **Installer test suites** (`scripts/*.test.mjs`, 19 tests) + a `test_replatform_invariants.py` structural gate; the plugin/marketplace gates were retargeted to `claude/` + `package.json`.
+
+### Notes
+- Pre-1.0: the fresh installer will churn; no 1.0 stability promise yet. Some deeper `CLAUDE.md` architecture narrative still describes the plugin era and is being migrated.
 
 ## [0.7.0] — 2026-08-04
 

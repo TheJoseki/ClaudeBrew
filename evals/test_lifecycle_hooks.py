@@ -17,7 +17,7 @@ import tempfile
 
 _HOOKS = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugins", "cbr", "hooks",
+    "claude", "hooks",
 )
 sys.path.insert(0, os.path.join(_HOOKS, "lib"))
 import sdlc_state as S  # noqa: E402
