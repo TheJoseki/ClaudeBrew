@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 // ClaudeBrew installer CLI — entry point.
 //
-// Phase 1 stub: argument parsing + verb/flag dispatch only. The real
-// provisioning (install/update/uninstall) lands in Phases 4–5. The one verb
-// wired to real logic here is `install --dev`, the dogfood self-install loop
-// that replaces the retired `claude --plugin-dir ./plugins/cbr`.
+// Phase 4 wires the FILE side: install/update/uninstall provision the `claude/` payload
+// into the target `.claude/`, baking residual {{CBR_ROOT}} tokens to absolute paths and
+// tracking a hash manifest. The CONFIG side (Python doctor, settings deep-merge, rules
+// block, opt-in worktree gate) is layered on next — `install` here does file provisioning
+// only. `install --dev` remains the dogfood self-install loop.
 //
 // Node built-ins only (zero runtime deps).
 
+import { resolveTarget } from "../scripts/lib/paths.mjs";
+import { sourceRoot } from "../scripts/lib/pkg.mjs";
+import { installFiles } from "../scripts/lib/install.mjs";
+import { updateFiles } from "../scripts/lib/update.mjs";
+import { uninstallFiles } from "../scripts/lib/uninstall.mjs";
 import { devInstall } from "../scripts/lib/dev-install.mjs";
 
 const USAGE = `claudebrew — install the ClaudeBrew SDLC skills into your Claude Code environment
@@ -49,11 +55,30 @@ function parseArgs(argv) {
   return { command, flags };
 }
 
-const NOT_YET = (verb) => {
-  console.error(`\`claudebrew ${verb}\` is not implemented yet (lands in Phases 4–5).`);
-  console.error(`For local development, use: claudebrew install --dev`);
-  process.exit(1);
-};
+function reportActions(res) {
+  if (res.dryRun) {
+    if (res.action === "install") console.log(`[dry-run] would install ${res.count} files`);
+    else if (res.action === "uninstall") console.log(`[dry-run] would remove ${res.willRemove} tracked files`);
+    else {
+      const a = res.actions;
+      console.log(`[dry-run] add ${a.added.length}, update ${a.updated.length}, skip ${a.skipped.length}, remove ${a.removed.length}, unchanged ${a.unchanged.length}`);
+    }
+    return;
+  }
+  if (res.action === "install") console.log(`Installed ${res.installed} files into ${res.claudeDir}`);
+  else if (res.action === "uninstall") {
+    console.log(`Uninstalled ${res.removed} tracked files`);
+    if (res.kept && res.kept.length) {
+      console.log(`  kept ${res.kept.length} user-modified file(s) (use uninstall --force to remove):`);
+      for (const k of res.kept) console.log(`    ${k}`);
+    }
+  }
+  else {
+    const a = res.actions;
+    console.log(`Update: +${a.added.length} added, ~${a.updated.length} updated, ${a.skipped.length} kept (user-modified), -${a.removed.length} removed, ${a.unchanged.length} unchanged`);
+    for (const s of a.skipped) console.log(`  kept: ${s}`);
+  }
+}
 
 function main() {
   const { command, flags } = parseArgs(process.argv.slice(2));
@@ -63,18 +88,26 @@ function main() {
     process.exit(command === null && !flags.help ? 2 : 0);
   }
 
-  switch (command) {
-    case "install":
-      if (flags.dev) { devInstall(); return; }
-      return NOT_YET("install");
-    case "update":
-      return NOT_YET("update");
-    case "uninstall":
-      return NOT_YET("uninstall");
-    default:
-      console.error(`Unknown command: ${command}\n`);
-      console.error(USAGE);
-      process.exit(2);
+  try {
+    switch (command) {
+      case "install":
+        if (flags.dev) { devInstall(); return; }
+        reportActions(installFiles(sourceRoot(), resolveTarget(flags.scope), { dryRun: flags.dryRun, force: flags.force }));
+        return;
+      case "update":
+        reportActions(updateFiles(sourceRoot(), resolveTarget(flags.scope), { force: flags.force, dryRun: flags.dryRun }));
+        return;
+      case "uninstall":
+        reportActions(uninstallFiles(resolveTarget(flags.scope), { dryRun: flags.dryRun }));
+        return;
+      default:
+        console.error(`Unknown command: ${command}\n`);
+        console.error(USAGE);
+        process.exit(2);
+    }
+  } catch (e) {
+    console.error(`claudebrew ${command}: ${e.message}`);
+    process.exit(1);
   }
 }
 
