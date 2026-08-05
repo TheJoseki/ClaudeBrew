@@ -61,6 +61,27 @@ test("full install rolls back the payload when the settings merge fails (no wedg
   } finally { rm(cwd); }
 });
 
+test("user scope installs into ~/.claude, merges ~/.claude/settings.json, writes ~/.claude/CLAUDE.md rules block", () => {
+  const home = mkdtempSync(path.join(os.tmpdir(), "cbr-home-"));
+  try {
+    // Inject a fake home so user scope never touches the real ~/.claude.
+    const target = resolveTarget("user", process.cwd(), home);
+    fullInstall(target);
+    assert.ok(existsSync(path.join(home, ".claude", "hooks", "guard-bash.py")), "payload provisioned under ~/.claude");
+
+    const sp = path.join(home, ".claude", "settings.json");
+    assert.ok(existsSync(sp), "user scope merges into ~/.claude/settings.json");
+    const s = readFileSync(sp, "utf8");
+    assert.ok(!s.includes("{{CBR_ROOT}}") && s.includes(`${target.cbrRoot}/hooks/`), "hook commands baked to the user's absolute path");
+
+    const md = path.join(home, ".claude", "CLAUDE.md");
+    assert.ok(existsSync(md) && readFileSync(md, "utf8").includes("@rules/sdlc-conventions.md"), "user-scope relative rules import (@rules/)");
+
+    fullUninstall(target);
+    assert.ok(!existsSync(path.join(home, ".claude", "hooks", "guard-bash.py")), "uninstall removed the payload");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
 test("full uninstall un-merges settings + strips rules block + removes files (pre-install state restored)", () => {
   const { cwd, target } = freshTarget();
   try {

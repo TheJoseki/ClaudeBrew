@@ -37,13 +37,14 @@ export function findProjectRoot(cwd) {
  * Resolve the install target for a scope.
  * @param {"project"|"user"} scope
  * @param {string} [cwd] project anchor (defaults to process.cwd())
+ * @param {string} [home] user-scope home (defaults to os.homedir(); injectable for tests)
  * @returns {{scope: string, base: string, claudeDir: string, cbrRoot: string}}
  */
-export function resolveTarget(scope, cwd = process.cwd()) {
+export function resolveTarget(scope, cwd = process.cwd(), home = os.homedir()) {
   if (scope !== "project" && scope !== "user") {
     throw new Error(`invalid scope '${scope}' — expected 'project' or 'user'`);
   }
-  const base = scope === "user" ? os.homedir() : findProjectRoot(cwd);
+  const base = scope === "user" ? home : findProjectRoot(cwd);
   const claudeDir = path.join(base, ".claude"); // native, for fs ops
   return {
     scope,

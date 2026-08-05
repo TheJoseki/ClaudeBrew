@@ -50,6 +50,10 @@ test("install provisions payload, bakes tokens, writes metadata", () => {
     // A file that carried a token is now baked to the absolute cbrRoot.
     const reviewer = readFileSync(path.join(target.claudeDir, "agents", "cbr-reviewer.md"), "utf8");
     assert.ok(reviewer.includes(`${target.cbrRoot}/schemas/`), "token baked to absolute cbrRoot");
+    // gate-spawn-resolves (H3 structural): the baked schema ref a spawned reviewer is handed
+    // by path points at a file that actually exists on disk — a substring eval can't prove this.
+    assert.ok(reviewer.includes(`${target.cbrRoot}/schemas/verdict-artifact.schema.json`), "reviewer carries the baked schema path");
+    assert.ok(existsSync(path.join(target.claudeDir, "schemas", "verdict-artifact.schema.json")), "the baked schema path resolves to a real file");
 
     // ZERO tokens survive anywhere in the installed tree.
     let tokenHits = 0;
