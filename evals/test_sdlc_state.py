@@ -11,7 +11,7 @@ import tempfile
 
 _LIB = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugins", "cbr", "hooks", "lib",
+    "claude", "hooks", "lib",
 )
 sys.path.insert(0, _LIB)
 import sdlc_state as S  # noqa: E402
@@ -96,7 +96,7 @@ def test_infer_gates_empty():
     with tempfile.TemporaryDirectory() as d:
         p = S.infer_gate_progress(d, "payment")  # no stream folder -> all pending
         check(all(v == "pending" for v in p["gates"].values()), f"all pending: {p['gates']}")
-        check(p["next_action"] == "/cbr:analyze-requirement payment", p["next_action"])
+        check(p["next_action"] == "/cbr-analyze-requirement payment", p["next_action"])
         check("G1 pending" in p["gate_line"], p["gate_line"])
 
 
@@ -106,7 +106,7 @@ def test_infer_gates_srs_tech():
         write(d, f"{sd('payment')}/design/TECH.md", "x")
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["G1"] == "pass" and p["gates"]["G3"] == "pass", str(p["gates"]))
-        check(p["next_action"] == "/cbr:review-code payment", p["next_action"])
+        check(p["next_action"] == "/cbr-review-code payment", p["next_action"])
 
 
 def test_infer_gates_verdict_pass():
@@ -116,7 +116,7 @@ def test_infer_gates_verdict_pass():
         write(d, f"{sd('payment')}/reviews/VERDICT-G4.json", '{"decision":"PASS"}')
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["G4"] == "pass", str(p["gates"]))
-        check(p["next_action"] == "/cbr:vulnerability-scanner payment", p["next_action"])
+        check(p["next_action"] == "/cbr-vulnerability-scanner payment", p["next_action"])
 
 
 def test_infer_gates_verdict_fail_routes_fixbug():
@@ -126,7 +126,7 @@ def test_infer_gates_verdict_fail_routes_fixbug():
         write(d, f"{sd('payment')}/reviews/VERDICT-G4.json", '{"decision":"FAIL"}')
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["G4"] == "fail", str(p["gates"]))
-        check(p["next_action"] == "/cbr:fix-bug payment", p["next_action"])
+        check(p["next_action"] == "/cbr-fix-bug payment", p["next_action"])
 
 
 def test_stream_dir_no_prefix_collision():

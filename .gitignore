@@ -15,3 +15,15 @@ __pycache__/
 .claude/sdlc-index.json
 .claude/compact-checkpoint.md
 .claude/.smoke-*
+
+# Dogfood build output — `claudebrew install --dev` copies the claude/ payload
+# here so a session in this repo loads the skills + fires the hooks. Source of
+# truth is claude/; these installed copies are derived. NOTE: .claude/settings.json
+# stays TRACKED (contributors get the harness on checkout); only the payload
+# subdirs below are ignored, enumerated positively so a sibling worktree is never touched.
+.claude/skills/
+.claude/agents/
+.claude/hooks/
+.claude/rules/
+.claude/schemas/
+.claude/docs/

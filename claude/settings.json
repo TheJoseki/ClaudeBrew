@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "Shipped settings template. The installer deep-merges this into the user's settings.json (project scope defaults to the gitignored settings.local.json); it is never copied as a standalone file. Each hook command's CBR_ROOT double-brace placeholder is resolved to an absolute path on the user's machine at install time. The worktree gate (enforce-worktree) is deliberately absent — it is offered only as a separate opt-in step at install, never shipped active.",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "in-process",
+  "worktree": {
+    "baseRef": "head"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/protect-files.py\"" }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/protect-files.py\" read" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/guard-bash.py\"" }
+        ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/guard-webfetch.py\"" }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/compact-context-saver.py\"" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/session-init.py\"" }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/subagent-context.py\"" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python \"{{CBR_ROOT}}/hooks/post-edit-reminder.py\"" }
+        ]
+      }
+    ]
+  }
+}

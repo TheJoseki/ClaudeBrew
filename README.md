@@ -1,6 +1,6 @@
 # ClaudeBrew
 
-<!-- release: 0.7.0 -->
+<!-- release: 0.8.0 -->
 
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
@@ -16,22 +16,30 @@ Every stage **never guesses** (uncertainty is surfaced, not assumed), is **evide
 
 ## Install
 
-ClaudeBrew ships as a Claude Code plugin. From inside Claude Code:
+ClaudeBrew installs into your Claude Code environment with a single command — no plugin, no marketplace:
 
 ```
-/plugin marketplace add TheJoseki/ClaudeBrew
-/plugin install cbr@claudebrew
-/cbr:setup
+npx claudebrew install
 ```
 
-`/cbr:setup` applies the harness-level settings a plugin can't bundle itself (agent-team mode and the worktree branch base). Run it once after installing, then restart your session so the environment variables take effect.
+That provisions the skills, agents, rules, and hooks into your project's `.claude/` (or `~/.claude/` with `--scope user`), merges the harness settings a plugin can't ship (agent-team mode, worktree base ref), and writes a managed rules block into your project memory. **Python 3 is required** — every hook is Python, and the installer fails loudly if no interpreter is on `PATH`.
+
+Manage the install later:
+
+```
+claudebrew update           # pull a new version without clobbering your edits
+claudebrew uninstall        # remove everything it added (settings un-merged, files removed)
+claudebrew install --gate   # also register the opt-in base-branch worktree gate
+```
+
+Project-scope settings merge into the gitignored `settings.local.json` by default (per-machine); pass `--shared` to target the tracked `settings.json`. Then restart your session so the agent-team environment variable takes effect.
 
 ## Use
 
 Start the pipeline by describing something you want to build:
 
-- **`/cbr:brainstorming`** — turn an idea into a validated, evidence-backed brainstorm artifact. (It also triggers automatically when you say things like "I have an idea…", "help me scope X", or "where do I start?")
-- **`/cbr:worktree`** — once a brainstorm is approved, move development into an isolated git worktree on a feature branch. This is **hard-mandatory**: a `PreToolUse` hook denies feature-code edits on `main`/`master`, so building always happens in isolation. The gate is active whenever the `cbr` plugin is enabled.
+- **`/cbr-brainstorming`** — turn an idea into a validated, evidence-backed brainstorm artifact. (It also triggers automatically when you say things like "I have an idea…", "help me scope X", or "where do I start?")
+- **`/cbr-worktree`** — once a brainstorm is approved, move development into an isolated git worktree on a feature branch. The move is the skill's mandate; the deterministic `PreToolUse` gate that denies feature-code edits on `main`/`master` is **opt-in** — enable it with `claudebrew install --gate`.
 
 Each stage writes its artifact into your repo under `docs/` (canonical paths live in `sdlc-conventions.md`), and a per-work-stream manifest at `docs/streams/<slug>-<date>/STREAM.md` links every artifact of one feature with a kanban-style task board — so a stream's brainstorm, spec, plan, reviews and tests read as one unit instead of scattering.
 
@@ -46,15 +54,15 @@ Each stage writes its artifact into your repo under `docs/` (canonical paths liv
 
 ## Develop / contribute
 
-This repo is both the marketplace and the dev workspace. The shipped plugin is `plugins/cbr/`; everything else (`evals/`, `examples/`, the dev config) stays out of the package.
+This repo is both the npm package and the dev workspace. The shipped payload is authored under `claude/` (installed as the user's `.claude/`); everything else (`evals/`, `examples/`, the dev config) stays out of the package.
 
 ```
-claude --plugin-dir ./plugins/cbr     # load the plugin in place; /reload-plugins after edits
-claude plugin validate ./plugins/cbr  # validate the plugin
-claude plugin validate .              # validate the marketplace
-python evals/test_hook.py             # unit-test the worktree gate
-python evals/test_release_docs.py     # release-docs gate: version <-> CHANGELOG + doc anchors
-python evals/test_english_docs.py     # English-only gate: no CJK in shipped skill prose
+node bin/claudebrew.mjs install --dev        # dogfood: sync claude/ into this repo's .claude/; re-run after edits
+node --test scripts/*.test.mjs               # installer unit + integration tests
+python evals/test_replatform_invariants.py   # structural gate: no plugin-isms, tokens present, Python-only hooks
+python evals/test_release_docs.py            # release-docs gate: version <-> CHANGELOG + doc anchors
+python evals/test_canonical_paths.py         # canonical stream-first artifact paths
+python evals/test_hook.py                    # unit-test the worktree gate
 ```
 
 See [CLAUDE.md](CLAUDE.md) for the full architecture, conventions, ship process, and Windows caveats.

@@ -1,0 +1,30 @@
+# The npm tarball is defined by the `files` allowlist in package.json
+# (claude/, bin/, scripts/, README.md, CHANGELOG.md, LICENSE). This file is
+# belt-and-suspenders: it guarantees the repo's own dev harness and dev-only
+# trees never ship even if `files` is later widened.
+#
+# IMPORTANT: every dev-only pattern is ROOT-ANCHORED (leading `/`). An
+# unanchored `docs/` would also match the SHIPPED `claude/docs/_templates/`
+# and silently re-open the template seeding gap. Do not un-anchor these.
+
+# Dev harness / dogfood build output (NOT the shipped source `claude/`).
+/.claude/
+
+# Dev-only trees (root-level only — must not match claude/docs, claude/...).
+/evals/
+/examples/
+/plans/
+/docs/
+
+# Plugin-era leftovers (should already be deleted; guard anyway).
+/.claude-plugin/
+/plugins/
+
+# Python bytecode (regenerated when hooks run in dev; must never ship). These are
+# unanchored on purpose — a stray __pycache__ can appear at any depth under claude/hooks/.
+__pycache__/
+*.pyc
+
+# Repo/tooling cruft.
+/.gitignore
+/.coveragerc

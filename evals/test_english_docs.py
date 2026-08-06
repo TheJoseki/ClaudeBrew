@@ -8,7 +8,7 @@ kept creeping into SKILL.md / references / rules / templates (e.g. `BD書`, `基
 `包豪斯`). This asserts the shipped markdown prose stays English-only — CJK
 (Han / Hiragana / Katakana / fullwidth forms) is treated as a language leak.
 
-Scope is `*.md` under `plugins/cbr/` — the instructions the model actually reads. Data
+Scope is `*.md` under `claude/` — the instructions the model actually reads. Data
 corpora under `skills/*/data/*.csv` are intentionally out of scope: a design/font corpus
 may legitimately name CJK typefaces or scripts, and flagging those would be a false alarm.
 """
@@ -17,7 +17,7 @@ import re
 import sys
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_PLUGIN = os.path.join(_ROOT, "plugins", "cbr")
+_PLUGIN = os.path.join(_ROOT, "claude")
 # Hiragana + Katakana + CJK ideographs + CJK fullwidth/halfwidth forms.
 _CJK = re.compile("[぀-ヿ㐀-鿿＀-￯]")
 _FAILURES = []

@@ -19,7 +19,7 @@ import tempfile
 
 GATE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugins", "cbr", "hooks", "verdict-gate.py",
+    "claude", "hooks", "verdict-gate.py",
 )
 PASS, BLOCK = 0, 2
 

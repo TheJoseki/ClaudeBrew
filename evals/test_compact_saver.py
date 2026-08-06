@@ -17,7 +17,7 @@ import tempfile
 
 _HOOKS = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugins", "cbr", "hooks",
+    "claude", "hooks",
 )
 
 
