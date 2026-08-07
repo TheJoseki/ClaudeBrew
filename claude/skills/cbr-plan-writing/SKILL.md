@@ -32,7 +32,7 @@ invariants plus a toolbox of moves you select by judgment — not a numbered mac
 1. **Plan from a real source of truth.** Step 1 (the input-contract) is mandatory:
    detect the source of truth, and **refuse to plan on nothing**. If there is no spec,
    brainstorm, research report, or familiar code to build on, stop and tell the user to
-   run a scout / `researcher` (or the future `explore` skill) first. Never fabricate scope.
+   run the `explore` scout skill (or the `researcher` agent it drives) first. Never fabricate scope.
 2. **Never guess.** When **more than one** source of truth exists, you do **not** silently
    pick — you surface what you found and let the **user** choose which to plan from. Any
    other uncertainty is surfaced too, batched into pre-analyzed questions.
@@ -103,10 +103,15 @@ live in **`references/input-contract.md`**.
 
 ## Step 2 — Resolve or open the work-stream
 
-- **Inside an existing stream** (the source you detected lives under
-  `docs/streams/<slug>-<YYYYMMDD>/`) → use that stream and write into it.
+`plan-writing` is an **opener**, under the shared **open-if-none / join-if-exists** law
+(`rules/sdlc-conventions.md`, "Stream openers & lanes"):
+
+- **Inside an existing stream** (the source you detected — e.g. a `research/RES-*.md` an
+  `explore` scout produced — lives under `docs/streams/<slug>-<YYYYMMDD>/`) → **JOIN** it: use
+  that stream and write `plan/PLAN.md` into it. This is the law's join-if-exists case.
 - **No stream exists** (brownfield: planning from code in a repo CBR has not been run on) →
-  **open one stream-light**:
+  first **slug-match** the topic against `docs/streams/*` (glob, strip the trailing date); if one
+  matches, JOIN it, otherwise **open one stream-light**:
   1. Pick a short kebab-case `<slug>` + today's date; create `docs/streams/<slug>-<YYYYMMDD>/`.
   2. Scaffold `STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md`; set **`lane: brownfield`** in its
      frontmatter (the stream-light marker) and fill the title / slug / date placeholders. **Prune
@@ -121,8 +126,9 @@ live in **`references/input-contract.md`**.
      ladder by design, not broken.
 
 Stream-light *is* the brownfield entry-point: it gives an existing codebase a valid CBR
-work-stream without a full spec chain. (`brainstorming` opens the stream for the greenfield
-flow; `plan-writing` opens it stream-light when brownfield work starts with no stream.)
+work-stream without a full spec chain. (The three openers — `brainstorming` greenfield, `explore`
+discovery, `plan-writing` stream-light — all obey the open-or-join law; whichever reaches a topic
+first opens its stream, the rest JOIN.)
 
 ## The moves — a toolbox, not a sequence
 
@@ -182,7 +188,7 @@ silently is the bug Hard gate 3 exists to prevent.
 |-----------|-------|------|
 | Prerequisite (greenfield) | `analyze-requirement` | Ensures `requirements/SRS.md` exists to plan from |
 | Prerequisite (unclear scope) | `brainstorming` | Run first if the idea is not yet a decided direction |
-| Prerequisite (brownfield, no SoT) | `researcher` / future `explore` | Produces `research/RES-*.md` when there is nothing to plan from |
+| Prerequisite (brownfield, no SoT) | `explore` (drives `researcher`) | Produces `research/RES-*.md` when there is nothing to plan from |
 | On success | `implement-feature` | Executes the plan (the user starts it) |
 
 ## Reference files

@@ -171,21 +171,30 @@ decision and why it beat the runner-up?* If not, keep going.
 
 ## Write the artifact (the output contract — always)
 
-Brainstorming **opens the work-stream**, and convergence **always** produces the
-typed artifact. Pick a short kebab-case `<slug>` and today's date `<YYYYMMDD>`, then:
+Brainstorming **opens or joins the work-stream**, and convergence **always** produces the
+typed artifact. Pick a short kebab-case `<slug>` and today's date `<YYYYMMDD>`, then apply the
+**open-if-none / join-if-exists** law (`rules/sdlc-conventions.md`, "Stream openers & lanes"):
 
-1. Create the stream folder `docs/streams/<slug>-<YYYYMMDD>/` (the folder name is the
-   stream identity every later artifact inherits).
-2. Scaffold its manifest `docs/streams/<slug>-<YYYYMMDD>/STREAM.md` from
-   `{{CBR_ROOT}}/docs/_templates/STREAM.md` — the stream's index + task board. `brainstorming`
-   creates it for the greenfield flow; later stages only append their own rows. (A
-   brownfield stream with no brainstorm is opened stream-light by `plan-writing` instead.)
-3. Write the brainstorm to
+1. **Resolve the stream by topic-slug.** Glob `docs/streams/*` and match `<slug>` against each
+   folder's slug (strip the trailing `-<YYYYMMDD>`).
+   - **No match → OPEN:** create `docs/streams/<slug>-<YYYYMMDD>/` and scaffold its manifest
+     `STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md` (lane `greenfield`) — the usual
+     case for a new idea.
+   - **Exactly one match → JOIN**, strictly additively (e.g. `explore` already opened a
+     `greenfield` stream for this topic): reuse that folder, **do not re-scaffold `STREAM.md`**
+     (append your row instead — re-scaffolding would wipe the existing membership/board), and
+     **do not overwrite** an existing `brainstorm/BRAINSTORM.md` (a second ideation round
+     appends, never clobbers).
+   - **More than one match → ask** which to join, always offering "open a new stream".
+   (Prose slug lookup — **not** `sdlc_state.py resolve_active_feature()`, which is topic-blind
+   and not skill-callable. A genuinely new idea gets a new slug → a new stream, so an unrelated
+   in-flight stream never absorbs it.)
+2. Write the brainstorm to
    `docs/streams/<slug>-<YYYYMMDD>/brainstorm/BRAINSTORM.md` following
    `references/artifact-template.md` exactly — its field list is the **contract** the
    requirement stage reads, and it carries the `stream:` id. Divergent option sets and
    any `cbr-strategist` critique land **inside** this one file (subagents write no
-   separate artifact).
+   separate artifact). Then append the artifact row + board entry to `STREAM.md`.
 
 These paths are load-bearing: session state and the SDLC gates are resolved from this
 canonical stream layout. Do not relocate or rename them.

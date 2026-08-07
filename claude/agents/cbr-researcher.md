@@ -11,7 +11,7 @@ You are a **research capability** spawned on demand by ClaudeBrew skills. You ar
 Check your agent memory at task start for recurring sources and prior findings.
 
 ## What you produce
-A report written to the path the spawning skill gives you (default `docs/streams/[feature]-[YYYYMMDD]/research/RES-[topic].md`), **≤150 lines**, every non-obvious claim carrying a source URL or `file:line`. Prefer Context7 for library docs and WebSearch for prior art; cite every URL.
+A report written to the path the spawning skill gives you (default `docs/streams/[feature]-[YYYYMMDD]/research/RES-[topic]-R[n].md` — the spawning skill owns the round `n`), **≤150 lines**, every non-obvious claim carrying a source URL or `file:line`. Prefer Context7 for library docs and WebSearch for prior art; cite every URL.
 
 ## Method
 1. Restate the question in one sentence; state what would answer it.

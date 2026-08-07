@@ -67,8 +67,8 @@ lines:
 > yet — then I can plan from it."
 
 Do not fabricate requirements, and do not silently plan against the whole repo. (The
-`explore` scout skill is greenlit as the next stream after this one; until it ships,
-`researcher` is the scout front-door.)
+`explore` scout skill is the discovery front door — it drives `cbr-researcher` and writes the
+`research/RES-*.md` this contract reads.)
 
 ## Greenfield is not regressed
 

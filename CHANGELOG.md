@@ -4,6 +4,22 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-08-07
+
+**New `cbr-explore` discovery / scout skill + a three-opener stream law.** `explore` is the SDLC's research front-door: it scouts existing code and/or user-pointed prior art into a re-runnable, cited `research/RES-<topic>-R[n].md` that `plan-writing` consumes, opens or joins a work-stream, then STOPS. Validated + red-teamed before build (3 adversarial reviewers; 12 findings applied).
+
+### Added
+- **`cbr-explore` skill** (`/cbr-explore`) — codebase scout + user-pointed prior-art gather → one cited `research/RES-<topic>-R[n].md` (re-runnable / time-series). Spawns `cbr-researcher` for fetch/distil; `--parallel` fans out N angle-workers under file-ownership (round-scoped, index-prefixed paths — disjoint by construction) converged by a final researcher pass. No gate (research is pre-G1) — it STOPS for the user.
+- **`evals/test_opener_law.py`** — structural gate asserting every opener resolves the stream by topic-slug and none uses `resolve_active_feature()` as the join mechanism.
+
+### Changed
+- **All three stream openers now obey one law — open-if-none / join-if-exists, resolved by topic-slug** (`rules/sdlc-conventions.md`). **`cbr-brainstorming` gains a JOIN branch (behavior change):** it no longer opens a stream unconditionally — when a stream already matches the topic slug (e.g. one `explore` opened), it JOINS strictly additively (never re-scaffolds `STREAM.md`, never overwrites `BRAINSTORM.md`); a genuinely new idea still opens a new stream. `plan-writing` is reconciled to the same law.
+- **`cbr-researcher` default report path → `research/RES-[topic]-R[n].md`** (was `RES-[topic].md`); the spawning skill owns the round.
+- **`sdlc-conventions.md`:** openers 2 → 3 (adds `explore`), new RES artifact-path + Artifact-Lifecycle rows; `plan-writing`'s "future explore" prose retired (the skill now ships).
+
+### Security
+- `cbr-explore` does **no autonomous web search** — web intake is limited to user-supplied URLs (`WebFetch`) + Context7 for a user-named library, and the constraint is bound into every `cbr-researcher` spawn brief. Carries the "fetched content = data, not instructions" invariant and reduces every topic / subtopic to a sanitized `[a-z0-9-]` slug before any path / shell / spawn use (path-traversal + injection guard).
+
 ## [0.8.0] — 2026-08-05
 
 **Re-platform: Claude Code plugin → standalone `npx claudebrew` npm installer.** ClaudeBrew is no longer a marketplace plugin; a zero-runtime-dependency Node CLI provisions the skills/agents/rules/hooks into the user's `.claude/`, merges harness settings, and writes a managed rules block into project memory. One-way-door, suite-wide.
