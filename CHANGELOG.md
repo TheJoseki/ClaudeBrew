@@ -4,6 +4,22 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.10.0] — 2026-08-08
+
+**The rules layer went from 13 always-on files to one contract — resident cost 76,657 → 4,622 payload bytes (≈20K → ≈1.1K tokens, −94%; the installed copy is a few hundred bytes larger once the three citation paths bake absolute).** That text was loaded on every turn *and* inherited by every spawned subagent, so the saving compounds. What was cut was apparatus, not judgment: prescriptive process taxonomies (CMMI/ISTQB/PMP branding, per-round pass-rate ladders, severity/priority grids, story points and velocity, risk P×I scoring, weighted decision matrices, checklist evidence tables). What survives moved into `claude/rules/agent-contract.md` — the invariants and interfaces an agent must hold on every turn — or into three references a skill opens when its task needs them.
+
+### Changed
+- **BREAKING — the shipped rule set is replaced.** The 13 files under `claude/rules/` are gone, replaced by `agent-contract.md` (never-guess, hard-gate/no-auto-cascade, evidence-over-assertion, surgical changes, trust boundary, Rule of Two, confirm-before-irreversible) plus the SDLC map. On `claudebrew update` an old rule file you never edited is deleted; one you *did* edit is **retired** — kept on disk, dropped from the `@`-import block. ⚠️ A retired file left under `.claude/rules/` is **still loaded**: the client auto-loads that directory recursively regardless of the block. Delete it by hand to get the full saving.
+- **On-demand references live outside the rules layer**, at `.claude/docs/references/` — `sdlc-reference.md` (gate table, canonical artifact paths, artifact lifecycle, the stream open-or-join law, memory tiers), `security-reference.md` (trust boundary, injection patterns, pre-Bash checklist, skill-authoring checklist), `ship-practices.md` (pre-deploy gate, expand/migrate/contract migrations, rollback, smoke tests, SemVer). A fresh-session probe confirmed the directory — not the `@`-import block — is what makes a file resident; `orchestrate.test.mjs` now asserts `rules/` holds exactly one file, so the saving cannot silently regress.
+- **Trade-off analysis replaces "DAR".** The method is unchanged — compare real alternatives, record what won and why — but the label and the weighted-scoring matrix are gone.
+- **`TEST_VIEWPOINT.md` is a one-page risk-first judgment prompt** instead of a fixed-threshold template. Its machine-read Section 0 line and the gate mapping are preserved verbatim.
+
+### Removed
+- **The `cbr-estimate` skill**, with its story-point/WBS/velocity apparatus.
+
+### Fixed
+- Dangling citations of the retired `sdlc-conventions.md` across `README.md`, `CLAUDE.md` and the doc templates now resolve. `evals/test_rule_crossrefs.py` guards every rule/reference citation, and treats a reference cited from inside the rules layer as a failure — so re-parking a reference where it would become resident breaks the build.
+
 ## [0.9.1] — 2026-08-07
 
 **`update` now propagates rules-set changes.** Previously the rules `@`-import block in `CLAUDE.local.md` (or `~/.claude/CLAUDE.md`) was written only at install: an update that added or removed rule files landed on disk but the block kept loading the old set — silently. This patch is a prerequisite for the upcoming rules re-architecture.

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-<!-- release: 0.9.1 -->
+<!-- release: 0.10.0 -->
 
 > **Packaging (0.8.0 re-platform):** ClaudeBrew moved from a Claude Code **plugin/marketplace** to a
 > standalone **`npx claudebrew` npm installer** that provisions the payload into the user's `.claude/`.
@@ -22,7 +22,7 @@ brainstorming → (worktree) → requirement → UI/tech design → implement �
 Two bodies of work sit side by side in the tree — know which one you're touching:
 
 - **The reference core.** `brainstorming` (Stage 1) and `worktree` (Stage 1.5 — the isolation gate between an approved brainstorm and any implementation) set the house style every sibling is meant to imitate — read them first. See "Worktree isolation" below.
-- **The single-layer SDLC skills.** The tree carries 24 stage/knowledge **skills**, a **5-agent capability pool** (`claude/agents/cbr-{researcher,developer,reviewer,tester,strategist}.md`), and ~13 **rules** (`claude/rules/*.md`). This suite was imported from a sibling project ("ClaudeKit") as a two-layer orchestrator→role-agent engine, then **collapsed to a single layer** (the v0.3.0 pivot — see `plans/260730-2316-single-layer-sdlc-refactor/`): the orchestrators and 10 rigid role agents were removed; each stage skill is now self-sufficient, writes its artifact, applies its gate, and **stops**. Skills spawn pool agents on demand (fresh-eyes gate verdicts, `--parallel` workers) — a flat toolbox, not an orchestrated pipeline. See "The SDLC engine" below.
+- **The single-layer SDLC skills.** The tree carries 24 stage/knowledge **skills**, a **5-agent capability pool** (`claude/agents/cbr-{researcher,developer,reviewer,tester,strategist}.md`), and a **one-file resident contract** (`claude/rules/agent-contract.md`) backed by three on-demand references (`claude/docs/references/*.md`). This suite was imported from a sibling project ("ClaudeKit") as a two-layer orchestrator→role-agent engine, then **collapsed to a single layer** (the v0.3.0 pivot — see `plans/260730-2316-single-layer-sdlc-refactor/`): the orchestrators and 10 rigid role agents were removed; each stage skill is now self-sufficient, writes its artifact, applies its gate, and **stops**. Skills spawn pool agents on demand (fresh-eyes gate verdicts, `--parallel` workers) — a flat toolbox, not an orchestrated pipeline. See "The SDLC engine" below.
 
 Two things live in this repo — don't conflate them. The **installer** is a real Node program (`package.json`, `bin/`, `scripts/lib/`, `node --test scripts/*.test.mjs`) with unit + integration tests. The **payload** is skills-as-prose: the "source" is the Markdown skills under `claude/skills/cbr-*/` (plus small Python hooks), and "testing" a skill means evaluating how well Claude follows it (trigger/behavioral evals under `evals/`), not running unit tests.
 
@@ -41,14 +41,16 @@ ClaudeBrew/                          # repo root = npm package + dev workspace
 │   ├── settings.json                 # harness settings DEEP-MERGED into the user's config (never copied as a file)
 │   ├── skills/cbr-<name>/SKILL.md    # 24 cbr-namespaced skills: brainstorming+worktree (reference) + SDLC stages
 │   ├── agents/cbr-<name>.md          # 5 capability agents (researcher/developer/reviewer/tester/strategist) skills spawn on demand
-│   ├── rules/*.md                    # ~13 convention files, loaded via a managed CLAUDE.local.md @-import block
+│   ├── rules/agent-contract.md       # THE resident layer — one contract, @-imported via CLAUDE.local.md
+│   ├── docs/references/*.md          # 3 on-demand references (loaded by a skill when its task needs them)
+│   ├── docs/_templates/*.md          # 8 agent-consumable doc templates, seeded into the user's docs/
 │   ├── schemas/verdict-artifact.schema.json  # shape of a gate verdict (verdict-gate.py input)
 │   └── hooks/*.py                    # Python guards + skill-invoked verdict-gate + lifecycle context hooks
 ├── evals/                           # DEV-ONLY structural/trigger evals + the Python hook unit tests
 └── examples/                        # sample artifacts (e.g. a brainstorm output)
 ```
 
-The `files` array ships only `claude/ bin/ scripts/` + the root docs; evals, examples, plans, and the dev `.claude/` stay out of the tarball. At install the CLI copies the six payload subdirs into the target `.claude/`, **bakes** every residual `{{CBR_ROOT}}` token to an absolute path, **deep-merges** `claude/settings.json` into the user's settings (fail-closed, provenance-tracked), and writes a managed rules `@`-import block into `CLAUDE.local.md` (project) or `~/.claude/CLAUDE.md` (user). Installed skills invoke as `/cbr-brainstorming`, `/cbr-worktree`, `/cbr-implement-feature`, `/cbr-review-code`. **Python 3 is a hard prerequisite** (every hook is Python); the doctor fails the install if none resolves.
+The `files` array ships only `claude/ bin/ scripts/` + the root docs; evals, examples, plans, and the dev `.claude/` stay out of the tarball. At install the CLI copies the six payload subdirs into the target `.claude/`, **bakes** every residual `{{CBR_ROOT}}` token to an absolute path, **deep-merges** `claude/settings.json` into the user's settings (fail-closed, provenance-tracked), and writes a managed rules `@`-import block into `CLAUDE.local.md` (project) or `~/.claude/CLAUDE.md` (user). **The directory decides what is resident, not that block:** the client auto-loads `.claude/rules/**` *recursively* and independently of the `@`-imports (probe-verified), so `rules/` holds the contract and nothing else, and every on-demand reference ships under `docs/references/` — cited as `{{CBR_ROOT}}/docs/references/<name>.md` so the bake resolves it. `orchestrate.test.mjs` asserts that `rules/` stays a one-file directory, which is what actually caps the per-turn (and per-subagent-spawn) cost. Installed skills invoke as `/cbr-brainstorming`, `/cbr-worktree`, `/cbr-implement-feature`, `/cbr-review-code`. **Python 3 is a hard prerequisite** (every hook is Python); the doctor fails the install if none resolves.
 
 **Users install** (no plugin, no marketplace):
 ```
