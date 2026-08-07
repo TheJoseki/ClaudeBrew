@@ -1,6 +1,6 @@
 {
   "name": "claudebrew",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "ClaudeBrew — a full software-development lifecycle as a suite of Claude Code skills (brainstorm → worktree → requirement → design → code → test → ship), installed into your Claude Code environment by the `claudebrew` CLI.",
   "type": "module",
   "bin": {

@@ -4,6 +4,19 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.9.1] — 2026-08-07
+
+**`update` now propagates rules-set changes.** Previously the rules `@`-import block in `CLAUDE.local.md` (or `~/.claude/CLAUDE.md`) was written only at install: an update that added or removed rule files landed on disk but the block kept loading the old set — silently. This patch is a prerequisite for the upcoming rules re-architecture.
+
+### Fixed
+- **`claudebrew update` regenerates the rules `@`-import block** from the new payload's `rules/` listing (`fullUpdate` in `orchestrate.mjs`), preserving the original rules-file provenance (`created` flag) so uninstall still cleans up correctly. If an install predates provenance tracking, update now WARNS instead of silently skipping.
+- **`install --force` no longer poisons settings provenance.** A forced reinstall over a live install used to re-derive provenance against settings that already contained CBR's values; a later `uninstall` would then "restore" CBR's own values — leaving hooks registered for deleted files. The original provenance (the true pre-CBR state) is now carried through.
+
+### Changed
+- **Removed-upstream + user-edited files are now *retired***: kept on disk but moved from the managed `files` manifest to a new `retired` section — reported once (`retired: <path> …`), excluded from the regenerated rules block, and no longer re-reported on every subsequent update. A later re-ship of the same path will not silently overwrite the user's edited copy (a copy reverted to its installed content is safely re-adopted; `--force` overrides). `uninstall` leaves retired files in place (even with `--force`) and reports them. The `retired` section survives `install --force`.
+- **Accepted trade-off:** with the provenance fix, no command re-merges *shipped settings* over an existing install any more (`install --force` deliberately skips the merge; `update` never merged). Refreshing shipped settings on an existing install requires `uninstall` + `install`. If a future version ships new settings/hook registrations, its release notes must say so explicitly — the file side will update, the settings side will not.
+- **`install --force` now validates the existing manifest first** and refuses with an actionable error when `metadata.json` is unreadable or its `settings.provenance` is malformed — previously this could throw mid-flight and roll back the payload of a working install while leaving merged settings behind.
+
 ## [0.9.0] — 2026-08-07
 
 **New `cbr-explore` discovery / scout skill + a three-opener stream law.** `explore` is the SDLC's research front-door: it scouts existing code and/or user-pointed prior art into a re-runnable, cited `research/RES-<topic>-R[n].md` that `plan-writing` consumes, opens or joins a work-stream, then STOPS. Validated + red-teamed before build (3 adversarial reviewers; 12 findings applied).

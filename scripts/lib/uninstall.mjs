@@ -33,8 +33,13 @@ export function uninstallFiles(target, opts = {}) {
     else kept.push(rel);
   }
 
+  // Retired files (removed upstream while user-edited, see update.mjs) are unmanaged by
+  // decision: uninstall leaves them in place — even with --force — but reports them so
+  // their existence is never silent.
+  const retiredLeft = Object.keys(manifest.retired || {});
+
   if (dryRun) {
-    return { dryRun: true, action: "uninstall", willRemove: toRemove.length, kept };
+    return { dryRun: true, action: "uninstall", willRemove: toRemove.length, kept, retiredLeft };
   }
 
   const touchedDirs = new Set();
@@ -44,7 +49,7 @@ export function uninstallFiles(target, opts = {}) {
   if (kept.length === 0) rmSync(manifestPath(target.claudeDir), { force: true });
   pruneEmptyDirs(touchedDirs, target.claudeDir);
 
-  return { action: "uninstall", removed: toRemove.length, kept };
+  return { action: "uninstall", removed: toRemove.length, kept, retiredLeft };
 }
 
 /** Remove now-empty dirs, deepest first, stopping strictly below `ceiling`. */

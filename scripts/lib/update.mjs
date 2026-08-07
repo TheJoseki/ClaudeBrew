@@ -29,8 +29,13 @@ export function updateFiles(sourceRoot, target, opts = {}) {
   const recorded = manifest.files || {};
   const nativeSep = (rel) => rel.replace(/\//g, path.sep);
 
-  const actions = { added: [], updated: [], unchanged: [], skipped: [], removed: [] };
+  const actions = { added: [], updated: [], unchanged: [], skipped: [], removed: [], retired: [] };
   const nextFiles = {};
+  // Files retired by an EARLIER update (removed upstream while user-edited) stay out of
+  // `files` — carrying them forward here is what keeps them from being re-reported as
+  // "kept" on every subsequent update. A retired path re-shipped upstream is re-adopted
+  // only when that is provably safe (see the added-branch guard below).
+  const retired = { ...(manifest.retired || {}) };
   const writes = []; // {dest, bytes}
   const deletes = []; // dest
   const seen = new Set();
@@ -43,7 +48,15 @@ export function updateFiles(sourceRoot, target, opts = {}) {
     const onDisk = existsSync(dest) ? hashBytes(readFileSync(dest)) : null;
 
     if (!(rel in recorded)) {
-      actions.added.push(rel); nextFiles[rel] = newHash; writes.push({ dest, bytes });
+      // A retired file (removed upstream while user-edited) can be re-shipped later.
+      // The user's edited copy gets the same protection as any managed user edit; a copy
+      // the user reverted to its installed content (hash == retired hash) is safe to adopt.
+      if (rel in retired && onDisk !== null && onDisk !== newHash && onDisk !== retired[rel] && !force) {
+        actions.skipped.push(`${rel} (re-shipped upstream but user-modified — kept, still retired)`);
+      } else {
+        delete retired[rel]; // re-adopted (identical/reverted copy, absent, or --force)
+        actions.added.push(rel); nextFiles[rel] = newHash; writes.push({ dest, bytes });
+      }
     } else if (onDisk !== null && onDisk !== recorded[rel]) {
       if (force) { actions.updated.push(`${rel} (forced over user edit)`); nextFiles[rel] = newHash; writes.push({ dest, bytes }); }
       else { actions.skipped.push(rel); nextFiles[rel] = recorded[rel]; }
@@ -61,7 +74,13 @@ export function updateFiles(sourceRoot, target, opts = {}) {
     const dest = path.join(target.claudeDir, nativeSep(rel));
     const onDisk = existsSync(dest) ? hashBytes(readFileSync(dest)) : null;
     if (onDisk === null || onDisk === recorded[rel]) { actions.removed.push(rel); deletes.push(dest); }
-    else { actions.skipped.push(`${rel} (removed upstream but user-modified — kept)`); nextFiles[rel] = recorded[rel]; }
+    else {
+      // Removed upstream but user-edited: RETIRE it — keep the file on disk, move it from
+      // `files` to `retired` so it is no longer managed (and, for rules, no longer imported
+      // once the caller regenerates the rules block). Reported once, on this update only.
+      actions.retired.push(rel);
+      retired[rel] = recorded[rel];
+    }
   }
 
   if (dryRun) return { dryRun: true, action: "update", actions };
@@ -78,6 +97,7 @@ export function updateFiles(sourceRoot, target, opts = {}) {
   // NOT drop the config provenance uninstall needs to un-merge settings + strip the rules block.
   const next = buildManifest({ name: manifest.name || "claudebrew", version, scope: target.scope, files: nextFiles });
   if (manifest.settings) next.settings = manifest.settings;
+  if (Object.keys(retired).length) next.retired = retired;
   writeManifest(target.claudeDir, next);
   return { action: "update", actions };
 }
