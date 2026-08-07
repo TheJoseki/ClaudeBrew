@@ -50,7 +50,20 @@ test("full install: files + settings.local.json merge + CLAUDE.md rules block, n
 
     const md = path.join(cwd, "CLAUDE.local.md");
     assert.ok(existsSync(md), "project rules block goes into gitignored CLAUDE.local.md");
-    assert.ok(readFileSync(md, "utf8").includes("@.claude/rules/sdlc-conventions.md"), "relative rules import");
+    assert.ok(readFileSync(md, "utf8").includes("@.claude/rules/agent-contract.md"), "relative rules import");
+  } finally { rm(cwd); }
+});
+
+test("on-demand references under rules/references/ are installed to disk but NOT @-imported (stay off the resident layer)", () => {
+  const { cwd, target } = freshTarget();
+  try {
+    fullInstall(target);
+    // The subdir is copied (progressive-disclosure content ships)...
+    assert.ok(existsSync(path.join(target.claudeDir, "rules", "references", "sdlc-reference.md")), "reference file provisioned on disk");
+    // ...but shippedRuleFiles is a FLAT readdir, so the block never imports the subdir — the whole
+    // point of the diet: paying resident tokens only for the contract, not the references.
+    const block = readFileSync(path.join(cwd, "CLAUDE.local.md"), "utf8");
+    assert.ok(!block.includes("references/"), "no reference file is @-imported into the resident block");
   } finally { rm(cwd); }
 });
 
