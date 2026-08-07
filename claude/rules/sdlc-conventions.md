@@ -61,7 +61,7 @@ stream root `docs/streams/<slug>-<YYYYMMDD>/` unless they start with `docs/`.
 |-------|----------|--------------------------------------|
 | `brainstorming` | Stream Manifest | `STREAM.md` (created at stream start; the stream's index + board) |
 | `brainstorming` | Brainstorm | `brainstorm/BRAINSTORM.md` |
-| `researcher` (pool) | Research Report | `research/RES-[topic].md` |
+| `explore` (owns) / `cbr-researcher` (writes) | Research Report | `research/RES-[topic]-R[n].md` (re-runnable; `--parallel` angles: `research/RES-[topic]-R[n]-a[NN]-[angle].md`) |
 | `worktree` | Worktree handoff | `WORKTREE.md` |
 | `analyze-requirement` | SRS | `requirements/SRS.md` |
 | `design-screen` | Screen Design | `requirements/SCREEN.md` |
@@ -137,22 +137,37 @@ identity carrier.
 
 **Upkeep protocol (MANDATORY, every stage skill).** When a stage skill writes its output artifact it must:
 (1) stamp `stream: [id]` in that artifact's frontmatter; (2) append/update the artifact's row in the
-stream's `STREAM.md` membership table; (3) update the task-board status for its phase. `brainstorming`
-(greenfield) or `plan-writing` (brownfield, stream-light) creates `STREAM.md` from
-`{{CBR_ROOT}}/docs/_templates/STREAM.md` at stream start. Skills NEVER write the derived Gate
+stream's `STREAM.md` membership table; (3) update the task-board status for its phase. The first opener to
+touch a topic — `brainstorming`, `explore`, or `plan-writing` (per the open-or-join law below) — creates
+`STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md`; the rest JOIN it. Skills NEVER write the derived Gate
 Status zone — `handoff` / `session-init` regenerate it.
 
 ### Stream openers & lanes (greenfield vs stream-light)
 
-A work-stream has two possible openers, both scaffolding `STREAM.md` from `{{CBR_ROOT}}/docs/_templates/STREAM.md`:
+A work-stream has **three** possible openers, all scaffolding `STREAM.md` from
+`{{CBR_ROOT}}/docs/_templates/STREAM.md` and all obeying one law:
 
-- **`brainstorming` (greenfield lane).** The spec-first front door — opens the stream, then the
-  `analyze-requirement → design → …` chain fills G1–G8 in order.
+> **Open-if-none / join-if-exists, resolved by topic-slug.** Before opening, an opener derives a
+> `[a-z0-9-]` slug from its topic and looks for an existing stream folder whose slug matches (glob
+> `docs/streams/*`, strip each folder's trailing `-<YYYYMMDD>`, compare). Exactly one match → **JOIN**
+> it (append artifacts + `STREAM.md` rows; **never** re-scaffold the manifest or overwrite an artifact —
+> a re-run writes a new round). No match → **OPEN** a new stream, even if unrelated streams are in
+> flight. More than one match → **ask** which, always offering "open a new stream". This is a prose
+> lookup — **not** `sdlc_state.py resolve_active_feature()`, which is topic-blind (it counts repo-wide
+> in-flight streams) and is not callable from a skill.
+
+- **`brainstorming` (greenfield lane).** The spec-first front door for a new idea — opens (or joins) the
+  stream, then the `analyze-requirement → design → …` chain fills G1–G8 in order.
+- **`explore` (brownfield code-scout / greenfield prior-art).** The discovery front door — scouts code
+  and/or user-pointed prior art into `research/RES-[topic]-R[n].md`, opens or joins the stream, then
+  STOPS (no gate; research is pre-G1). A `greenfield`-lane explore stream is later JOINed by
+  `brainstorming` on the same slug.
 - **`plan-writing` (brownfield, stream-light lane).** When maintenance work starts on an existing
-  codebase with **no** stream, `plan-writing` opens one directly and writes `plan/PLAN.md` — **without**
-  writing an SRS/design or forcing G1–G3. Its Step-1 **input-contract** first detects the source of truth
-  to plan from (priority `requirements/SRS.md → brainstorm/BRAINSTORM.md → research/RES-*.md → code`; it
-  **asks the user** when several are present, and **refuses to plan on nothing**).
+  codebase with **no** matching stream, `plan-writing` opens one directly and writes `plan/PLAN.md` —
+  **without** writing an SRS/design or forcing G1–G3. Its Step-1 **input-contract** first detects the
+  source of truth to plan from (priority `requirements/SRS.md → brainstorm/BRAINSTORM.md →
+  research/RES-*.md → code`; it **asks the user** when several are present, and **refuses to plan on
+  nothing**).
 
 `lane:` in `STREAM.md` frontmatter records which — `greenfield` (default) or `brownfield`. It is
 **descriptive metadata only**: gate authority stays with the `hooks/lib/sdlc_state.py` glob, never the
@@ -173,8 +188,9 @@ is a gap.
 
 | Artifact | Created by | Updated by | Consumed by | Closed at |
 |----------|-----------|-----------|-------------|-----------|
-| STREAM.md | `brainstorming` (greenfield) / `plan-writing` (brownfield stream-light) | every stage (row + board) | `handoff`, `session-init` | G8 |
+| STREAM.md | `brainstorming` / `explore` / `plan-writing` (whichever opens first, per the open-or-join law) | every stage (row + board) | `handoff`, `session-init` | G8 |
 | BRAINSTORM | `brainstorming` | — | `analyze-requirement` | G1 |
+| RES (research) | `explore` (`cbr-researcher` writes) | `explore` (re-run → `R[n+1]`) | `plan-writing` | superseded when an SRS/PLAN cites it, else stream close |
 | SRS | `analyze-requirement` | `analyze-requirement` | `design-screen`, `design-function`, tests | G1 |
 | SCREEN | `design-screen` | `design-screen` | `design-function`, `implement-feature` | G2 |
 | BASIC | `design-function` | `design-function` | `implement-feature`, `integration-test` | G3a |
