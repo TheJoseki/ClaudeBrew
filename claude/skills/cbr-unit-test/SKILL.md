@@ -1,6 +1,6 @@
 ---
 name: cbr-unit-test
-description: "QA Unit Test agent writes and runs unit tests following ISTQB CTFL 4.0. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run unit tests for specific modules, controllers, services, or components. NOT FOR: integration/E2E tests (use integration-test)."
+description: "QA Unit Test agent writes and runs unit tests. Test framework detected from PROJECT.md/CLAUDE.md. TRIGGER: user asks to write or run unit tests for specific modules, controllers, services, or components. NOT FOR: integration/E2E tests (use integration-test)."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, Agent, AskUserQuestion
 argument-hint: "[feature name] [--parallel]"
 metadata:
@@ -8,7 +8,7 @@ metadata:
   category: core-sdlc
 ---
 
-# QA Unit Test — ISTQB CTFL 4.0
+# QA Unit Test
 
 $ARGUMENTS
 
@@ -41,7 +41,7 @@ Do NOT hardcode framework assumptions.
   If NOT FOUND → STOP: "UTC not found. Run `/unit-test` Mode A first to create the test cases."
 
 ## Required Reading
-- `docs/TEST_VIEWPOINT.md` — ISTQB techniques, TC catalog, quality gates
+- `docs/TEST_VIEWPOINT.md` — test viewpoint, TC catalog, quality gates
 - `docs/CODING_RULES.md` — Rules to verify (soft delete, guards, i18n, no any)
 - `docs/streams/[feature]-*/design/TECH.md` — Technical spec
 - `docs/streams/[feature]-*/work-logs/DEV-*.md` — Dev log (if exists)
@@ -107,14 +107,12 @@ cd backend && [backend test command] --testPathPattern="[module]" --verbose
 cd frontend && [frontend test command] --coverage --reporter=verbose
 ```
 
-Round gates — pass rate required at each round:
+Round gates — each round (`R[n]`, max R5) fixes only the failures the previous round
+reported, then re-runs the full suite. The gate is met when the targeted suite is
+**100% green**; if it is not green by R5, escalate to the user rather than pass.
 
-| R1 | R2 | R3 | R4 | R5 |
-|----|----|----|----|----|
-| Baseline | ≥70% | ≥90% | ≥95% | 100% GATE |
-
-G6 also requires ≥80% coverage and 100% of TECH-spec functions covered
-(Function Coverage Matrix).
+G6 also requires the coverage target in `docs/TEST_VIEWPOINT.md` to be met and 100%
+of TECH-spec functions covered (Function Coverage Matrix).
 
 ### Step 1 — Spawn one `cbr-tester`
 
@@ -126,7 +124,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 
 - **Scope**: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md` + the code under test.
 - **Commands**: the PROJECT.md test commands above (tell it to detect, not assume).
-- **Round**: which R[n] this is, and the pass-rate bar for that round.
+- **Round**: which R[n] this is (fix only this round's reported failures).
 - **Outputs**, both mandatory:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
     (template: [`references/utc-template.md`](references/utc-template.md))
@@ -178,7 +176,7 @@ skill for R[n+1].
 - Artifacts (Mode B, written by the spawned `cbr-tester`):
   `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` and
   `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`
-- Quality gate: G6 — ≥80% coverage, R5 = 100% pass rate,
+- Quality gate: G6 — coverage target in `docs/TEST_VIEWPOINT.md` met, 100% pass by R5,
   `verdict-gate.py --gate G6` run with its exit code reported
 
 ---

@@ -1,7 +1,7 @@
 # Test Viewpoint — [PROJECT_NAME — e.g. Acme Store]
 
 > Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr-tester` + user.
-> Methodology: ISTQB CTFL · ISO/IEC 25010.
+> A short, project-specific judgment prompt: **what to test, where the risk is, and how the test gates map** — not a technique-cataloguing exercise.
 > Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. Gate G3c requires zero remaining placeholder brackets.
 
 ---
@@ -37,16 +37,21 @@ Which test activity satisfies which quality gate. Pass criteria and deciding aut
 
 ---
 
-## Section 2 — ISTQB Technique Application
+## Section 2 — What to test (risk-first)
 
-One line per technique naming where it is applied in this project.
+Judgment, not a matrix. Name where this project actually breaks, then spend the test effort there.
 
-| Technique | Where applied |
-|-----------|---------------|
-| Equivalence partitioning | [where applied — e.g. login input classes: valid / invalid / empty] |
-| Boundary value analysis | [where applied — e.g. pagination page size at 0, 1, max, max+1] |
-| Decision table | [where applied — e.g. role × resource permission matrix] |
-| State transition | [where applied — e.g. order status DRAFT → PAID → SHIPPED transitions] |
+- **Highest-risk areas** — the modules where a defect is most costly (e.g. auth/RBAC, payments, data integrity, anything touching money or permissions). List them and say *why* each is risky.
+- **Layers per area** — for each risk area, which layers carry the weight (unit for pure logic, integration for cross-module workflows, E2E for critical user journeys). A CRUD screen and a payment flow do not deserve the same depth.
+- **Negative paths that must fail correctly** — the unhappy paths the system must reject, not just the happy path: unauthenticated (401), wrong role (403), invalid input per validation rule (400), missing resource (404), uniqueness conflict (409). Cover the ones each endpoint actually has.
+- **Realistic data** — test with data shaped like production (real IDs, boundary sizes, unicode, empty/null), not just tidy fixtures.
+
+Fill in per project:
+
+| Risk area | Why it's risky | Layers to test | Key negative paths |
+|-----------|----------------|----------------|--------------------|
+| [area — e.g. auth/RBAC] | [why — e.g. broken access control is the top OWASP risk] | [layers — e.g. unit + integration] | [e.g. 401 no token, 403 wrong role] |
+| [area — e.g. …] | [why] | [layers] | [negative paths] |
 
 ---
 
@@ -54,10 +59,10 @@ One line per technique naming where it is applied in this project.
 
 Seed with representative cases per layer; expand during `unit-test` / `integration-test` Mode A. Every row's `Gate` must be one of G6 / G7a / G7b.
 
-| TC-ID | Layer | Technique | Scenario | Expected | Gate |
-|-------|-------|-----------|----------|----------|------|
-| [TC-001 — e.g. TC-001] | Unit | Equivalence partitioning | [scenario — e.g. valid credentials return a session token] | [expected — e.g. 200 + token payload] | G6 |
-| [TC-002 — e.g. TC-002] | Integration | Boundary value | [scenario — e.g. list endpoint at max page size] | [expected — e.g. 200 + N items, no overflow] | G7a |
+| TC-ID | Layer | Scenario | Expected | Gate |
+|-------|-------|----------|----------|------|
+| [TC-001 — e.g. TC-001] | Unit | [scenario — e.g. valid credentials return a session token] | [expected — e.g. 200 + token payload] | G6 |
+| [TC-002 — e.g. TC-002] | Integration | [scenario — e.g. list endpoint at max page size] | [expected — e.g. 200 + N items, no overflow] | G7a |
 
 ---
 
@@ -68,6 +73,6 @@ Check every item before requesting G3c approval. These are gate checks, not fill
 - [ ] Section 0 filled with real frameworks, fixtures, and run commands (no placeholder brackets)
 - [ ] Coverage target and coverage tool set from PROJECT.md
 - [ ] Gate mapping reviewed; G7b marked N/A if the project is backend-only
-- [ ] Each ISTQB technique either has a real application or is marked N/A with a reason
+- [ ] Section 2 names the real risk areas, their layers, and their negative paths (no generic filler)
 - [ ] Test Case Catalog seeded with at least one case per applicable layer
 - [ ] Zero remaining `[… — e.g. …]` placeholder brackets in this document

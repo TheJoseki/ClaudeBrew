@@ -63,10 +63,10 @@ The audit trail of the divergent motion — what was on the table, not just what
   and which one was adopted (see problem-first.md).
 - **Options generated** (the divergent range — obvious / minimal / inverted / wild),
   each with a one-line essence, so the reasoning is reconstructable.
-- For each significant decision, a **Decision Record** (see dar-analysis.md): the
-  decision and alternatives considered; the DAR criteria, weights, and scores (or a
-  note that the choice was minor and reversible, so DAR was skipped); the chosen
-  option and rationale.
+- For each significant decision, a **Decision Record** (see trade-off-analysis.md):
+  the decision and alternatives considered; why it won over the runner-up and the
+  strongest counter-argument (or a note that the choice was minor and reversible, so
+  no trade-off analysis was warranted); the chosen option and rationale.
 
 ## 9. Recommended approach
 The synthesized direction: which approaches won and how they fit together — the spine

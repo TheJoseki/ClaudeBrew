@@ -56,7 +56,7 @@ defend:
   runner-up* — the comparison is the point.
 - **State what would change your mind** — the condition under which you would switch.
   This is honesty, and it tells the requirement stage what to watch.
-- **Hard-to-reverse + real trade-offs → DAR** (`dar-analysis.md`). Reversible/minor →
+- **Hard-to-reverse + real trade-offs → trade-off analysis** (`trade-off-analysis.md`). Reversible/minor →
   just recommend and move on (say it was minor).
 
 ### The convergence test

@@ -105,11 +105,9 @@ cd frontend && [E2E test command] --reporter=list
 - [HTTP integration test library] (e.g. Supertest, httpx, RestAssured — per PROJECT.md)
 - [E2E test framework] (e.g. Playwright, Cypress, Selenium — per PROJECT.md)
 
-Round gates — pass rate required at each round:
-
-| R1 | R2 | R3 | R4 | R5 |
-|----|----|----|----|----|
-| Baseline | ≥70% | ≥90% | ≥95% | 100% GATE |
+Round gates — each round (`R[n]`, max R5) fixes only the failures the previous round
+reported, then re-runs the full suite. The gate is met when the targeted suite is
+**100% green**; if it is not green by R5, escalate to the user rather than pass.
 
 G7 covers both the API integration suite and, where the project has a UI, the
 critical-journey E2E suite. Run against a production-equivalent database, and

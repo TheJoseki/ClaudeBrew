@@ -110,7 +110,7 @@ ClaudeBrew's house style, set by `brainstorming` (the reference implementation).
 - **Hard gate + no auto-cascade**: a stage does no downstream work and does not invoke the next skill until its artifact is written and the user explicitly approves; then it **stops** so the user decides when the next stage begins. Cascading silently is a bug, not a feature.
 - **Never-guess at the strictest setting**: any uncertainty is surfaced, never silently assumed. Kept ergonomic by *batching* related uncertainties into pre-analyzed multiple-choice questions, not by relaxing the bar.
 - **Evidence-backed**: use Context7 for library/framework docs and WebSearch for patterns/prior art; cite every URL in the artifact.
-- **DAR** (Decision Analysis & Resolution) for trade-offs that are hard to reverse — weighted criteria, scoring matrix, recorded decision.
+- **Trade-off analysis** for decisions that are hard to reverse — compare alternatives on what matters, record the decision and why it won.
 
 ### Worktree isolation (hard-mandatory, Stage 1.5)
 

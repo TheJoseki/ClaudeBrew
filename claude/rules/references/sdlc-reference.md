@@ -70,7 +70,6 @@ Paths below are relative to the stream root unless they start with `docs/`.
 | `retro` | Retrospective | `retro/RETRO-[YYYYMMDD].md` |
 | `handoff` | Session Handoff | `handoffs/HANDOFF-[YYYYMMDD].md` |
 | user / relevant skill | DAR / CAR | `dars/DAR-[topic]-[YYYYMMDD].md` / `cars/CAR-[topic]-[YYYYMMDD].md` |
-| `estimate` | Estimation | `estimate/EST-[YYYYMMDD].md` |
 | `design-*` | Screen & design exports | `assets/<tool>/[SCR-XX]-[state].<ext>` (`stitch`\|`pencil`\|`figma`) |
 
 **Project-level (at `docs/` root, NOT per-stream):** `docs/CODING-CHECKLIST.md`,

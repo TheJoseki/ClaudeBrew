@@ -1,7 +1,7 @@
 # Coding Rules — [PROJECT_NAME]
 
 > **Version**: 1.0
-> **Standards**: PMBOK 7th Ed · CMMI V3.0 · OWASP 2025 · ISO/IEC 25010:2023 · Clean Code · SOLID
+> **Standards**: OWASP 2025 · ISO/IEC 25010:2023 · Clean Code · SOLID
 > **Applies to**: All agents (human & AI) working on this codebase
 > Created/updated by `design-function`; enforced by `review-code` + fresh `cbr-reviewer` verdict + user.
 > Framework specifics are PROJECT.md-driven — fill each `[… — e.g. …]` slot from your stack.

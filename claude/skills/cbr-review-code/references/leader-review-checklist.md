@@ -19,7 +19,7 @@
 ## 2. Correctness
 
 - [ ] Implementation matches the TECH spec for this batch (compare DEV work log vs TECH spec sections)
-- [ ] All WBS scope items for this batch are present in the work log
+- [ ] All planned scope items for this batch are present in the work log
 - [ ] Edge cases handled: empty collections, null/undefined, boundary values
 - [ ] Error responses follow the API design patterns in `docs/API_DESIGN.md`
 - [ ] Soft delete filters applied consistently (if project uses soft delete)

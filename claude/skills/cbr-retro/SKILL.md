@@ -1,6 +1,6 @@
 ---
 name: cbr-retro
-description: "Retrospective on a delivered feature, phase, or sprint. TRIGGER: user asks for a retro, post-mortem, or lessons-learned review after delivery. Reads the feature's own artifacts (SRS, TECH, review, test, security reports) plus git history, then produces 5-Why root-cause analysis, Lessons Learned per category, git velocity metrics, and prioritized Action Items. Output saved to the feature's work-stream folder (docs/streams/[feature]-*/retro/). NOT FOR: work still in progress (use a handoff/session summary instead)."
+description: "Retrospective on a delivered feature, phase, or sprint. TRIGGER: user asks for a retro, post-mortem, or lessons-learned review after delivery. Reads the feature's own artifacts (SRS, TECH, review, test, security reports) plus git history, then produces 5-Why root-cause analysis, Lessons Learned per category, git activity metrics, and prioritized Action Items. Output saved to the feature's work-stream folder (docs/streams/[feature]-*/retro/). NOT FOR: work still in progress (use a handoff/session summary instead)."
 allowed-tools: Read, Grep, Glob, Bash, Write
 disable-model-invocation: false
 argument-hint: "[feature|phase|sprint name]"
@@ -140,7 +140,7 @@ Synthesize across all perspectives into 4 categories:
 
 ## Step 5: Git Metrics
 
-Collect velocity and quality metrics with read-only git commands:
+Collect activity and quality metrics with read-only git commands:
 
 ```bash
 # Commit count
