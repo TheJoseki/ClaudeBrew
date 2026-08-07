@@ -24,7 +24,7 @@ Status: [PENDING APPROVAL | APPROVED — e.g. PENDING APPROVAL]
 
 ## Section 1 — Gate Mapping
 
-Which test activity satisfies which quality gate. Pass criteria and deciding authority are the authority in `rules/references/sdlc-reference.md` — this table is the test-side view.
+Which test activity satisfies which quality gate. Pass criteria and deciding authority are the authority in `{{CBR_ROOT}}/docs/references/sdlc-reference.md` — this table is the test-side view.
 
 | Gate | Test activity | Pass criteria | Decided by |
 |------|---------------|---------------|------------|

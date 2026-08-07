@@ -1,7 +1,7 @@
 # Open or join the work-stream — the topic-slug law
 
 `explore` is one of the SDLC's three stream **openers**. All three obey one law, stated
-normatively in `rules/references/sdlc-reference.md` ("Stream openers & lanes"):
+normatively in `{{CBR_ROOT}}/docs/references/sdlc-reference.md` ("Stream openers & lanes"):
 
 > **Open-if-none / join-if-exists — resolved by topic-slug.** Before opening a stream, check
 > whether one already governs *this topic*. If it does, JOIN it. If not, OPEN a new one — even

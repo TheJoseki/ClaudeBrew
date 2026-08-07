@@ -54,14 +54,16 @@ test("full install: files + settings.local.json merge + CLAUDE.md rules block, n
   } finally { rm(cwd); }
 });
 
-test("on-demand references under rules/references/ are installed to disk but NOT @-imported (stay off the resident layer)", () => {
+test("on-demand references ship outside rules/, so nothing but the contract is resident", () => {
   const { cwd, target } = freshTarget();
   try {
     fullInstall(target);
-    // The subdir is copied (progressive-disclosure content ships)...
-    assert.ok(existsSync(path.join(target.claudeDir, "rules", "references", "sdlc-reference.md")), "reference file provisioned on disk");
-    // ...but shippedRuleFiles is a FLAT readdir, so the block never imports the subdir — the whole
-    // point of the diet: paying resident tokens only for the contract, not the references.
+    // The references are provisioned (progressive-disclosure content ships)...
+    assert.ok(existsSync(path.join(target.claudeDir, "docs", "references", "sdlc-reference.md")), "reference file provisioned on disk");
+    // ...but never under rules/. The client auto-loads .claude/rules/** RECURSIVELY, independent of
+    // the @-import block, so any file parked there is resident on every turn regardless of what the
+    // block lists. Keeping rules/ down to the contract alone is what actually caps the resident cost.
+    assert.deepEqual(readdirSync(path.join(target.claudeDir, "rules")), ["agent-contract.md"], "rules/ holds the contract and nothing else");
     const block = readFileSync(path.join(cwd, "CLAUDE.local.md"), "utf8");
     assert.ok(!block.includes("references/"), "no reference file is @-imported into the resident block");
   } finally { rm(cwd); }

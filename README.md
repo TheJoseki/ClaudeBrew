@@ -41,7 +41,7 @@ Start the pipeline by describing something you want to build:
 - **`/cbr-brainstorming`** — turn an idea into a validated, evidence-backed brainstorm artifact. (It also triggers automatically when you say things like "I have an idea…", "help me scope X", or "where do I start?")
 - **`/cbr-worktree`** — once a brainstorm is approved, move development into an isolated git worktree on a feature branch. The move is the skill's mandate; the deterministic `PreToolUse` gate that denies feature-code edits on `main`/`master` is **opt-in** — enable it with `claudebrew install --gate`.
 
-Each stage writes its artifact into your repo under `docs/` (canonical paths live in `.claude/rules/references/sdlc-reference.md`), and a per-work-stream manifest at `docs/streams/<slug>-<date>/STREAM.md` links every artifact of one feature with a kanban-style task board — so a stream's brainstorm, spec, plan, reviews and tests read as one unit instead of scattering.
+Each stage writes its artifact into your repo under `docs/` (canonical paths live in `.claude/docs/references/sdlc-reference.md`), and a per-work-stream manifest at `docs/streams/<slug>-<date>/STREAM.md` links every artifact of one feature with a kanban-style task board — so a stream's brainstorm, spec, plan, reviews and tests read as one unit instead of scattering.
 
 ## What makes it different
 

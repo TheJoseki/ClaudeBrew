@@ -6,11 +6,14 @@ real file. This is the guard the repo lacked when the rules diet ran: deleting o
 rule file could otherwise leave a dangling `rules/<x>.md` pointer or @-import (the class of bug
 that shipped for real as work-log-template.md's "sdlc-conventions.md § Context Budget" citation).
 
-Scope is the RULES LAYER only — the citations the rules diet could break:
-  - `rules/<name>.md` / `rules/references/<name>.md` anywhere: claude-root-anchored cross-skill
-    pointers into the rules layer. Always checked.
-  - bare `references/<name>.md` inside a file that itself lives under claude/rules/: a rules-layer
-    reference (e.g. the contract pointing at its own references/). Checked, citing-file-relative.
+Scope is the CONTRACT LAYER only — the citations the rules diet could break:
+  - `rules/<name>.md` anywhere: claude-root-anchored pointer at the resident contract.
+  - `docs/references/<name>.md`, with or without a leading `{{CBR_ROOT}}/`: the on-demand
+    references. They live OUTSIDE claude/rules/ on purpose — the client auto-loads `rules/**`
+    recursively, so a reference parked there would be resident on every turn. Always checked.
+  - bare `references/<name>.md` inside a file that itself lives under claude/rules/: this now
+    resolves nowhere by design, so it stands as a tripwire against re-parking a reference in the
+    rules layer. Checked, citing-file-relative.
 A bare `references/...` citation inside a SKILL file is that skill's own local convention (each
 skill has its own references/ subdir) and is out of scope. Bare mentions with no prefix
 (e.g. "the former coding-standards.md") are prose, not pointers, and are not checked.
@@ -23,7 +26,8 @@ ROOT = Path(__file__).resolve().parent.parent
 CLAUDE = ROOT / "claude"
 RULES = CLAUDE / "rules"
 
-CITATION = re.compile(r"`((?:rules/|references/)[^`]+\.md)`")
+TOKEN = "{{CBR_ROOT}}/"
+CITATION = re.compile(r"`((?:\{\{CBR_ROOT\}\}/)?(?:rules/|docs/references/|references/)[^`]+\.md)`")
 
 
 def main() -> int:
@@ -32,10 +36,11 @@ def main() -> int:
     for md in CLAUDE.rglob("*.md"):
         in_rules_layer = md.parent == RULES or RULES in md.parents
         for cit in CITATION.findall(md.read_text(encoding="utf-8")):
-            if cit.startswith("rules/"):
-                target = CLAUDE / cit
+            path = cit[len(TOKEN):] if cit.startswith(TOKEN) else cit
+            if path.startswith(("rules/", "docs/references/")):
+                target = CLAUDE / path
             elif in_rules_layer:
-                target = md.parent / cit  # rules-layer reference, citing-file-relative
+                target = md.parent / path  # rules-layer reference, citing-file-relative
             else:
                 continue  # skill-local references/ citation — out of scope
             checked += 1

@@ -104,7 +104,7 @@ live in **`references/input-contract.md`**.
 ## Step 2 — Resolve or open the work-stream
 
 `plan-writing` is an **opener**, under the shared **open-if-none / join-if-exists** law
-(`rules/references/sdlc-reference.md`, "Stream openers & lanes"):
+(`{{CBR_ROOT}}/docs/references/sdlc-reference.md`, "Stream openers & lanes"):
 
 - **Inside an existing stream** (the source you detected — e.g. a `research/RES-*.md` an
   `explore` scout produced — lives under `docs/streams/<slug>-<YYYYMMDD>/`) → **JOIN** it: use
@@ -158,7 +158,7 @@ carries the slug, the filename drops it). Follow the structure in
 `references/plan-structure.md`; a full worked example is `references/examples/PLAN-example.md`.
 The plan carries `stream: <slug>-<YYYYMMDD>` in its frontmatter.
 
-Then perform the mandatory **stream upkeep** (`rules/references/sdlc-reference.md`): append/update the
+Then perform the mandatory **stream upkeep** (`{{CBR_ROOT}}/docs/references/sdlc-reference.md`): append/update the
 PLAN row in `STREAM.md`'s membership table, and set the board status for the phases you planned.
 Never touch the derived Gate Status zone.
 

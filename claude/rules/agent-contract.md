@@ -58,11 +58,11 @@ is no orchestrator:
 
 Open only when the task needs them:
 
-- **`references/sdlc-reference.md`** — writing or locating a stream artifact, opening a stream, or needing
-  the quality-gate criteria: the canonical artifact-path table, the artifact lifecycle, the full
-  open-or-join law and upkeep protocol, the gate table, and the memory tiers.
-- **`references/security-reference.md`** — a skill fetches web content, processes `$ARGUMENTS`, or authors
-  another skill: the full injection-pattern list, sanitize-before-interpolation, the pre-Bash checklist,
-  and the skill-authoring security checklist.
-- **`references/ship-practices.md`** — preparing a deploy or release: the pre-deploy gate, expand/migrate/
-  contract DB migrations, rollback triggers, smoke tests, and SemVer.
+- **`{{CBR_ROOT}}/docs/references/sdlc-reference.md`** — writing or locating a stream artifact,
+  opening a stream, or needing the quality-gate criteria: the canonical artifact-path table, the
+  artifact lifecycle, the full open-or-join law and upkeep protocol, the gate table, and the memory tiers.
+- **`{{CBR_ROOT}}/docs/references/security-reference.md`** — a skill fetches web content, processes
+  `$ARGUMENTS`, or authors another skill: the full injection-pattern list, sanitize-before-interpolation,
+  the pre-Bash checklist, and the skill-authoring security checklist.
+- **`{{CBR_ROOT}}/docs/references/ship-practices.md`** — preparing a deploy or release: the pre-deploy
+  gate, expand/migrate/contract DB migrations, rollback triggers, smoke tests, and SemVer.
