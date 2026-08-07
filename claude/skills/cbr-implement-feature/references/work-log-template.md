@@ -43,7 +43,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (replace BN with a
 > Write a checkpoint after each implementation sub-step (data layer done, service layer done, etc.).
 > This prevents context overflow and enables graceful partial completion via STATUS: PARTIAL.
 > SAFE batches (≤150K): checkpoint after sub-step 1 of 2. TIGHT batches (150–200K): checkpoint after each of 3 sub-steps.
-> See `sdlc-conventions.md` § Context Budget Estimation for thresholds and formula (90K baseline).
+> On long multi-file work, checkpoint progress here and return PARTIAL with remaining scope rather than pushing past coherence (see `rules/agent-contract.md`).
 
 ### Sub-step 1 Complete
 - Files created: [list]

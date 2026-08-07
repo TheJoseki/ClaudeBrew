@@ -173,7 +173,7 @@ decision and why it beat the runner-up?* If not, keep going.
 
 Brainstorming **opens or joins the work-stream**, and convergence **always** produces the
 typed artifact. Pick a short kebab-case `<slug>` and today's date `<YYYYMMDD>`, then apply the
-**open-if-none / join-if-exists** law (`rules/sdlc-conventions.md`, "Stream openers & lanes"):
+**open-if-none / join-if-exists** law (`rules/references/sdlc-reference.md`, "Stream openers & lanes"):
 
 1. **Resolve the stream by topic-slug.** Glob `docs/streams/*` and match `<slug>` against each
    folder's slug (strip the trailing `-<YYYYMMDD>`).

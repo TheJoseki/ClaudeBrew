@@ -103,7 +103,7 @@ test("user scope installs into ~/.claude, merges ~/.claude/settings.json, writes
     assert.ok(!s.includes("{{CBR_ROOT}}") && s.includes(`${target.cbrRoot}/hooks/`), "hook commands baked to the user's absolute path");
 
     const md = path.join(home, ".claude", "CLAUDE.md");
-    assert.ok(existsSync(md) && readFileSync(md, "utf8").includes("@rules/sdlc-conventions.md"), "user-scope relative rules import (@rules/)");
+    assert.ok(existsSync(md) && readFileSync(md, "utf8").includes("@rules/agent-contract.md"), "user-scope relative rules import (@rules/)");
 
     fullUninstall(target);
     assert.ok(!existsSync(path.join(home, ".claude", "hooks", "guard-bash.py")), "uninstall removed the payload");

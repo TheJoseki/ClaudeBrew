@@ -98,4 +98,4 @@ still gated and started by the user.
 
 Write to `docs/streams/<slug>-<YYYYMMDD>/plan/PLAN.md` — the feature's work-stream folder; the
 filename drops the slug because the folder carries it. Then update `STREAM.md` (membership row
-+ board) per the mandatory upkeep protocol in `rules/sdlc-conventions.md`.
++ board) per the mandatory upkeep protocol in `rules/references/sdlc-reference.md`.

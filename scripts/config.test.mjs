@@ -95,11 +95,11 @@ test("rules block: relative imports per scope, idempotent write, clean strip", (
   try {
     const md = path.join(dir, "CLAUDE.md");
     writeFileSync(md, "# My project\n\nSome existing notes.\n");
-    const rules = ["sdlc-conventions.md", "coding-standards.md"];
+    const rules = ["agent-contract.md"];
 
     const prov = writeRulesBlock(md, rules, "project");
     let c = readFileSync(md, "utf8");
-    assert.ok(c.includes("@.claude/rules/sdlc-conventions.md"), "project-scope relative import");
+    assert.ok(c.includes("@.claude/rules/agent-contract.md"), "project-scope relative import");
     assert.ok(c.includes("Some existing notes."), "existing content preserved");
     assert.equal(prov.created, false, "did not create (file existed)");
 
@@ -119,9 +119,9 @@ test("rules block: user scope prefix + created-file is removed on strip", () => 
   const dir = tmp();
   try {
     const md = path.join(dir, "CLAUDE.md");
-    const prov = writeRulesBlock(md, ["sdlc-conventions.md"], "user");
+    const prov = writeRulesBlock(md, ["agent-contract.md"], "user");
     assert.equal(prov.created, true, "created a new CLAUDE.md");
-    assert.ok(readFileSync(md, "utf8").includes("@rules/sdlc-conventions.md"), "user-scope relative import");
+    assert.ok(readFileSync(md, "utf8").includes("@rules/agent-contract.md"), "user-scope relative import");
     stripRulesBlock(md, prov);
     assert.ok(!existsSync(md), "a file CBR created solely for the block is removed on strip");
   } finally { rmSync(dir, { recursive: true, force: true }); }

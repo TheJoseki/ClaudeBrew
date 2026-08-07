@@ -94,7 +94,7 @@ Pick what the question needs; skip the rest; loop back freely.
 
 ## Open or join the work-stream (by topic-slug)
 
-`explore` is a stream **opener**, under the shared law in `rules/sdlc-conventions.md`:
+`explore` is a stream **opener**, under the shared law in `rules/references/sdlc-reference.md`:
 **open-if-none / join-if-exists**, resolved by topic-slug — never by "is any stream active".
 Full procedure: `references/stream-open-or-join.md`. In short:
 
@@ -121,7 +121,7 @@ The report is `research/RES-<topic>-R[n].md` inside the stream, following
 `R1`; a later re-scout of the same topic appends `R2`, `R3`… (never overwrite a prior round).
 `cbr-researcher` writes the body; the skill owns the path, the round number, and the upkeep.
 
-Then do the mandatory stream upkeep (`rules/sdlc-conventions.md`): stamp `stream:` in the RES
+Then do the mandatory stream upkeep (`rules/references/sdlc-reference.md`): stamp `stream:` in the RES
 frontmatter, append the RES row to `STREAM.md`'s membership table, and update the task board.
 Never write the derived Gate-Status zone.
 
