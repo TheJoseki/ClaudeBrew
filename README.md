@@ -1,6 +1,6 @@
 # ClaudeBrew
 
-<!-- release: 0.10.0 -->
+<!-- release: 0.11.0 -->
 
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
