@@ -6,7 +6,7 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-cases/UT
 
 ```markdown
 # Unit Test Cases: [Feature]
-Date: [YYYY-MM-DD] | Techniques: EP, BVA, DT, EG (ISTQB 4.0)
+Date: [YYYY-MM-DD] | Techniques: EP, BVA, DT, EG
 Backend test framework: [detected from PROJECT.md]
 Frontend test framework: [detected from PROJECT.md]
 

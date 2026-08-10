@@ -146,10 +146,14 @@ npx cypress run --spec "cypress/e2e/[feature].cy.ts"
 
 ## Execution Process (R1→R5)
 
-| Round | Trigger | Expected Pass Rate |
-|-------|---------|-------------------|
-| R1 | First run after Code Review PASS | Baseline |
-| R2 | After fix-bug fixes R1 failures | ≥70% |
-| R3 | After fix-bug fixes R2 failures | ≥90% |
-| R4 | Full regression | ≥95% |
-| R5 | Final verification | 100% — GATE |
+Each round fixes only the failures the previous round reported, then re-runs the full
+suite (max R5). The gate is met when the suite is 100% green; if it is not green by R5,
+escalate to the user rather than pass.
+
+| Round | Trigger |
+|-------|---------|
+| R1 | First run after Code Review PASS |
+| R2 | After fix-bug fixes R1 failures |
+| R3 | After fix-bug fixes R2 failures |
+| R4 | Full regression |
+| R5 | Final verification — 100% gate |

@@ -66,9 +66,9 @@ The lead is the session running this skill. The concrete tool lifecycle below is
    when the team surfaces an uncertainty only the user can resolve, the **lead**
    batches it into an `AskUserQuestion` (teammates do not interrogate the user
    directly). Feed the answer back to the relevant teammates.
-5. **Run DAR for trade-offs collaboratively.** Use teammates' competing
-   positions as the alternatives and evidence feeding the DAR matrix
-   (`dar-analysis.md`).
+5. **Run the trade-off analysis collaboratively.** Use teammates' competing
+   positions as the alternatives and evidence feeding the trade-off comparison
+   (`trade-off-analysis.md`).
 6. **Synthesize.** The lead consolidates the debate into 2-3 approaches, gets the
    user's incremental approvals, and writes the single shared artifact
    (`artifact-template.md`). Teammates contribute; the lead owns the artifact so

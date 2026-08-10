@@ -1,6 +1,6 @@
 {
   "skill_name": "retro",
-  "notes": "retro runs a solo retrospective: detect mode (feature/phase/sprint), read the scope's own artifacts (SRS/TECH/work-logs/REVIEW/SEC/UTR/ITR) plus git history directly, then produce per-stage observations, a 5-Why root-cause analysis on the top 3 issues, Lessons Learned per category, git velocity metrics, and prioritized Action Items in the feature's stream folder (docs/streams/[feature]-*/retro/). Evaluate correct mode detection, evidence gathered from artifacts (with missing artifacts reported rather than invented), and the synthesized report (Action Items presented to user). The skill must not spawn subagents.",
+  "notes": "retro runs a solo retrospective: detect mode (feature/phase/sprint), read the scope's own artifacts (SRS/TECH/work-logs/REVIEW/SEC/UTR/ITR) plus git history directly, then produce per-stage observations, a 5-Why root-cause analysis on the top 3 issues, Lessons Learned per category, git activity metrics, and prioritized Action Items in the feature's stream folder (docs/streams/[feature]-*/retro/). Evaluate correct mode detection, evidence gathered from artifacts (with missing artifacts reported rather than invented), and the synthesized report (Action Items presented to user). The skill must not spawn subagents.",
   "evals": [
     {
       "id": 1,
@@ -11,7 +11,7 @@
     {
       "id": 2,
       "prompt": "Do a sprint retrospective covering the last two weeks, 2026-07-15 to 2026-07-29.",
-      "expected_output": "Sprint mode over the given date range: uses git log to scope which artifacts changed in the range, reads the implementation/review/test artifacts (skips SRS), collects git velocity and quality metrics for the range, and writes docs/streams/sprint-[YYYYMMDD]/retro/RETRO-[date].md with 5-Why, Lessons Learned, and prioritized Action Items.",
+      "expected_output": "Sprint mode over the given date range: uses git log to scope which artifacts changed in the range, reads the implementation/review/test artifacts (skips SRS), collects git activity and quality metrics for the range, and writes docs/streams/sprint-[YYYYMMDD]/retro/RETRO-[date].md with 5-Why, Lessons Learned, and prioritized Action Items.",
       "files": []
     },
     {

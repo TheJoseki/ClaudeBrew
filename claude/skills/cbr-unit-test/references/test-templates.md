@@ -12,7 +12,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 **Date**: [YYYY-MM-DD]
 **Author**: unit-test
 **Input TECH**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
-**Techniques**: EP, BVA, Decision Table, Error Guessing (ISTQB CTFL 4.0)
+**Techniques**: EP, BVA, Decision Table, Error Guessing
 **Test Runner**: [detected from PROJECT.md]
 **Complexity**: Small / Medium / Large
 **Target UTC Count**: ≥[80/200/400]
@@ -84,7 +84,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
 | FE Coverage | X% |
 
 ## Result: PASS / FAIL
-(PASS requires: 100% pass rate at R5 + BE ≥85% + FE ≥75%)
+(PASS requires: 100% pass rate at R5 + BE/FE coverage targets in TEST_VIEWPOINT met)
 
 ## Passed Test Cases
 [list or "All X TCs passed"]

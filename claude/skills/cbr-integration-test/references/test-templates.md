@@ -47,6 +47,12 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 
 ## Business Flow Chains (from BASIC §6.5 + TECH §4.3)
 
+An integration chain must be a real **business flow** — a sequence of steps that
+crosses an actor/role switch, a module boundary, or a state change — not three CRUD
+calls on one entity dressed up as a chain (create → list → view is CRUD isolation, not
+integration). Use realistic, production-shaped seed data, and cover each chain's
+unhappy paths (the Negative Test Matrix below), not only the happy path.
+
 ### CHAIN-[feature]-001: [Flow Name — Happy Path]
 | Field | Value |
 |-------|-------|

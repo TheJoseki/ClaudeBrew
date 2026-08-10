@@ -3,12 +3,18 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync, cpSync, readdirSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { resolveTarget } from "./lib/paths.mjs";
-import { fullInstall, fullUninstall } from "./lib/orchestrate.mjs";
+import { fullInstall, fullUninstall, fullUpdate } from "./lib/orchestrate.mjs";
 import { parseSettings } from "./lib/settings-merge.mjs";
+import { readManifest, writeManifest } from "./lib/metadata.mjs";
+import { sourceRoot } from "./lib/pkg.mjs";
+
+// Any currently-shipped rule file works for the set-change tests; picked dynamically so a
+// future rules re-architecture (which deletes/renames rule files) cannot ENOENT them.
+const PROBE_RULE = readdirSync(path.join(sourceRoot(), "rules")).find((f) => f.endsWith(".md"));
 
 function freshTarget() {
   const cwd = mkdtempSync(path.join(os.tmpdir(), "cbr-orch-"));
@@ -16,6 +22,15 @@ function freshTarget() {
   return { cwd, target: resolveTarget("project", cwd) };
 }
 const rm = (cwd) => rmSync(cwd, { recursive: true, force: true });
+
+/** A private copy of the real payload with a mutation applied — simulates a newer
+ *  version whose rule-file SET differs (the operation update must propagate). */
+function mutatedPayload(mutate) {
+  const dir = mkdtempSync(path.join(os.tmpdir(), "cbr-payload-"));
+  cpSync(sourceRoot(), dir, { recursive: true });
+  mutate(dir);
+  return dir;
+}
 
 test("full install: files + settings.local.json merge + CLAUDE.md rules block, no tokens, no gate by default", () => {
   const { cwd, target } = freshTarget();
@@ -35,7 +50,22 @@ test("full install: files + settings.local.json merge + CLAUDE.md rules block, n
 
     const md = path.join(cwd, "CLAUDE.local.md");
     assert.ok(existsSync(md), "project rules block goes into gitignored CLAUDE.local.md");
-    assert.ok(readFileSync(md, "utf8").includes("@.claude/rules/sdlc-conventions.md"), "relative rules import");
+    assert.ok(readFileSync(md, "utf8").includes("@.claude/rules/agent-contract.md"), "relative rules import");
+  } finally { rm(cwd); }
+});
+
+test("on-demand references ship outside rules/, so nothing but the contract is resident", () => {
+  const { cwd, target } = freshTarget();
+  try {
+    fullInstall(target);
+    // The references are provisioned (progressive-disclosure content ships)...
+    assert.ok(existsSync(path.join(target.claudeDir, "docs", "references", "sdlc-reference.md")), "reference file provisioned on disk");
+    // ...but never under rules/. The client auto-loads .claude/rules/** RECURSIVELY, independent of
+    // the @-import block, so any file parked there is resident on every turn regardless of what the
+    // block lists. Keeping rules/ down to the contract alone is what actually caps the resident cost.
+    assert.deepEqual(readdirSync(path.join(target.claudeDir, "rules")), ["agent-contract.md"], "rules/ holds the contract and nothing else");
+    const block = readFileSync(path.join(cwd, "CLAUDE.local.md"), "utf8");
+    assert.ok(!block.includes("references/"), "no reference file is @-imported into the resident block");
   } finally { rm(cwd); }
 });
 
@@ -75,11 +105,106 @@ test("user scope installs into ~/.claude, merges ~/.claude/settings.json, writes
     assert.ok(!s.includes("{{CBR_ROOT}}") && s.includes(`${target.cbrRoot}/hooks/`), "hook commands baked to the user's absolute path");
 
     const md = path.join(home, ".claude", "CLAUDE.md");
-    assert.ok(existsSync(md) && readFileSync(md, "utf8").includes("@rules/sdlc-conventions.md"), "user-scope relative rules import (@rules/)");
+    assert.ok(existsSync(md) && readFileSync(md, "utf8").includes("@rules/agent-contract.md"), "user-scope relative rules import (@rules/)");
 
     fullUninstall(target);
     assert.ok(!existsSync(path.join(home, ".claude", "hooks", "guard-bash.py")), "uninstall removed the payload");
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("fullUpdate regenerates the rules @-import block on a rules-set change", () => {
+  const { cwd, target } = freshTarget();
+  const payloadB = mutatedPayload((d) => {
+    rmSync(path.join(d, "rules", PROBE_RULE));
+    writeFileSync(path.join(d, "rules", "zz-probe-rule.md"), "# Probe rule\n");
+  });
+  try {
+    fullInstall(target);
+    const md = path.join(cwd, "CLAUDE.local.md");
+    assert.ok(readFileSync(md, "utf8").includes(`@.claude/rules/${PROBE_RULE}`), "precondition: old rule imported");
+
+    const res = fullUpdate(target, { src: payloadB });
+    const block = readFileSync(md, "utf8");
+    assert.ok(!block.includes(PROBE_RULE), "deleted rule's import removed from the block");
+    assert.ok(block.includes("@.claude/rules/zz-probe-rule.md"), "added rule imported");
+    assert.equal(res.claudeMd, md, "update reports the refreshed block target");
+    assert.ok(existsSync(path.join(target.claudeDir, "rules", "zz-probe-rule.md")), "new rule file landed on disk");
+    assert.ok(readManifest(target.claudeDir).settings, "settings provenance survives the update");
+
+    fullUninstall(target);
+    assert.ok(!existsSync(md), "uninstall still strips the (regenerated) block cleanly");
+  } finally { rm(cwd); rm(payloadB); }
+});
+
+test("update retires a removed-upstream user-edited rule: kept on disk, dropped from block + files manifest, reported once", () => {
+  const { cwd, target } = freshTarget();
+  const REL = `rules/${PROBE_RULE}`;
+  const payloadB = mutatedPayload((d) => rmSync(path.join(d, "rules", PROBE_RULE)));
+  try {
+    fullInstall(target);
+    const installed = path.join(target.claudeDir, "rules", PROBE_RULE);
+    writeFileSync(installed, readFileSync(installed, "utf8") + "\n<!-- user tweak -->\n");
+
+    const res1 = fullUpdate(target, { src: payloadB });
+    assert.deepEqual(res1.actions.retired, [REL], "retire reported on the update that drops it");
+    assert.ok(existsSync(installed), "user-edited file kept on disk");
+    assert.ok(!readFileSync(path.join(cwd, "CLAUDE.local.md"), "utf8").includes(PROBE_RULE), "retired rule no longer imported");
+    const meta = readManifest(target.claudeDir);
+    assert.ok(!(REL in (meta.files || {})), "retired rule left the files manifest");
+    assert.ok(meta.retired && meta.retired[REL], "recorded under manifest.retired");
+
+    const res2 = fullUpdate(target, { src: payloadB });
+    assert.deepEqual(res2.actions.retired, [], "retire is reported once, not on every update");
+    assert.deepEqual(res2.actions.skipped, [], "no repeated kept-file spam for retired entries");
+
+    const res3 = fullUninstall(target);
+    assert.ok(res3.retiredLeft.includes(REL), "uninstall reports the retired leftover");
+    assert.ok(existsSync(installed), "retired file stays on disk after uninstall (unmanaged by decision)");
+  } finally { rm(cwd); rm(payloadB); }
+});
+
+test("fullUpdate WARNS (not silently skips) when the manifest lacks rules-block provenance", () => {
+  const { cwd, target } = freshTarget();
+  try {
+    fullInstall(target);
+    const meta = readManifest(target.claudeDir);
+    delete meta.settings;
+    writeManifest(target.claudeDir, meta);
+
+    const res = fullUpdate(target);
+    assert.equal(res.claudeMd, null, "no block target reported");
+    assert.match(res.rulesBlockSkipped, /no stored rules-block provenance/, "loud skip reason for the reporter");
+    assert.ok(readManifest(target.claudeDir), "manifest still readable after the warned update");
+  } finally { rm(cwd); }
+});
+
+test("install --force refuses a corrupt or malformed manifest BEFORE touching the payload", () => {
+  const { cwd, target } = freshTarget();
+  try {
+    fullInstall(target);
+    const meta = readManifest(target.claudeDir);
+    meta.settings.provenance = "not-a-provenance-object"; // malformed shape
+    writeManifest(target.claudeDir, meta);
+
+    assert.throws(() => fullInstall(target, { force: true }), /malformed settings\.provenance/, "named, actionable error");
+    assert.ok(existsSync(path.join(target.claudeDir, "hooks", "guard-bash.py")), "payload untouched — no rollback destruction");
+  } finally { rm(cwd); }
+});
+
+test("install --force over a live install preserves original settings provenance (uninstall restores pre-CBR state)", () => {
+  const { cwd, target } = freshTarget();
+  try {
+    mkdirSync(target.claudeDir, { recursive: true });
+    const sp = path.join(target.claudeDir, "settings.local.json");
+    writeFileSync(sp, JSON.stringify({ model: "opus" }));
+
+    fullInstall(target);
+    fullInstall(target, { force: true }); // the documented recovery path — must not poison provenance
+
+    fullUninstall(target);
+    assert.deepEqual(parseSettings(sp), { model: "opus" }, "pre-CBR settings restored despite forced reinstall");
+    assert.ok(!existsSync(path.join(cwd, "CLAUDE.local.md")), "CBR-created rules file removed (created flag survived --force)");
+  } finally { rm(cwd); }
 });
 
 test("full uninstall un-merges settings + strips rules block + removes files (pre-install state restored)", () => {

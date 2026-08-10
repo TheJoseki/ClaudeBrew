@@ -54,12 +54,12 @@ test("update: add-new file, refresh-on-content-change, upstream-remove, keep-use
     assert.ok(r.actions.removed.includes("hooks/new.py"), "upstream-removed file deleted");
     assert.ok(!existsSync(path.join(target.claudeDir, "hooks", "new.py")));
 
-    // upstream-remove of a USER-MODIFIED file → kept + reported
+    // upstream-remove of a USER-MODIFIED file → retired: kept on disk, moved out of `files`
     writeFileSync(path.join(target.claudeDir, "hooks", "h.py"), "USER EDITED\n");
     rmSync(path.join(src, "hooks", "h.py"));
     r = updateFiles(src, target, { version: V });
-    assert.ok(r.actions.skipped.some((s) => s.startsWith("hooks/h.py")), "user-modified upstream-removed file kept");
-    assert.ok(existsSync(path.join(target.claudeDir, "hooks", "h.py")), "kept file survives");
+    assert.ok(r.actions.retired.includes("hooks/h.py"), "user-modified upstream-removed file retired");
+    assert.ok(existsSync(path.join(target.claudeDir, "hooks", "h.py")), "retired file survives on disk");
 
     // dry-run mutates nothing and reports the plan
     writeFileSync(path.join(src, "hooks", "z.py"), "z\n");

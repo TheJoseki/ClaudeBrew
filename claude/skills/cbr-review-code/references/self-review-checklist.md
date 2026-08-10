@@ -7,7 +7,7 @@
 
 ## Functionality
 
-- [ ] All WBS scope items for this batch are implemented (cross-check Batch row in PLAN file)
+- [ ] All planned scope items for this batch are implemented (cross-check Batch row in PLAN file)
 - [ ] No scope items skipped without explicit note in work log
 - [ ] Feature works end-to-end for the happy path
 - [ ] Edge cases handled: empty input, null values, boundary values

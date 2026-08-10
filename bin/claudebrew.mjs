@@ -15,9 +15,8 @@ import { pathToFileURL } from "node:url";
 import { resolveTarget } from "../scripts/lib/paths.mjs";
 import { sourceRoot } from "../scripts/lib/pkg.mjs";
 import { installFiles } from "../scripts/lib/install.mjs";
-import { updateFiles } from "../scripts/lib/update.mjs";
 import { uninstallFiles } from "../scripts/lib/uninstall.mjs";
-import { fullInstall, fullUninstall } from "../scripts/lib/orchestrate.mjs";
+import { fullInstall, fullUninstall, fullUpdate } from "../scripts/lib/orchestrate.mjs";
 import { devInstall } from "../scripts/lib/dev-install.mjs";
 
 export const USAGE = `claudebrew — install the ClaudeBrew SDLC skills into your Claude Code environment
@@ -69,7 +68,7 @@ function reportActions(res, log) {
     else if (res.action === "uninstall") log(`[dry-run] would remove ${res.willRemove} tracked files`);
     else {
       const a = res.actions;
-      log(`[dry-run] add ${a.added.length}, update ${a.updated.length}, skip ${a.skipped.length}, remove ${a.removed.length}, unchanged ${a.unchanged.length}`);
+      log(`[dry-run] add ${a.added.length}, update ${a.updated.length}, skip ${a.skipped.length}, remove ${a.removed.length}, retire ${(a.retired || []).length}, unchanged ${a.unchanged.length}`);
     }
     return;
   }
@@ -85,10 +84,17 @@ function reportActions(res, log) {
       log(`  kept ${res.kept.length} user-modified file(s) (use uninstall --force to remove):`);
       for (const k of res.kept) log(`    ${k}`);
     }
+    if (res.retiredLeft && res.retiredLeft.length) {
+      log(`  ${res.retiredLeft.length} retired file(s) (upstream-removed, user-edited) left in place:`);
+      for (const r of res.retiredLeft) log(`    ${r}`);
+    }
   } else {
     const a = res.actions;
     log(`Update: +${a.added.length} added, ~${a.updated.length} updated, ${a.skipped.length} kept (user-modified), -${a.removed.length} removed, ${a.unchanged.length} unchanged`);
     for (const s of a.skipped) log(`  kept: ${s}`);
+    for (const r of a.retired || []) log(`  retired: ${r} (removed upstream, user-edited — kept on disk, no longer managed or loaded)`);
+    if (res.claudeMd) log(`  rules block refreshed → ${res.claudeMd}`);
+    if (res.rulesBlockSkipped) log(`  WARNING: rules block NOT refreshed — ${res.rulesBlockSkipped}`);
   }
 }
 
@@ -117,7 +123,7 @@ export function main(argv, opts = {}) {
         reportActions(fullInstall(rt(flags.scope), { shared: flags.shared, gate: flags.gate, force: flags.force }), log);
         return 0;
       case "update":
-        reportActions(updateFiles(sourceRoot(), rt(flags.scope), { force: flags.force, dryRun: flags.dryRun }), log);
+        reportActions(fullUpdate(rt(flags.scope), { force: flags.force, dryRun: flags.dryRun }), log);
         return 0;
       case "uninstall":
         if (flags.dryRun) { reportActions(uninstallFiles(rt(flags.scope), { dryRun: true }), log); return 0; }

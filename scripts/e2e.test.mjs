@@ -38,6 +38,7 @@ test("E2E: install -> update (no-op) -> uninstall lifecycle via main()", () => {
     out = cap();
     assert.equal(main(["update"], { cwd, ...out }), 0);
     assert.match(out.text(), /\+0 added, ~0 updated/, "update is a clean no-op");
+    assert.match(out.text(), /rules block refreshed/, "update reports the regenerated rules block");
 
     out = cap();
     assert.equal(main(["uninstall"], { cwd, ...out }), 0);

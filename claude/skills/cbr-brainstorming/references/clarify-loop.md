@@ -108,7 +108,7 @@ user answers *"Actually, it should be a Slack bot — my users live in Slack."*
 That is not a fifth platform option; it reframes the product. Re-enumerate:
 distribution shifts to the Slack app directory, "accounts" may now mean Slack
 OAuth, the "streak heatmap" hero view may not fit a chat surface, and your
-backend DAR weights change. Acknowledge the reframe, then re-open the questions
+backend trade-offs change. Acknowledge the reframe, then re-open the questions
 it disturbed — do not carry forward answers that the pivot has quietly outdated.
 
 ## When the user pivots the whole idea
@@ -116,7 +116,7 @@ it disturbed — do not carry forward answers that the pivot has quietly outdate
 If the new input replaces or substantially changes the idea (not just one
 answer), follow the **"When the user steers"** protocol in SKILL.md: detect it,
 then confirm whether it is a **replacement** (supersede the artifact, restart for
-the new idea), a **branch** (explore alongside / DAR the two), or a
+the new idea), a **branch** (explore alongside / run a trade-off analysis on the two), or a
 **refinement** (update in place, re-run affected moves). Apply never-guess to
 *which kind of pivot it is* — do not assume.
 

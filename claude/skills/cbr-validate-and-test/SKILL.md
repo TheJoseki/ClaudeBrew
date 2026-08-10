@@ -170,7 +170,7 @@ When called by another skill or a pool agent, output results in this format:
 
 - Lint: clean
 - Type check: 0 errors (gate before testing)
-- Unit coverage: ≥80% (from `docs/TEST_VIEWPOINT.md`)
+- Unit coverage: meets the target in `docs/TEST_VIEWPOINT.md`
 - R5 pass rate: 100% (gate for delivery)
 
 > **Auto-routing on FAIL**: route to `/fix-bug` with the failed test name and

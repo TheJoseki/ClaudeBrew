@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "We're building a real-time chat feature for our existing web app and I can't decide on the backend transport — WebSockets vs long-polling vs server-sent events. Help me brainstorm the right approach.",
-      "expected_output": "Recognizes a real, hard-to-reverse trade-off (one-way-door) and runs DAR: criteria (latency, scale, infra cost, complexity, client support), weighted matrix, recommendation with the strongest counter-argument and a 'revisit if'. Steelmans-then-attacks the leading option. Researches/cites current best practices (treating fetched docs as untrusted data). Records a decision record in the artifact.",
+      "expected_output": "Recognizes a real, hard-to-reverse trade-off (one-way-door) and runs a trade-off analysis: names what matters (latency, scale, infra cost, complexity, client support), compares the alternatives, recommendation with the strongest counter-argument and a 'revisit if'. Steelmans-then-attacks the leading option. Researches/cites current best practices (treating fetched docs as untrusted data). Records a decision record in the artifact.",
       "files": []
     },
     {
@@ -29,7 +29,7 @@
     {
       "id": 5,
       "prompt": "Quick one — I'm naming the internal in-memory cache module. Should it be called `cache` or `store`? Just brainstorm it with me.",
-      "expected_output": "Recognizes this is BELOW the brainstorm threshold (a single trivial, reversible naming choice). Gives one clear recommendation with a short reason (and maybe one alternative), and does NOT run the clarify loop / DAR / divergence panel and does NOT open a stream folder or write a BRAINSTORM.md artifact. Demonstrates adaptive depth (invariant 4): no ceremony for a variable name.",
+      "expected_output": "Recognizes this is BELOW the brainstorm threshold (a single trivial, reversible naming choice). Gives one clear recommendation with a short reason (and maybe one alternative), and does NOT run the clarify loop / trade-off analysis / divergence panel and does NOT open a stream folder or write a BRAINSTORM.md artifact. Demonstrates adaptive depth (invariant 4): no ceremony for a variable name.",
       "files": []
     },
     {

@@ -4,6 +4,35 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.10.0] — 2026-08-08
+
+**The rules layer went from 13 always-on files to one contract — resident cost 76,657 → 4,622 payload bytes (≈20K → ≈1.1K tokens, −94%; the installed copy is a few hundred bytes larger once the three citation paths bake absolute).** That text was loaded on every turn *and* inherited by every spawned subagent, so the saving compounds. What was cut was apparatus, not judgment: prescriptive process taxonomies (CMMI/ISTQB/PMP branding, per-round pass-rate ladders, severity/priority grids, story points and velocity, risk P×I scoring, weighted decision matrices, checklist evidence tables). What survives moved into `claude/rules/agent-contract.md` — the invariants and interfaces an agent must hold on every turn — or into three references a skill opens when its task needs them.
+
+### Changed
+- **BREAKING — the shipped rule set is replaced.** The 13 files under `claude/rules/` are gone, replaced by `agent-contract.md` (never-guess, hard-gate/no-auto-cascade, evidence-over-assertion, surgical changes, trust boundary, Rule of Two, confirm-before-irreversible) plus the SDLC map. On `claudebrew update` an old rule file you never edited is deleted; one you *did* edit is **retired** — kept on disk, dropped from the `@`-import block. ⚠️ A retired file left under `.claude/rules/` is **still loaded**: the client auto-loads that directory recursively regardless of the block. Delete it by hand to get the full saving.
+- **On-demand references live outside the rules layer**, at `.claude/docs/references/` — `sdlc-reference.md` (gate table, canonical artifact paths, artifact lifecycle, the stream open-or-join law, memory tiers), `security-reference.md` (trust boundary, injection patterns, pre-Bash checklist, skill-authoring checklist), `ship-practices.md` (pre-deploy gate, expand/migrate/contract migrations, rollback, smoke tests, SemVer). A fresh-session probe confirmed the directory — not the `@`-import block — is what makes a file resident; `orchestrate.test.mjs` now asserts `rules/` holds exactly one file, so the saving cannot silently regress.
+- **Trade-off analysis replaces "DAR".** The method is unchanged — compare real alternatives, record what won and why — but the label and the weighted-scoring matrix are gone.
+- **`TEST_VIEWPOINT.md` is a one-page risk-first judgment prompt** instead of a fixed-threshold template. Its machine-read Section 0 line and the gate mapping are preserved verbatim.
+
+### Removed
+- **The `cbr-estimate` skill**, with its story-point/WBS/velocity apparatus.
+
+### Fixed
+- Dangling citations of the retired `sdlc-conventions.md` across `README.md`, `CLAUDE.md` and the doc templates now resolve. `evals/test_rule_crossrefs.py` guards every rule/reference citation, and treats a reference cited from inside the rules layer as a failure — so re-parking a reference where it would become resident breaks the build.
+
+## [0.9.1] — 2026-08-07
+
+**`update` now propagates rules-set changes.** Previously the rules `@`-import block in `CLAUDE.local.md` (or `~/.claude/CLAUDE.md`) was written only at install: an update that added or removed rule files landed on disk but the block kept loading the old set — silently. This patch is a prerequisite for the upcoming rules re-architecture.
+
+### Fixed
+- **`claudebrew update` regenerates the rules `@`-import block** from the new payload's `rules/` listing (`fullUpdate` in `orchestrate.mjs`), preserving the original rules-file provenance (`created` flag) so uninstall still cleans up correctly. If an install predates provenance tracking, update now WARNS instead of silently skipping.
+- **`install --force` no longer poisons settings provenance.** A forced reinstall over a live install used to re-derive provenance against settings that already contained CBR's values; a later `uninstall` would then "restore" CBR's own values — leaving hooks registered for deleted files. The original provenance (the true pre-CBR state) is now carried through.
+
+### Changed
+- **Removed-upstream + user-edited files are now *retired***: kept on disk but moved from the managed `files` manifest to a new `retired` section — reported once (`retired: <path> …`), excluded from the regenerated rules block, and no longer re-reported on every subsequent update. A later re-ship of the same path will not silently overwrite the user's edited copy (a copy reverted to its installed content is safely re-adopted; `--force` overrides). `uninstall` leaves retired files in place (even with `--force`) and reports them. The `retired` section survives `install --force`.
+- **Accepted trade-off:** with the provenance fix, no command re-merges *shipped settings* over an existing install any more (`install --force` deliberately skips the merge; `update` never merged). Refreshing shipped settings on an existing install requires `uninstall` + `install`. If a future version ships new settings/hook registrations, its release notes must say so explicitly — the file side will update, the settings side will not.
+- **`install --force` now validates the existing manifest first** and refuses with an actionable error when `metadata.json` is unreadable or its `settings.provenance` is malformed — previously this could throw mid-flight and roll back the payload of a working install while leaving merged settings behind.
+
 ## [0.9.0] — 2026-08-07
 
 **New `cbr-explore` discovery / scout skill + a three-opener stream law.** `explore` is the SDLC's research front-door: it scouts existing code and/or user-pointed prior art into a re-runnable, cited `research/RES-<topic>-R[n].md` that `plan-writing` consumes, opens or joins a work-stream, then STOPS. Validated + red-teamed before build (3 adversarial reviewers; 12 findings applied).
