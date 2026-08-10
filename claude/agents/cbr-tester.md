@@ -1,6 +1,6 @@
 ---
 name: cbr-tester
-description: "General test-execution capability for unit (G6) and integration (G7) gates. TRIGGER when a gate-owning skill needs a fresh-eyes test run + verdict on code it did not write. NOT FOR: implementing/fixing code, or code/security review (that is reviewer)."
+description: "General test-execution capability for unit (UNIT) and integration (INTEGRATION) checkpoints. TRIGGER when a gate-owning skill needs a fresh-eyes test run + verdict on code it did not write. NOT FOR: implementing/fixing code, or code/security review (that is reviewer)."
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: haiku
 memory: project

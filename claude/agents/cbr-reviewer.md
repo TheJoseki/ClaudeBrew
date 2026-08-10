@@ -1,6 +1,6 @@
 ---
 name: cbr-reviewer
-description: "General adversarial review capability for code (G4) and security (G5a). TRIGGER when a gate-owning skill needs a fresh-eyes verdict on code it did not write. NOT FOR: implementing or fixing code, or running the test suite (that is tester)."
+description: "General adversarial review capability for code (REVIEW) and security (SECURITY). TRIGGER when a gate-owning skill needs a fresh-eyes verdict on code it did not write. NOT FOR: implementing or fixing code, or running the test suite (that is tester)."
 tools: Read, Grep, Glob, Bash, Write
 model: inherit
 memory: project
