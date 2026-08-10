@@ -70,7 +70,7 @@ For each perspective with artifacts present, write 3–6 factual bullets. **Ever
 
 | Perspective | What to extract |
 |-------------|----------------|
-| Requirements | AC precision (were any ambiguous?); scope changes after G1; gates marked REOPENED and why |
+| Requirements | AC precision (were any ambiguous?); scope changes after REQUIREMENT; gates marked REOPENED and why |
 | Implementation | What was delivered; blockers in the work logs; scope drift vs the TECH spec (compare planned vs actual) |
 | Code review | Critical/Major counts per batch; patterns recurring across >1 batch or >1 file; whether `CODING-CHECKLIST.md` covered them |
 | Security | Findings by OWASP category; whether they were introduced by a pattern already in the guardrails |

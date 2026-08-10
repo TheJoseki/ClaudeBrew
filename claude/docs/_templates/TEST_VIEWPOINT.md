@@ -2,7 +2,7 @@
 
 > Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr-tester` + user.
 > A short, project-specific judgment prompt: **what to test, where the risk is, and how the test gates map** — not a technique-cataloguing exercise.
-> Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. Gate G3c requires zero remaining placeholder brackets.
+> Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. The Test Viewpoint stop requires zero remaining placeholder brackets.
 
 ---
 
@@ -22,18 +22,18 @@ Status: [PENDING APPROVAL | APPROVED — e.g. PENDING APPROVAL]
 
 ---
 
-## Section 1 — Gate Mapping
+## Section 1 — Checkpoint Mapping
 
-Which test activity satisfies which quality gate. Pass criteria and deciding authority are the authority in `{{CBR_ROOT}}/docs/references/sdlc-reference.md` — this table is the test-side view.
+Which test activity satisfies which checkpoint. Pass criteria and deciding authority are the authority in `{{CBR_ROOT}}/docs/references/sdlc-reference.md` — this table is the test-side view.
 
-| Gate | Test activity | Pass criteria | Decided by |
-|------|---------------|---------------|------------|
-| G3c | This viewpoint approved | Section 0 filled, all layers defined, zero placeholder brackets | User approval |
-| G6 | Unit tests | 100% pass, ≤R5 rounds, 100% TECH-spec functions covered | `unit-test` verdict (fresh `cbr-tester`) + user |
-| G7a | API integration tests | 100% pass, ≤R5 rounds, all BASIC workflows + TECH API contracts covered | `integration-test` verdict (fresh `cbr-tester`) + user |
-| G7b | E2E browser tests | 100% pass, ≤R5 rounds, all critical journeys covered — N/A for backend-only | `integration-test` verdict (fresh `cbr-tester`) + user |
+| Checkpoint | Test activity | Pass criteria | Decided by |
+|-----------|---------------|---------------|------------|
+| Test Viewpoint (process-only stop) | This viewpoint approved | Section 0 filled, all layers defined, zero placeholder brackets | User approval |
+| UNIT | Unit tests | 100% pass, 100% TECH-spec functions covered | `unit-test` verdict (fresh `cbr-tester`) + user |
+| INTEGRATION — API | API integration tests | 100% pass, all BASIC workflows + TECH API contracts covered | `integration-test` verdict (fresh `cbr-tester`) + user |
+| INTEGRATION — E2E | E2E browser tests | 100% pass, all critical journeys covered — N/A for backend-only | `integration-test` verdict (fresh `cbr-tester`) + user |
 
-> Verdict-artifact note: G7a and G7b are sub-criteria and both report under `gate: "G7"` in the verdict JSON — writing `"G7a"`/`"G7b"` fails schema validation. Record the API-vs-E2E split inside the integration test report (ITR), not in the `gate` field.
+> Verdict-artifact note: API and E2E are sub-criteria of the same checkpoint and both report under `gate: "INTEGRATION"` in the verdict JSON — the schema has no separate value for either. Record the API-vs-E2E split inside the integration test report (ITR), not in the `gate` field.
 
 ---
 
@@ -57,22 +57,22 @@ Fill in per project:
 
 ## Section 3 — Test Case Catalog
 
-Seed with representative cases per layer; expand during `unit-test` / `integration-test` Mode A. Every row's `Gate` must be one of G6 / G7a / G7b.
+Seed with representative cases per layer; expand during `unit-test` / `integration-test` Mode A. Every row's `Checkpoint` must be one of UNIT / INTEGRATION-API / INTEGRATION-E2E.
 
-| TC-ID | Layer | Scenario | Expected | Gate |
-|-------|-------|----------|----------|------|
-| [TC-001 — e.g. TC-001] | Unit | [scenario — e.g. valid credentials return a session token] | [expected — e.g. 200 + token payload] | G6 |
-| [TC-002 — e.g. TC-002] | Integration | [scenario — e.g. list endpoint at max page size] | [expected — e.g. 200 + N items, no overflow] | G7a |
+| TC-ID | Layer | Scenario | Expected | Checkpoint |
+|-------|-------|----------|----------|-----------|
+| [TC-001 — e.g. TC-001] | Unit | [scenario — e.g. valid credentials return a session token] | [expected — e.g. 200 + token payload] | UNIT |
+| [TC-002 — e.g. TC-002] | Integration | [scenario — e.g. list endpoint at max page size] | [expected — e.g. 200 + N items, no overflow] | INTEGRATION-API |
 
 ---
 
-## Section 4 — G3c Pass Checklist
+## Section 4 — Test Viewpoint Pass Checklist
 
-Check every item before requesting G3c approval. These are gate checks, not fill-in slots.
+Check every item before requesting approval to close this stop. These are checkpoint checks, not fill-in slots.
 
 - [ ] Section 0 filled with real frameworks, fixtures, and run commands (no placeholder brackets)
 - [ ] Coverage target and coverage tool set from PROJECT.md
-- [ ] Gate mapping reviewed; G7b marked N/A if the project is backend-only
+- [ ] Checkpoint mapping reviewed; the INTEGRATION-E2E row marked N/A if the project is backend-only
 - [ ] Section 2 names the real risk areas, their layers, and their negative paths (no generic filler)
 - [ ] Test Case Catalog seeded with at least one case per applicable layer
 - [ ] Zero remaining `[… — e.g. …]` placeholder brackets in this document

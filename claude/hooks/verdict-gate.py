@@ -1,26 +1,31 @@
 #!/usr/bin/env python3
-"""Skill-invoked verdict gate for cbr SDLC quality gates (G4/G5a/G6/G7).
+"""Skill-invoked verdict gate for cbr SDLC checkpoints (REVIEW/SECURITY/UNIT/INTEGRATION).
 
 A gate-owning skill (review-code, vulnerability-scanner, unit-test,
 integration-test) spawns a fresh reviewer/tester agent, which writes a verdict
 artifact (schema: schemas/verdict-artifact.schema.json). The skill
 then runs this validator BEFORE its user-facing AskUserQuestion:
 
-    python verdict-gate.py --gate <G4|G5a|G6|G7> --artifact <path>
+    python verdict-gate.py --gate <REVIEW|SECURITY|UNIT|INTEGRATION> --artifact <path>
 
 exit 0 = PASS  — gate criteria objectively met; skill may present the verdict.
-exit 2 = BLOCK — FAIL decision, unresolved Critical, missing test evidence,
-                 leaked secret, or a malformed artifact. Reason on stderr.
+exit 2 = BLOCK — FAIL decision, unresolved Critical (or, for SECURITY, Major),
+                 missing verification evidence, leaked secret, or a malformed
+                 artifact. Reason on stderr.
 
 Unlike the ambient guards (protect-files.py fails OPEN so it never bricks
 unrelated work), a gate fails CLOSED: exit 0 must mean "definitively passed".
 A missing / malformed / underspecified artifact therefore BLOCKS.
 
 Per-gate policy:
-  G4 (code review) / G5a (security): decision==PASS and no unresolved Critical.
-      A reviewer runs no commands, so no verification entry is required.
-  G6 (unit) / G7 (integration): decision==PASS, no unresolved Critical, and at
-      least one verification entry with result=="pass" (the test run).
+  REVIEW (code review): decision==PASS and no unresolved Critical. A reviewer
+      runs no commands, so no verification entry is required.
+  SECURITY: decision==PASS, no unresolved Critical **or Major** (R2 design doc
+      §7 — the schema has no separate "High" value, so Major carries that
+      weight for this gate only), and at least one verification entry with
+      result=="pass" (the audit command the scanner ran).
+  UNIT / INTEGRATION: decision==PASS, no unresolved Critical, and at least one
+      verification entry with result=="pass" (the test run).
   All gates: the artifact text is scanned for leaked credentials — a match BLOCKS.
 
 Invoked by skill instruction via Bash; never registered as an automatic hook, so
@@ -31,8 +36,9 @@ import json
 import re
 import sys
 
-VALID_GATES = ("G4", "G5a", "G6", "G7")
-TEST_GATES = ("G6", "G7")  # gates that require a passing verification entry
+VALID_GATES = ("REVIEW", "SECURITY", "UNIT", "INTEGRATION")
+TEST_GATES = ("SECURITY", "UNIT", "INTEGRATION")  # gates that require a passing verification entry
+MAJOR_BLOCKS = ("SECURITY",)  # gates where an unresolved Major finding also blocks (Critical always does)
 
 # Content secret patterns — a leaked credential must never ride into a committed
 # artifact. Kept specific so the artifact's own keys are not false positives.
@@ -82,15 +88,16 @@ def validate_shape(a, gate):
 def apply_policy(a, gate):
     if a["decision"] != "PASS":
         block(f"decision is {a['decision']} at {gate}")
-    criticals = [f for f in a["findings"]
-                 if str(f.get("severity", "")).casefold() == "critical"]
-    if criticals:
-        block(f"{len(criticals)} unresolved Critical finding(s) at {gate}")
+    blocking_severities = {"critical", "major"} if gate in MAJOR_BLOCKS else {"critical"}
+    blockers = [f for f in a["findings"]
+                if str(f.get("severity", "")).casefold() in blocking_severities]
+    if blockers:
+        block(f"{len(blockers)} unresolved {'/'.join(s.capitalize() for s in blocking_severities)} finding(s) at {gate}")
     if gate in TEST_GATES:
         passed = [v for v in a["verification"]
                   if str(v.get("result", "")).casefold() == "pass"]
         if not passed:
-            block(f"{gate} requires >=1 passing verification entry (test run)")
+            block(f"{gate} requires >=1 passing verification entry (audit/test run)")
 
 
 def main():

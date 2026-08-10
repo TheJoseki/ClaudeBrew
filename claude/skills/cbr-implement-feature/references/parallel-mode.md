@@ -19,10 +19,10 @@ capability, which already carries the file-ownership persona and a `model`
 tier.
 
 **`cbr-reviewer` and `cbr-tester` are reserved for gate verdicts and must never
-be spawned as parallel workers.** Their value at G4/G5a/G6/G7 is that they have
-not seen the work being judged; using them to *produce* work destroys exactly
-that. If no agent pool is installed, fall back to `general-purpose` — never to
-`reviewer`/`tester`.
+be spawned as parallel workers.** Their value at REVIEW/SECURITY/UNIT/INTEGRATION
+is that they have not seen the work being judged; using them to *produce* work
+destroys exactly that. If no agent pool is installed, fall back to
+`general-purpose` — never to `reviewer`/`tester`.
 
 ---
 

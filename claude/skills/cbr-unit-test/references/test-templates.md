@@ -102,7 +102,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
 
 ## Next Action
 - FAIL → fix-bug fixes bugs listed above → re-run R[n+1]
-- R5 PASS (100% + coverage gates) → report to the user with the verdict artifact: Unit Tests ready for G6 (the user decides)
+- R5 PASS (100% + coverage gates) → report to the user with the verdict artifact: Unit Tests ready for UNIT (the user decides)
 ```
 
 ---

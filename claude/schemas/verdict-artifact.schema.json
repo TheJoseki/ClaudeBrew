@@ -2,21 +2,21 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://claudebrew/cbr/schemas/verdict-artifact.schema.json",
   "title": "cbr verdict-artifact",
-  "description": "Verdict written by a fresh reviewer/tester agent for an SDLC quality gate (G4/G5a/G6/G7). Validated by hooks/verdict-gate.py before the user gate.",
+  "description": "Verdict written by a fresh reviewer/tester agent for an SDLC checkpoint (REVIEW/SECURITY/UNIT/INTEGRATION). Documents the shape hooks/verdict-gate.py enforces by hand (validate_shape()) — this file is not loaded by the validator; keep the two in sync manually.",
   "type": "object",
   "required": ["gate", "decision", "findings", "verification", "producedBy"],
   "additionalProperties": true,
   "properties": {
     "gate": {
-      "description": "Which SDLC gate this verdict is for.",
-      "enum": ["G4", "G5a", "G6", "G7"]
+      "description": "Which SDLC checkpoint this verdict is for. A pre-0.11.0 artifact may still carry G4/G5a/G6/G7 — verdict-gate.py's LEGACY_GATE_NAME shim (one release, see CHANGELOG) reads those by filename, not by this field.",
+      "enum": ["REVIEW", "SECURITY", "UNIT", "INTEGRATION"]
     },
     "decision": {
       "description": "Overall verdict. PASS means the gate criteria are objectively met.",
       "enum": ["PASS", "FAIL"]
     },
     "findings": {
-      "description": "Open findings. Any Critical finding blocks the gate regardless of decision.",
+      "description": "Open findings. Any Critical finding blocks the gate regardless of decision; for SECURITY, an unresolved Major also blocks (the schema has no separate 'High' value).",
       "type": "array",
       "items": {
         "type": "object",
@@ -33,7 +33,7 @@
       }
     },
     "verification": {
-      "description": "Commands run as evidence (G6/G7 require >=1 with result 'pass').",
+      "description": "Commands run as evidence (SECURITY/UNIT/INTEGRATION require >=1 with result 'pass').",
       "type": "array",
       "items": {
         "type": "object",

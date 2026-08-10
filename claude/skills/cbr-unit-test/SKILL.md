@@ -23,7 +23,7 @@ Do NOT hardcode framework assumptions.
 | --- | --- |
 | Step 0 | Always — detect test framework first |
 | Mode A: Create UTC | When writing test cases (supports `--parallel`) |
-| Mode B: Execute | When running the suite as the G6 gate |
+| Mode B: Execute | When running the suite as the UNIT gate |
 | Parallel mode | Mode A only, when invoked with `--parallel` |
 
 ## Determine Operating Mode
@@ -33,9 +33,9 @@ Do NOT hardcode framework assumptions.
 - Output: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 - This is execution work; it may run `--parallel`.
 
-**Mode B (EXECUTE R[n])** — the **G6 quality gate**
+**Mode B (EXECUTE R[n])** — the **UNIT quality gate**
 - Input: `docs/streams/[feature]-*/test-cases/UTC.md` + code
-- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` + the G6 verdict artifact
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` + the UNIT verdict artifact
 - Run by a freshly spawned `cbr-tester`, never graded here — see Mode B below.
 - **Precondition**: Grep for `docs/streams/[feature]-*/test-cases/UTC.md` before proceeding.
   If NOT FOUND → STOP: "UTC not found. Run `/unit-test` Mode A first to create the test cases."
@@ -85,7 +85,7 @@ decides when the gate runs.
 
 ---
 
-## Mode B: Execute Round R[n] — the G6 gate (fresh eyes)
+## Mode B: Execute Round R[n] — the UNIT gate (fresh eyes)
 
 **Do not run the suite and grade it yourself.** A freshly spawned `cbr-tester`
 executes the tests and writes the verdict; this skill owns the criteria and the
@@ -111,7 +111,7 @@ Round gates — each round (`R[n]`, max R5) fixes only the failures the previous
 reported, then re-runs the full suite. The gate is met when the targeted suite is
 **100% green**; if it is not green by R5, escalate to the user rather than pass.
 
-G6 also requires the coverage target in `docs/TEST_VIEWPOINT.md` to be met and 100%
+UNIT also requires the coverage target in `docs/TEST_VIEWPOINT.md` to be met and 100%
 of TECH-spec functions covered (Function Coverage Matrix).
 
 ### Step 1 — Spawn one `cbr-tester`
@@ -128,18 +128,18 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 - **Outputs**, both mandatory:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
     (template: [`references/utc-template.md`](references/utc-template.md))
-  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`, conforming
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-UNIT.json`, conforming
     to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
-    `gate: "G6"` and `producedBy: "cbr-tester"`.
+    `gate: "UNIT"` and `producedBy: "cbr-tester"`.
 - **Evidence requirement**: `verification` MUST hold the actual command(s) run
-  and their result — G6 blocks without at least one `result: "pass"` entry.
+  and their result — UNIT blocks without at least one `result: "pass"` entry.
   Summarize output; never paste raw dumps or secrets into the artifact.
 - `decision: PASS` only when the targeted suite is fully green at this round's bar.
 
 ### Step 2 — Validate
 
 ```bash
-python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G6 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate UNIT --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-UNIT.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no
@@ -175,9 +175,9 @@ skill for R[n+1].
 - Artifact (Mode A): `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 - Artifacts (Mode B, written by the spawned `cbr-tester`):
   `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md` and
-  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G6.json`
-- Quality gate: G6 — coverage target in `docs/TEST_VIEWPOINT.md` met, 100% pass by R5,
-  `verdict-gate.py --gate G6` run with its exit code reported
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-UNIT.json`
+- Quality gate: UNIT — coverage target in `docs/TEST_VIEWPOINT.md` met, 100% pass by R5,
+  `verdict-gate.py --gate UNIT` run with its exit code reported
 
 ---
 

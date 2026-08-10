@@ -2,11 +2,13 @@
 """sdlc_state.py — reconstruct cbr SDLC state from committed docs/ artifacts.
 
 Pure, zero-dependency helpers shared by the `session-init` and `subagent-context`
-hooks. The canonical layout in `rules/sdlc-conventions.md` IS the addressing scheme:
-every per-feature artifact lives under `docs/streams/<slug>-<YYYYMMDD>/<subdir>/`, the
+hooks. The canonical layout in `{{CBR_ROOT}}/docs/references/sdlc-reference.md` IS the addressing
+scheme: every per-feature artifact lives under `docs/streams/<slug>-<YYYYMMDD>/<subdir>/`, the
 **folder is the identity**, the sub-folder is the type, and the filename drops the slug.
 These helpers glob the stream folders and read only cheap signals (folder names, verdict
-`decision` fields, STREAM.md status, markdown headers) — never full spec bodies.
+`decision` fields, STREAM.md `status:`, markdown headers) — never full spec bodies. Stream
+completion is the sole exception to "inferred": it is authored (`status: done`), never
+computed from checkpoint/verdict state — see `_stream_closed`.
 
 Design contract: functions tolerate a missing/empty `docs/` tree (return None / [] / {}),
 but do NOT blanket-swallow errors — the calling hooks own fail-open (try/except -> exit 0).
@@ -20,19 +22,24 @@ import re
 # --- Canonical locations (relative to project_dir) --------------------------
 STREAMS_DIR = os.path.join("docs", "streams")
 
-# Gate -> the stage skill that advances it (drives next_action).
+# Checkpoint -> the stage skill that advances it (drives next_action). REQUIREMENT/DESIGN are
+# artifact-existence checkpoints (no verdict); REVIEW/SECURITY/UNIT/INTEGRATION are verdict-backed.
 GATE_SKILL = {
-    "G1": "analyze-requirement",
-    "G3": "design-function",
-    "G4": "review-code",
-    "G5a": "vulnerability-scanner",
-    "G6": "unit-test",
-    "G7": "integration-test",
+    "REQUIREMENT": "analyze-requirement",
+    "DESIGN": "design-function",
+    "REVIEW": "review-code",
+    "SECURITY": "vulnerability-scanner",
+    "UNIT": "unit-test",
+    "INTEGRATION": "integration-test",
 }
-GATE_ORDER = ["G1", "G3", "G4", "G5a", "G6", "G7"]
+GATE_ORDER = ["REQUIREMENT", "DESIGN", "REVIEW", "SECURITY", "UNIT", "INTEGRATION"]
 
-# Verdict gate -> the stream sub-folder its VERDICT-*.json lives in (beside its report).
-VERDICT_SUBDIR = {"G4": "reviews", "G5a": "security", "G6": "test-reports", "G7": "test-reports"}
+# Verdict checkpoint -> the stream sub-folder its VERDICT-*.json lives in (beside its report).
+VERDICT_SUBDIR = {"REVIEW": "reviews", "SECURITY": "security", "UNIT": "test-reports", "INTEGRATION": "test-reports"}
+
+# Pre-0.11.0 filename token for each verdict checkpoint — one release's read-compat shim
+# (R2 design doc §3). Drop this map and the shim it feeds once the shim window closes.
+LEGACY_GATE_NAME = {"REVIEW": "G4", "SECURITY": "G5a", "UNIT": "G6", "INTEGRATION": "G7"}
 
 # Large specs get section-range pointers (H6-style); stream-relative locations.
 _STREAM_SPECS = (
@@ -45,7 +52,10 @@ _LARGE_SPEC_TYPES = {"SRS", "BASIC", "TECH"}
 
 _HEADER_RE = re.compile(r"^(#{2,3})\s+(.+?)\s*$")
 _STREAM_DIR_RE = re.compile(r"^(.+)-\d{8}$")                       # <slug>-<YYYYMMDD>
-_ARCHIVED_RE = re.compile(r"^status:\s*[\"']?(archived|abandoned)\b", re.MULTILINE)
+# A stream is closed (excluded from "in flight") when the USER has authored one of these —
+# completion is never inferred from gate/checkpoint state (R2 design doc §1). `done` = finished;
+# `archived`/`abandoned` = finished-without-finishing. `blocked`/`pending`/`in-progress` stay in flight.
+_CLOSED_RE = re.compile(r"^status:\s*[\"']?(done|archived|abandoned)\b", re.MULTILINE)
 
 
 def slug_from_stream_dir(name):
@@ -81,33 +91,30 @@ def _stream_dir(project_dir, slug):
     return max(hits, key=os.path.getmtime)
 
 
-def _stream_archived(stream_dir):
-    """True if the stream's STREAM.md frontmatter marks it archived/abandoned."""
-    return bool(_ARCHIVED_RE.search(_read_head(os.path.join(stream_dir, "STREAM.md"))))
-
-
-def _all_pass(gates):
-    """True when every ordered gate is 'pass' (the stream's work is complete)."""
-    return all(gates.get(g) == "pass" for g in GATE_ORDER)
+def _stream_closed(stream_dir):
+    """True if the stream's STREAM.md frontmatter marks it done/archived/abandoned."""
+    return bool(_CLOSED_RE.search(_read_head(os.path.join(stream_dir, "STREAM.md"))))
 
 
 def resolve_active_feature(project_dir):
     """Return (slug, ambiguity_list).
 
-    A stream is 'in flight' when its gate line is not all-pass and its STREAM.md is not
-    archived/abandoned. Exactly one in-flight stream -> (slug, []); several -> (None,
-    [slugs]) so the caller emits a picker; none -> (None, []). Gate authority is the glob,
-    not a hand-set flag — `status:` only *excludes* an archived/abandoned stream.
+    A stream is 'in flight' when its STREAM.md is not closed (done/archived/abandoned).
+    Exactly one in-flight stream -> (slug, []); several -> (None, [slugs]) so the caller
+    emits a picker; none -> (None, []). Completion is authored, never inferred from gate
+    state — a stream-light stream that never writes an SRS/TECH could otherwise never
+    close (R2 design doc §1: this was a real, reproducible bug under the old all-pass
+    predicate). `status:` is the sole completion signal; gate/checkpoint state below drives
+    only the progress display (gate_line, next_action), not in-flight membership.
     """
     in_flight = []
     for stream in sorted(glob.glob(os.path.join(project_dir, STREAMS_DIR, "*"))):
         if not os.path.isdir(stream):
             continue
         slug = slug_from_stream_dir(stream)
-        if not slug or _stream_archived(stream):
+        if not slug or _stream_closed(stream):
             continue
-        if not _all_pass(infer_gate_progress(project_dir, slug)["gates"]):
-            in_flight.append(slug)
+        in_flight.append(slug)
     in_flight = list(dict.fromkeys(in_flight))  # de-dupe, preserve order
     if len(in_flight) == 1:
         return in_flight[0], []
@@ -127,19 +134,33 @@ def _verdict_decision(path):
     return d.lower() if isinstance(d, str) else None
 
 
-def _gate_verdict(project_dir, slug, gate):
-    """Aggregate verdict status for a gate across its (possibly per-batch) files.
-
-    fail/blocked on any -> 'fail'; all pass -> 'pass'; some pass -> 'partial';
-    none found -> None. Verdicts live in the stream's `reviews/`, `security/`, or
-    `test-reports/` sub-folder.
+def _verdict_files(project_dir, slug, gate):
+    """Glob every verdict file for `gate` in its stream sub-folder: current name + the
+    pre-0.11.0 LEGACY_GATE_NAME token for one release (R2 design doc §3 shim).
     """
     d = _stream_dir(project_dir, slug)
     if not d:
-        return None
+        return []
     subdir = VERDICT_SUBDIR[gate]
-    hits = set(glob.glob(os.path.join(d, subdir, f"VERDICT-*{gate}.json")))
-    hits.add(os.path.join(d, subdir, f"VERDICT-{gate}.json"))
+    tokens = [gate] + ([LEGACY_GATE_NAME[gate]] if gate in LEGACY_GATE_NAME else [])
+    hits = set()
+    for tok in tokens:
+        hits.update(glob.glob(os.path.join(d, subdir, f"VERDICT-*{tok}.json")))
+        hits.add(os.path.join(d, subdir, f"VERDICT-{tok}.json"))
+    return sorted(p for p in hits if os.path.isfile(p))
+
+
+def _verdict_legacy_only(hits, gate):
+    """True if verdict files exist for `gate` but every one uses only the pre-0.11.0 name."""
+    return bool(hits) and not any(gate in os.path.basename(h) for h in hits)
+
+
+def _gate_verdict(project_dir, slug, gate):
+    """Aggregate verdict status for a gate across its (possibly per-batch, possibly
+    legacy-named) files. fail/blocked on any -> 'fail'; all pass -> 'pass'; some pass ->
+    'partial'; none found -> None.
+    """
+    hits = _verdict_files(project_dir, slug, gate)
     decisions = [x for x in (_verdict_decision(h) for h in hits) if x]
     if not decisions:
         return None
@@ -150,20 +171,53 @@ def _gate_verdict(project_dir, slug, gate):
     return "partial"
 
 
+def _security_stale(project_dir, slug):
+    """True if the newest SECURITY verdict predates the newest DEV-log or bug-report entry
+    in the stream — the code-enforced replacement for the deleted "re-scan after every
+    fix" mandate (R2 design doc §6). Both work-logs/ and bug-reports/ are checked: a
+    post-scan fix made via `fix-bug` alone never touches the DEV log.
+    """
+    hits = _verdict_files(project_dir, slug, "SECURITY")
+    if not hits:
+        return False
+    d = _stream_dir(project_dir, slug)
+    touches = (glob.glob(os.path.join(d, "work-logs", "DEV-*.md")) +
+               glob.glob(os.path.join(d, "bug-reports", "BUG-*.md")))
+    if not touches:
+        return False
+    return max(os.path.getmtime(p) for p in touches) > max(os.path.getmtime(p) for p in hits)
+
+
 def infer_gate_progress(project_dir, slug):
     """Return {'gates': {G: status}, 'next_action': str|None, 'gate_line': str}.
 
-    Gate status is inferred from artifact existence (G1 `requirements/SRS.md`, G3
-    `design/TECH.md`) and verdict decisions (G4/G5a/G6/G7), all within the stream folder.
-    next_action is the first non-'pass' gate's skill (fix-bug when that gate is 'fail').
+    Checkpoint status is inferred from artifact existence (REQUIREMENT `requirements/SRS.md`,
+    DESIGN `design/TECH.md`) and verdict decisions (REVIEW/SECURITY/UNIT/INTEGRATION), all
+    within the stream folder — this drives the progress DISPLAY only; stream completion
+    (resolve_active_feature) no longer reads any of it (R2 design doc §1). next_action is
+    the first non-'pass' checkpoint's skill (fix-bug when that checkpoint is 'fail'); a
+    'stale' SECURITY verdict routes back to vulnerability-scanner via the same fallthrough.
     """
     d = _stream_dir(project_dir, slug)
     gates = {
-        "G1": "pass" if (d and os.path.isfile(os.path.join(d, "requirements", "SRS.md"))) else "pending",
-        "G3": "pass" if (d and os.path.isfile(os.path.join(d, "design", "TECH.md"))) else "pending",
+        "REQUIREMENT": "pass" if (d and os.path.isfile(os.path.join(d, "requirements", "SRS.md"))) else "pending",
+        "DESIGN": "pass" if (d and os.path.isfile(os.path.join(d, "design", "TECH.md"))) else "pending",
     }
-    for gate in ("G4", "G5a", "G6", "G7"):
-        gates[gate] = _gate_verdict(project_dir, slug, gate) or "pending"
+    legacy = {}
+    for gate in ("REVIEW", "SECURITY", "UNIT", "INTEGRATION"):
+        hits = _verdict_files(project_dir, slug, gate)
+        decisions = [x for x in (_verdict_decision(h) for h in hits) if x]
+        if not decisions:
+            gates[gate] = "pending"
+        elif any(x in ("fail", "blocked") for x in decisions):
+            gates[gate] = "fail"
+        elif all(x == "pass" for x in decisions):
+            gates[gate] = "pass"
+        else:
+            gates[gate] = "partial"
+        legacy[gate] = _verdict_legacy_only(hits, gate)
+    if gates["SECURITY"] == "pass" and _security_stale(project_dir, slug):
+        gates["SECURITY"] = "stale"
 
     next_action = None
     for g in GATE_ORDER:
@@ -172,9 +226,10 @@ def infer_gate_progress(project_dir, slug):
             next_action = f"/cbr-{skill} {slug}"
             break
 
-    icon = {"pass": "PASS", "fail": "FAIL", "partial": "PARTIAL", "pending": "pending"}
+    icon = {"pass": "PASS", "fail": "FAIL", "partial": "PARTIAL", "pending": "pending", "stale": "STALE"}
     gate_line = "Feature {}: {}".format(
-        slug, " | ".join(f"{g} {icon[gates[g]]}" for g in GATE_ORDER)
+        slug,
+        " | ".join(f"{g} {icon[gates[g]]}{' (legacy)' if legacy.get(g) else ''}" for g in GATE_ORDER),
     )
     return {"gates": gates, "next_action": next_action, "gate_line": gate_line}
 
@@ -239,9 +294,8 @@ def _feature_artifacts(project_dir, slug):
             if type_ in _LARGE_SPEC_TYPES:
                 rec["sections"] = extract_sections(full)
             arts.append(rec)
-    for gate in ("G4", "G5a", "G6", "G7"):
-        subdir = VERDICT_SUBDIR[gate]
-        for h in sorted(glob.glob(os.path.join(d, subdir, f"VERDICT-*{gate}.json"))):
+    for gate in ("REVIEW", "SECURITY", "UNIT", "INTEGRATION"):
+        for h in _verdict_files(project_dir, slug, gate):
             arts.append({
                 "type": f"VERDICT-{gate}",
                 "path": os.path.relpath(h, project_dir).replace("\\", "/"),

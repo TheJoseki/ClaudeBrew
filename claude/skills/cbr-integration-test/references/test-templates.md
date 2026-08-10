@@ -138,7 +138,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`
 
 ## Next Action
 - FAIL → fix-bug fixes bugs above → re-run R[n+1]
-- R5 PASS → report to the user with the verdict artifact: Integration Tests 100% PASS (G7 is the user's call)
+- R5 PASS → report to the user with the verdict artifact: Integration Tests 100% PASS (INTEGRATION is the user's call)
 ```
 
 

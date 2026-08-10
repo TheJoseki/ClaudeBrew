@@ -87,10 +87,12 @@ Read each if it exists. Extract:
 
 From the PLAN file and collected artifacts, determine:
 
-1. **Current SDLC phase**: Which phase is active? (G1 / G2 / G3a / G3b / G4 / G5a / G6 / G7 / G5b / G8)
-2. **Last completed gate**: What is the last ✅ gate?
+1. **Current SDLC phase**: Which checkpoint/stop is active? (REQUIREMENT / UI Design / DESIGN /
+   Basic Design stop / Test Viewpoint / REVIEW / Design Review / SECURITY / UNIT / INTEGRATION /
+   Pre-Delivery Re-scan / Delivery)
+2. **Last completed checkpoint**: What is the last ✅ one?
 3. **Active work**: What task is currently `⏳ IN_PROGRESS`?
-4. **Blockers**: Any `⚠️ REOPENED` gates or unresolved FLAGS?
+4. **Blockers**: Any `⚠️ REOPENED` checkpoints or unresolved FLAGS?
 
 ---
 
@@ -135,7 +137,7 @@ its folder date is the stream-start date, distinct from today's handoff date).
 ## Current Phase
 
 **Active phase**: [Phase N — e.g., Phase 6: Unit Tests]
-**Last completed gate**: [Gate X — e.g., G4 Code Review ✅]
+**Last completed checkpoint**: [Checkpoint X — e.g., REVIEW ✅]
 **Next required action**: [exact next step — e.g., "Run unit tests with: npx jest --testPathPattern=payment"]
 
 ---

@@ -72,7 +72,7 @@
 
 > **Why this matters**: `TEST_DB_ENGINE` tells agents which database engine integration tests must use.
 > Integration tests running against a lightweight substitute instead of this engine = silent false pass.
-> `E2E_FRAMEWORK: None` disables G7b (E2E gate) for backend-only projects.
+> `E2E_FRAMEWORK: None` disables the E2E sub-criteria of the INTEGRATION checkpoint for backend-only projects.
 
 ## Approval/Workflow States (if applicable)
 

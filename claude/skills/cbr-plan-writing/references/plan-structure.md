@@ -57,12 +57,12 @@ status: pending
 - Tests 100% pass · Code review PASS
 ```
 
-- **Greenfield plans** map phases onto the SDLC gates (G1 requirement → G2/G3 design → G4
-  review → G6/G7 tests → G8 delivery); see `references/examples/PLAN-example.md` for the full
-  gate-aligned form.
-- **Brownfield (stream-light) plans** skip the design gates that don't apply — a maintenance
-  change may go straight to implementation → review → test. The gates you skip read `pending`
-  (benign), and the plan's phases are the real work list.
+- **Greenfield plans** map phases onto the SDLC checkpoints (REQUIREMENT → UI Design/DESIGN →
+  REVIEW → UNIT/INTEGRATION → Delivery); see `references/examples/PLAN-example.md` for the full
+  checkpoint-aligned form.
+- **Brownfield (stream-light) plans** skip the design checkpoints that don't apply — a
+  maintenance change may go straight to implementation → review → test. The checkpoints you
+  skip read `pending` (benign), and the plan's phases are the real work list.
 
 ## Status values
 

@@ -1,6 +1,6 @@
 # Coding Convention — [PROJECT_NAME — e.g. Acme Orders]
 
-> Created/updated by `design-function`; consumed by `implement-feature`, `design-screen`, and `fix-bug`; enforced at the G4 code-review gate by `review-code` + a fresh `cbr-reviewer` verdict.
+> Created/updated by `design-function`; consumed by `implement-feature`, `design-screen`, and `fix-bug`; enforced at the REVIEW checkpoint by `review-code` + a fresh `cbr-reviewer` verdict.
 > Copy this template to `docs/CODING_CONVENTION.md` and fill in per project.
 > Reference: `docs/CODING_RULES.md` (enforcement rules), `docs/ARCHITECTURE.md` (system design).
 
@@ -77,7 +77,7 @@ Tag with a category and a resolution anchor so markers stay grep-able and never 
 - `FIXME: [known bug or race condition]`
 - `HACK: [temporary workaround] — [reason]`
 
-Committed code carries no bare `TODO` / `FIXME` / debug print unless it names an anchor (checked at G4).
+Committed code carries no bare `TODO` / `FIXME` / debug print unless it names an anchor (checked at REVIEW).
 
 ## 5. Error Handling
 

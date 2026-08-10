@@ -57,7 +57,8 @@ def render(agent_type, slug, feature):
         if feature.get("nextAction"):
             lines.append(f"Next gate action: {feature['nextAction']}")
         lines.append(
-            f"Gate verdict -> docs/streams/{slug}-<YYYYMMDD>/{{reviews,security,test-reports}}/VERDICT-G<n>.json "
+            f"Gate verdict -> docs/streams/{slug}-<YYYYMMDD>/{{reviews,security,test-reports}}/"
+            "VERDICT-<REVIEW|SECURITY|UNIT|INTEGRATION>.json "
             "per {{CBR_ROOT}}/schemas/verdict-artifact.schema.json; validate before writing."
         )
         for art in feature.get("artifacts", []):

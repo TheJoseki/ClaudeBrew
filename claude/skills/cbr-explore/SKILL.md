@@ -47,8 +47,8 @@ Everything else is fluid; these hold every time:
    every RES path resolves **inside** the stream folder (no `..` traversal).
 6. **Open-if-none / join-if-exists** — resolve the stream by **topic-slug** (below); never
    open a second stream for work a stream already governs.
-7. **Write the RES, do stream upkeep, then STOP** — there is no verdict gate (research is
-   pre-G1) and no auto-cascade; the user decides what runs next.
+7. **Write the RES, do stream upkeep, then STOP** — there is no verdict gate (research runs
+   before REQUIREMENT) and no auto-cascade; the user decides what runs next.
 
 ## Dial scout depth to the stakes
 

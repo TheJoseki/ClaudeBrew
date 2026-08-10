@@ -215,7 +215,7 @@ def test_si_main_compact_source():
 # --- subagent-context render ----------------------------------------------- #
 def _feature():
     return {
-        "gates": {"G4": "pending"},
+        "gates": {"REVIEW": "pending"},
         "nextAction": "/cbr:review-code payment",
         "artifacts": [
             {"type": "TECH", "path": "docs/streams/payment-20260801/design/TECH.md",
@@ -226,7 +226,7 @@ def _feature():
 
 def test_sc_render_reviewer():
     out = SC.render("reviewer", "payment", _feature())
-    check("Next gate action" in out and "VERDICT-G" in out and "sections:" in out, out)
+    check("Next gate action" in out and "VERDICT-<REVIEW" in out and "sections:" in out, out)
 
 
 def test_sc_render_explore_minimal():
