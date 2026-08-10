@@ -108,6 +108,13 @@ task board) and one **derived** zone (the gate snapshot). **Gate authority stays
 stream's `STREAM.md` membership table; (3) update the task-board status for its phase. Skills NEVER write
 the derived Gate Status zone.
 
+**Closing a stream (authored, not automatic).** `status: done` is the only thing that closes a stream —
+no skill infers it from checkpoint/verdict state. Any stage skill MAY stamp it on `STREAM.md`
+frontmatter at its own user-confirmed terminal stop; `retro` does so as a matter of course for a
+`feature`-mode run, since reaching retro already presumes delivery is confirmed. A stream-light stream
+that never reaches `retro` gets it from whichever stage the user calls "done" at instead — stamp it by
+hand, or let that stage's own stop-gate do it.
+
 **Opener law — open-if-none / join-if-exists, resolved by topic-slug.** A stream has three possible
 openers (`brainstorming`, `explore`, `plan-writing`), all scaffolding `STREAM.md` from
 `{{CBR_ROOT}}/docs/_templates/STREAM.md`. Before opening, an opener derives an `[a-z0-9-]` slug from its

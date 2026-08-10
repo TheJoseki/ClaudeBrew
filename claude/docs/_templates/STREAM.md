@@ -1,7 +1,7 @@
 ---
 stream: "[slug]-[YYYYMMDD]"
 title: "[Feature title — e.g. Order Export]"
-status: pending            # pending | in-progress | done | blocked -- "done" is what CLOSES the stream
+status: pending            # pending | in-progress | blocked | done | archived | abandoned -- done/archived/abandoned CLOSE the stream
 lane: greenfield           # greenfield | brownfield (stream-light — opened by plan-writing without REQUIREMENT/DESIGN)
 created: "[YYYY-MM-DD]"
 ---

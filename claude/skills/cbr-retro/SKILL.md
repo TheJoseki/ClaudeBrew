@@ -235,7 +235,16 @@ its **own** stream folder keyed by the sprint's end date —
 | LOW | [specific action] | [owner] | optional | — |
 ```
 
-**Present to user:** show the Action Items table only, plus the report path. The user reads the full report in the stream's `retro/` folder.
+### Close the stream (`feature` mode only)
+
+Reaching a `feature`-mode retro already presumes delivery is confirmed (the Step 0 precondition). Stamp
+`status: done` on the stream's `STREAM.md` frontmatter — this is the ONLY thing that closes a stream, so
+skipping it leaves the stream reading as in-flight indefinitely. If `status:` is already `done`,
+`archived`, or `abandoned`, leave it unchanged. `phase` and `sprint` retros do NOT represent full-stream
+completion — do not stamp it for those modes.
+
+**Present to user:** show the Action Items table, the report path, and (for `feature` mode) confirmation
+that the stream was closed. The user reads the full report in the stream's `retro/` folder.
 
 Then **stop.** Do not open the action items as work — the user decides what gets picked up.
 

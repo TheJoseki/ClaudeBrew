@@ -50,6 +50,14 @@ find-and-replace: three real defects in the old model were fixed in the same pas
   pure passthrough of `sdlc_state.py`'s output) and neither did `design-function`'s BASIC mid-stop
   (`sdlc_state.py` only ever indexed `BASIC.md` for section-pointers, never gate-checked it) — both
   smaller blast radius than the plan estimated.
+- **`status: done` had a reader but no writer.** The completion-predicate fix above shipped
+  `sdlc_state.py` reading the stamp, but no skill ever wrote it — every stream would have stayed
+  in-flight forever regardless of the fix. `cbr-retro` now stamps `status: done` on `STREAM.md` as a
+  matter of course for a `feature`-mode run (the design doc's own stated behavior); the upkeep
+  protocol in `sdlc-reference.md` documents that any stage MAY do the same at its own user-confirmed
+  terminal stop, for stream-light streams that never reach `retro`. The `STREAM.md` template's
+  `status:` comment also listed only `pending|in-progress|done|blocked`, omitting the `archived` and
+  `abandoned` values the code already recognized as closing — corrected.
 
 ## [0.10.0] — 2026-08-08
 
