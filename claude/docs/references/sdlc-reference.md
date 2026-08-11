@@ -4,39 +4,55 @@
 > open a stream, or need a gate's pass criteria. The contract carries the invariants; this file carries the
 > tables and the full procedures. (Relocated from the former `sdlc-conventions.md`.)
 
-## Quality Gates
+## Stage Checkpoints
 
-| Gate | Phase | Criteria | Decided By | Verdict artifact |
-|------|-------|----------|------------|------------------|
-| G1 | Requirement | SRS complete, user stories + AC documented | User approval | — |
-| G2 | UI Design | All screen states defined (default/load/empty/error) | User approval | — |
-| G3a | Basic Design | Module structure, DB table list, API endpoint list | User approval | — |
-| G3b | Detail Design | ORM schema, service methods, DTOs complete | User approval | — |
-| G3c | Test Viewpoint | `docs/TEST_VIEWPOINT.md` customized (no placeholders) + test layers defined | User approval | — |
-| G3d | Design Review | Design-review checklist PASS (0 Critical, 0 Major), full SRS→BASIC→TECH traceability | Review verdict + user | — |
-| G4 | Code Review | 0 Critical findings, ≤2 Major (must fix) | `review-code` verdict (cbr-reviewer) + user | `gate: "G4"` |
-| G5a | Initial Security Scan | 0 Critical, 0 High findings — scan after implementation complete | `vulnerability-scanner` verdict (cbr-reviewer) + user | `gate: "G5a"` |
-| G6 | Unit Tests | 100% pass, ≤R5 rounds, 100% TECH functions covered | `unit-test` verdict (cbr-tester) + user | `gate: "G6"` |
-| G7a | API Integration | All API integration tests pass (100%, ≤R5) on production-equivalent DB | `integration-test` verdict (cbr-tester) + user | `gate: "G7"` |
-| G7b | E2E Browser | All critical-journey E2E tests pass (100%, ≤R5) — **N/A for backend-only** | `integration-test` verdict (cbr-tester) + user | `gate: "G7"` |
-| G5b | Pre-Delivery Security Re-scan | Re-scan after all bug fixes: 0 Critical, 0 High clean | `vulnerability-scanner` re-scan + user | — (reuses G5a shape) |
-| G8 | Delivery | All gates above green (G5b required before G8) | User sign-off | — |
+Stage-is-the-gate: a checkpoint is a stage's artifact plus a user-approval stop, not a numbered gate in a
+fixed taxonomy. Six checkpoints are **code-tracked** — `hooks/lib/sdlc_state.py` computes their status and
+feeds the progress display + `next_action`; every other stage stop is process-only (still hard-gate,
+still no auto-cascade, just nothing in derived state tracks it individually — the surrounding
+checkpoint's artifact covers it).
 
-**Never advance past an open Critical. Max R5 retry rounds per phase.**
+### Code-tracked
 
-**A verdict is evidence, not a decision.** A fresh pool agent writes it; the user decides whether the gate
-opens. No agent auto-passes a gate. Only four gates are machine-validated — `hooks/verdict-gate.py` +
-`schemas/verdict-artifact.schema.json` accept exactly `G4, G5a, G6, G7`:
+| Checkpoint | Stage | Criteria | Decided by | Verdict artifact |
+|-----------|-------|----------|-------------|-------------------|
+| REQUIREMENT | `analyze-requirement` | SRS complete, user stories + AC documented | User approval | — (artifact: `requirements/SRS.md`) |
+| DESIGN | `design-function` | Basic + Detail design complete (module structure, DB, API endpoints, ORM schema, service methods, DTOs) | User approval | — (artifact: `design/TECH.md`) |
+| REVIEW | `review-code` | 0 Critical findings, ≤2 Major (must fix) | `review-code` verdict (cbr-reviewer) + user | `gate: "REVIEW"` |
+| SECURITY | `vulnerability-scanner` | 0 Critical, 0 Major findings; ≥1 verification entry (the audit command run). **Code-enforced staleness**: a verdict older than the stream's newest `work-logs/DEV-*.md` or `bug-reports/BUG-*.md` entry shows `STALE` and routes back to this stage — the replacement for a prose "re-scan after every fix" mandate | `vulnerability-scanner` verdict (cbr-reviewer) + user | `gate: "SECURITY"` |
+| UNIT | `unit-test` | 100% pass, 100% TECH-spec functions covered, ≥1 passing verification entry | `unit-test` verdict (cbr-tester) + user | `gate: "UNIT"` |
+| INTEGRATION | `integration-test` | 100% pass (API + E2E where applicable — E2E is N/A for backend-only) on a production-equivalent DB, ≥1 passing verification entry. API and E2E are sub-criteria of the same checkpoint — record the split inside the ITR, not in the `gate` field | `integration-test` verdict (cbr-tester) + user | `gate: "INTEGRATION"` |
 
-- **G7a and G7b both report under `gate: "G7"`** (API vs E2E sub-criteria; report the split in the ITR,
-  not the `gate` field).
-- **G3d** carries a human-readable review verdict only — no machine artifact.
-- **G5b** re-runs the G5a scan and reuses its shape.
+**Never advance past an open Critical (or, for SECURITY, Major). Fix rounds are bounded by judgment —
+escalate to the user if a fix round isn't converging, rather than looping indefinitely.**
 
-Each verdict is written beside its gate's report inside the stream (`reviews/`, `security/`,
-`test-reports/`) and validated by `hooks/verdict-gate.py --gate <G> --artifact <path>` before the user
-decides. The `Critical`/`Major` severity a verdict blocks on is defined in the verdict schema's
-`findings.severity` description.
+**A verdict is evidence, not a decision.** A fresh pool agent writes it; the user decides whether the
+checkpoint opens. No agent auto-passes one. Exactly four checkpoints are machine-validated —
+`hooks/verdict-gate.py` + `schemas/verdict-artifact.schema.json` accept exactly `REVIEW`, `SECURITY`,
+`UNIT`, `INTEGRATION`. Each verdict is written beside its checkpoint's report inside the stream
+(`reviews/`, `security/`, `test-reports/`) and validated by
+`hooks/verdict-gate.py --gate <REVIEW|SECURITY|UNIT|INTEGRATION> --artifact <path>` before the user
+decides. The severities a verdict blocks on are defined in the verdict schema's `findings.severity`
+description (SECURITY blocks on Critical-or-Major; every other checkpoint blocks on Critical only).
+
+**Reading a pre-0.11.0 verdict:** a stream that hasn't been re-reviewed since the rename may still carry
+old-named files (`VERDICT-G4.json` etc.) — `sdlc_state.py`'s `LEGACY_GATE_NAME` shim reads those for one
+release and marks them `(legacy)` in the progress display. This is a display concern only: whether a
+stream is open or closed depends solely on `STREAM.md`'s `status:` field (below), never on which
+verdict-naming era produced a file.
+
+### Process-only stops (no individually-tracked derived state)
+
+Still a hard gate — the stage does no downstream work until the user approves — just not its own row in
+`infer_gate_progress`.
+
+| Stop | Stage | Criteria | Decided by |
+|------|-------|----------|-----------|
+| UI Design | `design-screen` | All screen states defined (default/load/empty/error) | User approval |
+| Test Viewpoint | `design-function` (or the user directly) | `docs/TEST_VIEWPOINT.md` customized (no placeholders) + test layers defined | User approval |
+| Design Review | `review-code` | Design-review checklist PASS (0 Critical, 0 Major), full SRS→BASIC→TECH traceability | Review verdict + user, human-readable only — no machine artifact |
+| Pre-Delivery Security Re-scan | `vulnerability-scanner` | Re-scan after all bug fixes: 0 Critical, 0 Major clean | `vulnerability-scanner` re-scan + user — the explicit, user-triggered form of the SECURITY staleness check above |
+| Delivery | user | Every checkpoint above green | User sign-off — then stamp `status: done` on `STREAM.md` to close the stream (see Work-Stream Grouping below; closing is a separate, authored step from any of the above) |
 
 ## Artifact Paths (canonical — stream-first)
 
@@ -59,10 +75,10 @@ Paths below are relative to the stream root unless they start with `docs/`.
 | `review-code` | Design Review | `reviews/DESIGN-REVIEW-[YYYYMMDD].md` |
 | `review-code` | Review Report | `reviews/REVIEW-[YYYYMMDD].md` |
 | `vulnerability-scanner` | Security Report | `security/SEC-[YYYYMMDD].md` |
-| cbr-reviewer (pool) | Gate Verdict — G4 | `reviews/VERDICT-G4.json` (per-batch: `reviews/VERDICT-B[n]-G4.json`) |
-| cbr-reviewer (pool) | Gate Verdict — G5a | `security/VERDICT-G5a.json` |
-| cbr-tester (pool) | Gate Verdict — G6 | `test-reports/VERDICT-G6.json` |
-| cbr-tester (pool) | Gate Verdict — G7 | `test-reports/VERDICT-G7.json` |
+| cbr-reviewer (pool) | Gate Verdict — REVIEW | `reviews/VERDICT-REVIEW.json` (per-batch: `reviews/VERDICT-B[n]-REVIEW.json`) |
+| cbr-reviewer (pool) | Gate Verdict — SECURITY | `security/VERDICT-SECURITY.json` |
+| cbr-tester (pool) | Gate Verdict — UNIT | `test-reports/VERDICT-UNIT.json` |
+| cbr-tester (pool) | Gate Verdict — INTEGRATION | `test-reports/VERDICT-INTEGRATION.json` |
 | `unit-test` | Test Cases / Report | `test-cases/UTC.md` / `test-reports/UTR-R[n].md` |
 | `integration-test` | Test Cases / Report | `test-cases/ITC.md` / `test-reports/ITR-R[n].md` |
 | `fix-bug` | Bug Report | `bug-reports/BUG-[YYYYMMDD]-[nn].md` |
@@ -92,6 +108,13 @@ task board) and one **derived** zone (the gate snapshot). **Gate authority stays
 stream's `STREAM.md` membership table; (3) update the task-board status for its phase. Skills NEVER write
 the derived Gate Status zone.
 
+**Closing a stream (authored, not automatic).** `status: done` is the only thing that closes a stream —
+no skill infers it from checkpoint/verdict state. Any stage skill MAY stamp it on `STREAM.md`
+frontmatter at its own user-confirmed terminal stop; `retro` does so as a matter of course for a
+`feature`-mode run, since reaching retro already presumes delivery is confirmed. A stream-light stream
+that never reaches `retro` gets it from whichever stage the user calls "done" at instead — stamp it by
+hand, or let that stage's own stop-gate do it.
+
 **Opener law — open-if-none / join-if-exists, resolved by topic-slug.** A stream has three possible
 openers (`brainstorming`, `explore`, `plan-writing`), all scaffolding `STREAM.md` from
 `{{CBR_ROOT}}/docs/_templates/STREAM.md`. Before opening, an opener derives an `[a-z0-9-]` slug from its
@@ -104,37 +127,39 @@ More than one match → **ask** which, always offering "open a new stream". This
 - **`brainstorming` (greenfield lane)** — spec-first front door; opens/joins, then the
   `analyze-requirement → design → …` chain fills the gates in order.
 - **`explore` (brownfield scout / greenfield prior-art)** — discovery front door; scouts into
-  `research/RES-*.md`, opens/joins, STOPS (research is pre-G1).
+  `research/RES-*.md`, opens/joins, STOPS (research runs before REQUIREMENT).
 - **`plan-writing` (brownfield, stream-light lane)** — maintenance work with no matching stream: opens one
-  and writes `plan/PLAN.md` **without** an SRS/design or forcing G1–G3. Its Step-1 input-contract detects
-  the source of truth (`requirements/SRS.md → brainstorm/BRAINSTORM.md → research/RES-*.md → code`; asks
-  when several exist, refuses to plan on nothing).
+  and writes `plan/PLAN.md` **without** an SRS/design or forcing REQUIREMENT/DESIGN. Its Step-1
+  input-contract detects the source of truth (`requirements/SRS.md → brainstorm/BRAINSTORM.md →
+  research/RES-*.md → code`; asks when several exist, refuses to plan on nothing).
 
 `lane:` in `STREAM.md` frontmatter (`greenfield` default / `brownfield`) is descriptive metadata only —
-not read by any hook. In a stream-light stream the design gates that never ran read `pending`, which is
-benign.
+not read by any hook. In a stream-light stream the checkpoints that never ran read `pending`, which is
+benign — closing the stream never depends on them (see `status: done`, above).
 
 ## Artifact Lifecycle
 
 Every stage artifact is created once, updated by named stages, consumed by named stages, and closed at a
-gate — nothing created-but-unused. `STREAM.md` is the orphan/gap surface.
+checkpoint — nothing created-but-unused. `STREAM.md` is the orphan/gap surface. "Closed at" names the
+checkpoint/stop that consumes it; the STREAM ITSELF only ever closes on an authored `status: done` (see
+Work-Stream Grouping above) — no artifact's individual closure implies the stream is done.
 
 | Artifact | Created by | Consumed by | Closed at |
 |----------|-----------|-------------|-----------|
-| STREAM.md | first opener (open-or-join) | `handoff`, `session-init` | G8 |
-| BRAINSTORM | `brainstorming` | `analyze-requirement` | G1 |
+| STREAM.md | first opener (open-or-join) | `handoff`, `session-init` | `status: done` (authored, at Delivery) |
+| BRAINSTORM | `brainstorming` | `analyze-requirement` | REQUIREMENT |
 | RES | `explore` | `plan-writing` | superseded by an SRS/PLAN citation, else stream close |
-| SRS | `analyze-requirement` | design, tests | G1 |
-| SCREEN | `design-screen` | `design-function`, `implement-feature` | G2 |
-| BASIC / TECH | `design-function` | `implement-feature`, `review-code`, tests | G3a / G3b |
-| PLAN | `plan-writing` | all stages | G8 |
-| DEV log | `implement-feature` | `review-code` | G4 |
-| REVIEW + VERDICT-G4 | `review-code` | user | G4 |
-| SEC + VERDICT-G5a | `vulnerability-scanner` | user | G5a/G5b |
-| UTR + VERDICT-G6 | `unit-test` | user | G6 |
-| ITR + VERDICT-G7 | `integration-test` | user | G7 |
+| SRS | `analyze-requirement` | design, tests | REQUIREMENT |
+| SCREEN | `design-screen` | `design-function`, `implement-feature` | UI Design stop |
+| BASIC / TECH | `design-function` | `implement-feature`, `review-code`, tests | DESIGN |
+| PLAN | `plan-writing` | all stages | Delivery |
+| DEV log | `implement-feature` | `review-code` | REVIEW |
+| REVIEW + VERDICT-REVIEW | `review-code` | user | REVIEW |
+| SEC + VERDICT-SECURITY | `vulnerability-scanner` | user | SECURITY / Pre-Delivery Re-scan |
+| UTR + VERDICT-UNIT | `unit-test` | user | UNIT |
+| ITR + VERDICT-INTEGRATION | `integration-test` | user | INTEGRATION |
 | BUG | `fix-bug` | `unit-test`, `integration-test` | on fix |
-| RETRO | `retro` | next stream | post-G8 |
+| RETRO | `retro` | next stream | after Delivery |
 
 ## Memory Tiers
 

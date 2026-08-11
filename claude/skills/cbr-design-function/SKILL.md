@@ -24,7 +24,7 @@ Do NOT hardcode framework assumptions.
 | --- | --- |
 | Step 0 | Always — detect tech stack first |
 | Parallel mode | Only when invoked with `--parallel` |
-| Step 1.5: Basic Design | Always — high-level structure + G3a checkpoint |
+| Step 1.5: Basic Design | Always — high-level structure + Basic Design stop |
 | Step 2: Design | Always — core detailed design work |
 | Step 3: TECH File | Always — mandatory output artifact |
 | Checklist | Before marking done |
@@ -57,7 +57,7 @@ auth strategy — in this context so workers cannot contradict each other.
 Parallel or not, this skill **stops after Step 3**. It never spawns
 `implement-feature` — the user starts the next stage.
 
-## Step 1.5: Basic Design → BASIC file (G3a)
+## Step 1.5: Basic Design → BASIC file (Basic Design stop)
 
 Produce the high-level **structure first** — a cheap checkpoint before detailing:
 - Module structure (files/components to create)
@@ -65,7 +65,7 @@ Produce the high-level **structure first** — a cheap checkpoint before detaili
 - API endpoint list (method + route — signatures come in Step 2)
 
 File: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (template: [`references/basic-design-template.md`](references/basic-design-template.md)).
-**Stop for G3a user approval** before Step 2 — approving the structure cheaply avoids reworking a full detailed spec. (This is a checkpoint within this skill, not a hand-off; the skill still stops after Step 3 for the user to start the next stage.)
+**Stop for Basic Design user approval** before Step 2 — approving the structure cheaply avoids reworking a full detailed spec. (This is a checkpoint within this skill, not a hand-off; the skill still stops after Step 3 for the user to start the next stage.)
 
 ## Step 2: Design
 
@@ -114,5 +114,5 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 - "Design the UI screens for user management" (use design-screen)
 
 **Expected outputs:**
-- Artifacts: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (G3a) + `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` (G3b)
+- Artifacts: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (Basic Design stop) + `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` (DESIGN)
 - Quality gate: All endpoints have auth guards, DTOs, and pagination; N+1 addressed

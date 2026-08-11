@@ -16,7 +16,7 @@ trace each task back to a real source.
 ## The priority order (most authoritative first)
 
 1. **SRS** — `requirements/SRS.md`. Approved requirements. The greenfield / spec-first
-   source; highest authority because a human approved it at G1.
+   source; highest authority because a human approved it at the REQUIREMENT checkpoint.
 2. **Brainstorm** — `brainstorm/BRAINSTORM.md`. An approved *direction* that predates a
    formal SRS. Enough to plan a spike or an early slice from.
 3. **Research report** — `research/RES-*.md`. A scout's or the `researcher` agent's findings

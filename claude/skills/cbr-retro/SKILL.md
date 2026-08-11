@@ -70,7 +70,7 @@ For each perspective with artifacts present, write 3–6 factual bullets. **Ever
 
 | Perspective | What to extract |
 |-------------|----------------|
-| Requirements | AC precision (were any ambiguous?); scope changes after G1; gates marked REOPENED and why |
+| Requirements | AC precision (were any ambiguous?); scope changes after REQUIREMENT; gates marked REOPENED and why |
 | Implementation | What was delivered; blockers in the work logs; scope drift vs the TECH spec (compare planned vs actual) |
 | Code review | Critical/Major counts per batch; patterns recurring across >1 batch or >1 file; whether `CODING-CHECKLIST.md` covered them |
 | Security | Findings by OWASP category; whether they were introduced by a pattern already in the guardrails |
@@ -235,7 +235,16 @@ its **own** stream folder keyed by the sprint's end date —
 | LOW | [specific action] | [owner] | optional | — |
 ```
 
-**Present to user:** show the Action Items table only, plus the report path. The user reads the full report in the stream's `retro/` folder.
+### Close the stream (`feature` mode only)
+
+Reaching a `feature`-mode retro already presumes delivery is confirmed (the Step 0 precondition). Stamp
+`status: done` on the stream's `STREAM.md` frontmatter — this is the ONLY thing that closes a stream, so
+skipping it leaves the stream reading as in-flight indefinitely. If `status:` is already `done`,
+`archived`, or `abandoned`, leave it unchanged. `phase` and `sprint` retros do NOT represent full-stream
+completion — do not stamp it for those modes.
+
+**Present to user:** show the Action Items table, the report path, and (for `feature` mode) confirmation
+that the stream was closed. The user reads the full report in the stream's `retro/` folder.
 
 Then **stop.** Do not open the action items as work — the user decides what gets picked up.
 

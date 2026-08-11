@@ -12,18 +12,18 @@
 
 ## State Summary (5 bullets max)
 
-- [DONE] G1 SRS approved — `docs/streams/user-auth-20260318/requirements/SRS.md`
-- [DONE] G3b TECH spec approved — `docs/streams/user-auth-20260318/design/TECH.md` (JWT + bcrypt + refresh token rotation)
-- [DONE] G4 Code Review PASSED — 0 Critical, 1 Major fixed (AuthService not injecting UserRepository correctly)
-- [PENDING] G6 Unit Tests — 14/16 tests pass; 2 failures in `auth.service.spec.ts` (see Open Issues)
-- [PENDING] G7a API Integration Tests — not started, blocked on G6
+- [DONE] REQUIREMENT: SRS approved — `docs/streams/user-auth-20260318/requirements/SRS.md`
+- [DONE] DESIGN: TECH spec approved — `docs/streams/user-auth-20260318/design/TECH.md` (JWT + bcrypt + refresh token rotation)
+- [DONE] REVIEW: Code Review PASSED — 0 Critical, 1 Major fixed (AuthService not injecting UserRepository correctly)
+- [PENDING] UNIT: Unit Tests — 14/16 tests pass; 2 failures in `auth.service.spec.ts` (see Open Issues)
+- [PENDING] INTEGRATION (API): not started, blocked on UNIT
 
 ---
 
 ## Current Phase
 
 **Active phase**: Phase 6 — Unit Tests
-**Last completed gate**: G4 Code Review ✅ (2026-03-19)
+**Last completed checkpoint**: REVIEW ✅ (2026-03-19)
 **Next required action**: Fix 2 failing unit tests in `src/auth/auth.service.spec.ts`, then re-run:
 ```bash
 cd backend && npx jest --testPathPattern=auth --coverage --verbose
@@ -91,4 +91,4 @@ then re-run: cd backend && npx jest --testPathPattern=auth --coverage
 
 - The `refresh_tokens` DB table was added in migration `20260318_add_refresh_tokens.sql` — ensure this migration ran in the test DB before running integration tests
 - Do NOT run integration tests until unit tests fully pass (UTR must be R1 100% before ITC)
-- The `AuthGuard` is currently applied only to `UserController` — check TECH spec for full list of controllers that need it before G7
+- The `AuthGuard` is currently applied only to `UserController` — check TECH spec for full list of controllers that need it before INTEGRATION

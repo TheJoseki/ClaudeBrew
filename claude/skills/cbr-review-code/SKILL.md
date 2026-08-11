@@ -25,7 +25,7 @@ Do NOT hardcode framework pattern expectations.
 | --- | --- |
 | Step 0 | Always — detect tech stack first |
 | Step 1: Read Input | Always — mandatory |
-| Step 2: Assemble the G4 checklist | Always — the criteria this skill owns |
+| Step 2: Assemble the REVIEW checklist | Always — the criteria this skill owns |
 | Step 3: Verdict (fresh eyes) | Always — spawn, validate, stop |
 
 ## Precondition Check (MANDATORY — stop if not met)
@@ -49,7 +49,7 @@ If implementation code **NOT FOUND**:
 - Input DEV log: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-*.md` (see implemented files)
 - Input TECH spec: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md` (verify implementation matches design)
 
-## Step 2: Assemble the G4 checklist (this skill owns the criteria)
+## Step 2: Assemble the REVIEW checklist (this skill owns the criteria)
 
 This skill decides **what** is judged. A freshly spawned `cbr-reviewer` decides
 **whether it passes**. Do not evaluate the code yourself here — assemble the
@@ -115,9 +115,9 @@ your own review is the failure mode this step exists to prevent.
 - **Outputs**, both mandatory:
   - Findings report → `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md`
     (template: [`references/template.md`](references/template.md))
-  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json`, conforming to
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-REVIEW.json`, conforming to
     `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
-    `gate: "G4"` and `producedBy: "cbr-reviewer"`. A reviewer runs no build or
+    `gate: "REVIEW"` and `producedBy: "cbr-reviewer"`. A reviewer runs no build or
     test commands, so `verification` stays `[]`.
 - **Posture**: assume the code was AI-written; look for what breaks, not for
   reasons to approve. Every finding cites `file:line`.
@@ -125,11 +125,11 @@ your own review is the failure mode this step exists to prevent.
 **3.2 — Validate the verdict** (never trust it unchecked):
 
 ```bash
-python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G4 --artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate REVIEW --artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-REVIEW.json
 ```
 
 In batch mode, validate that batch's verdict instead —
-`--artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-G4.json` (the exact path
+`--artifact docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-REVIEW.json` (the exact path
 the reviewer wrote in Step 3.1). The `--artifact` path must always equal the file written;
 the gate fails closed on a missing artifact.
 
@@ -155,8 +155,8 @@ re-invokes `/fix-bug` and then `/review-code` themselves.
 - [ ] Checklist + rubric handed to the reviewer by path, not re-judged here
 - [ ] `cbr-reviewer` spawned fresh — this skill graded nothing itself
 - [ ] `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[date].md` written by the reviewer
-- [ ] `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json` written by the reviewer
-- [ ] `verdict-gate.py --gate G4` run, exit code reported
+- [ ] `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-REVIEW.json` written by the reviewer
+- [ ] `verdict-gate.py --gate REVIEW` run, exit code reported
 - [ ] On block: `AskUserQuestion` raised with findings — then STOPPED ✅
 
 ---
@@ -168,7 +168,7 @@ re-invokes `/fix-bug` and then `/review-code` themselves.
 | Called from | `implement-feature` | Mandatory quality gate after each implementation batch — always run before next batch or PR |
 | On security findings | `vulnerability-scanner` | Any Critical/High security finding → deep OWASP audit |
 | If FAIL (≤ R2 per batch) | `fix-bug` | Fix Critical + Major findings → re-review same batch |
-| All batches PASS | `vulnerability-scanner` | Full OWASP scan (G5a) on all implemented code — user starts it |
+| All batches PASS | `vulnerability-scanner` | Full OWASP scan (SECURITY) on all implemented code — user starts it |
 
 **Input pattern (batch mode)** — one gate run per batch, each ending in its own
 user gate:
@@ -176,7 +176,7 @@ user gate:
 BATCH: Batch-N
 INPUT: docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md  ← scope list of files for this batch only
 SCOPE: Review only files in DEV-BN work log, not previous batches
-OUTPUT: docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md + docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-G4.json
+OUTPUT: docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md + docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-BN-REVIEW.json
 Checklist: references/leader-review-checklist.md
 ```
 
@@ -195,7 +195,7 @@ Checklist: references/leader-review-checklist.md
 **Expected outputs:**
 - Artifacts (both written by the spawned `cbr-reviewer`):
   `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-[YYYYMMDD].md` and
-  `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-G4.json`
-- Quality gate: G4 — `verdict-gate.py --gate G4` run and its exit code reported;
+  `docs/streams/[feature]-[YYYYMMDD]/reviews/VERDICT-REVIEW.json`
+- Quality gate: REVIEW — `verdict-gate.py --gate REVIEW` run and its exit code reported;
   all Critical/Major findings have file + line reference; on block, the user was
   asked and the skill stopped

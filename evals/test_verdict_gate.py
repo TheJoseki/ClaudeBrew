@@ -55,7 +55,7 @@ def run_gate_cli(gate, artifact_path):
 def artifact(**overrides):
     """A well-formed PASS artifact; override fields per case."""
     a = {
-        "gate": "G4",
+        "gate": "REVIEW",
         "decision": "PASS",
         "findings": [],
         "verification": [],
@@ -78,39 +78,47 @@ def main():
             return p
 
         crit = [{"severity": "Critical", "file": "a.py", "line": 3, "note": "x"}]
+        major = [{"severity": "Major", "file": "a.py", "line": 3, "note": "x"}]
         minor = [{"severity": "Minor", "file": "a.py", "line": 3, "note": "x"}]
         vpass = [{"cmd": "pytest", "result": "pass"}]
         vfail = [{"cmd": "pytest", "result": "fail"}]
 
         # (label, gate, artifact-or-text, expected-exit)
         cases = [
-            # G4 / G5a — review & security: PASS + no Critical, no command needed
-            ("G4 pass clean",            "G4",  artifact(gate="G4"), PASS),
-            ("G4 pass w/ minor finding", "G4",  artifact(gate="G4", findings=minor), PASS),
-            ("G4 FAIL decision",         "G4",  artifact(gate="G4", decision="FAIL"), BLOCK),
-            ("G4 pass but Critical",     "G4",  artifact(gate="G4", findings=crit), BLOCK),
-            ("G5a pass clean",           "G5a", artifact(gate="G5a"), PASS),
-            ("G5a Critical blocks",      "G5a", artifact(gate="G5a", findings=crit), BLOCK),
-            # G6 / G7 — tests: PASS + >=1 passing verification entry
-            ("G6 pass w/ verification",  "G6",  artifact(gate="G6", verification=vpass), PASS),
-            ("G6 pass no verification",  "G6",  artifact(gate="G6", verification=[]), BLOCK),
-            ("G6 verification all fail", "G6",  artifact(gate="G6", verification=vfail), BLOCK),
-            ("G7 pass w/ verification",  "G7",  artifact(gate="G7", verification=vpass), PASS),
-            ("G7 Critical blocks",       "G7",  artifact(gate="G7", verification=vpass, findings=crit), BLOCK),
+            # REVIEW — PASS + no Critical, no command needed; Major does NOT block (asymmetric with SECURITY)
+            ("REVIEW pass clean",            "REVIEW",  artifact(gate="REVIEW"), PASS),
+            ("REVIEW pass w/ minor finding", "REVIEW",  artifact(gate="REVIEW", findings=minor), PASS),
+            ("REVIEW Major does not block",  "REVIEW",  artifact(gate="REVIEW", findings=major), PASS),
+            ("REVIEW FAIL decision",         "REVIEW",  artifact(gate="REVIEW", decision="FAIL"), BLOCK),
+            ("REVIEW pass but Critical",     "REVIEW",  artifact(gate="REVIEW", findings=crit), BLOCK),
+            # SECURITY — PASS + no Critical/Major, requires >=1 passing verification entry (R2 §7)
+            ("SECURITY pass w/ verification",   "SECURITY", artifact(gate="SECURITY", verification=vpass), PASS),
+            ("SECURITY Critical blocks",        "SECURITY", artifact(gate="SECURITY", verification=vpass, findings=crit), BLOCK),
+            ("SECURITY Major blocks",           "SECURITY", artifact(gate="SECURITY", verification=vpass, findings=major), BLOCK),
+            ("SECURITY requires verification",  "SECURITY", artifact(gate="SECURITY", verification=[]), BLOCK),
+            # UNIT / INTEGRATION — tests: PASS + >=1 passing verification entry
+            ("UNIT pass w/ verification",  "UNIT",  artifact(gate="UNIT", verification=vpass), PASS),
+            ("UNIT pass no verification",  "UNIT",  artifact(gate="UNIT", verification=[]), BLOCK),
+            ("UNIT verification all fail", "UNIT",  artifact(gate="UNIT", verification=vfail), BLOCK),
+            ("INTEGRATION pass w/ verification",  "INTEGRATION",  artifact(gate="INTEGRATION", verification=vpass), PASS),
+            ("INTEGRATION Critical blocks",       "INTEGRATION",  artifact(gate="INTEGRATION", verification=vpass, findings=crit), BLOCK),
+            ("INTEGRATION Major does not block",  "INTEGRATION",  artifact(gate="INTEGRATION", verification=vpass, findings=major), PASS),
             # secret scan — any gate blocks on a leaked credential in the artifact
-            ("secret AWS key",           "G4",  artifact(gate="G4", producedBy="AKIA1234567890ABCDEF"), BLOCK),
-            ("secret PEM block",         "G4",  artifact(gate="G4",
+            ("secret AWS key",           "REVIEW",  artifact(gate="REVIEW", producedBy="AKIA1234567890ABCDEF"), BLOCK),
+            ("secret PEM block",         "REVIEW",  artifact(gate="REVIEW",
                                                          findings=[{"severity": "Minor", "file": "k", "line": 1,
                                                                     "note": "-----BEGIN RSA PRIVATE KEY-----"}]), BLOCK),
             # malformed / missing / invalid
-            ("malformed json",           "G4",  "{not json", BLOCK),
-            ("missing decision field",   "G4",  artifact(gate="G4", decision=None), BLOCK),
-            ("invalid decision value",   "G4",  artifact(gate="G4", decision="MAYBE"), BLOCK),
-            ("finding not an object",    "G4",  artifact(gate="G4", findings=["oops"]), BLOCK),
-            ("top-level non-dict json",  "G4",  "[1, 2, 3]", BLOCK),
-            ("findings not a list",      "G4",  artifact(gate="G4", findings="nope"), BLOCK),
-            ("verification not a list",  "G4",  artifact(gate="G4", verification="nope"), BLOCK),
-            ("gate mismatch artifact",   "G4",  artifact(gate="G7", verification=vpass), BLOCK),
+            ("malformed json",           "REVIEW",  "{not json", BLOCK),
+            ("missing decision field",   "REVIEW",  artifact(gate="REVIEW", decision=None), BLOCK),
+            ("invalid decision value",   "REVIEW",  artifact(gate="REVIEW", decision="MAYBE"), BLOCK),
+            ("finding not an object",    "REVIEW",  artifact(gate="REVIEW", findings=["oops"]), BLOCK),
+            ("top-level non-dict json",  "REVIEW",  "[1, 2, 3]", BLOCK),
+            ("findings not a list",      "REVIEW",  artifact(gate="REVIEW", findings="nope"), BLOCK),
+            ("verification not a list",  "REVIEW",  artifact(gate="REVIEW", verification="nope"), BLOCK),
+            ("gate mismatch artifact",   "REVIEW",  artifact(gate="INTEGRATION", verification=vpass), BLOCK),
+            # R2 identity coupling — the pre-0.11.0 token is no longer a valid --gate value
+            ("legacy G4 token rejected", "G4",      artifact(gate="G4"), BLOCK),
         ]
         for label, gate, body, expect in cases:
             p = write(body)
@@ -126,15 +134,15 @@ def main():
         print(f"{'OK  ' if got == BLOCK else 'FAIL'} exit={got} expect={BLOCK}  unknown gate arg")
 
         # missing artifact file -> block
-        got = run_gate("G4", os.path.join(d, "nope.json"))
+        got = run_gate("REVIEW", os.path.join(d, "nope.json"))
         failures += got != BLOCK
         print(f"{'OK  ' if got == BLOCK else 'FAIL'} exit={got} expect={BLOCK}  missing artifact file")
 
         # CLI smoke — prove the real subprocess entrypoint works end-to-end
-        p = write(artifact(gate="G4"))
-        got = run_gate_cli("G4", p)
+        p = write(artifact(gate="REVIEW"))
+        got = run_gate_cli("REVIEW", p)
         failures += got != PASS
-        print(f"{'OK  ' if got == PASS else 'FAIL'} exit={got} expect={PASS}  [cli smoke] G4 pass")
+        print(f"{'OK  ' if got == PASS else 'FAIL'} exit={got} expect={PASS}  [cli smoke] REVIEW pass")
 
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILED'}")
     sys.exit(1 if failures else 0)

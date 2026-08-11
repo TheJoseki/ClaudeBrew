@@ -121,9 +121,10 @@ live in **`references/input-contract.md`**.
      (placeholders and all) — **never author gate values or substitute the slug there**; `handoff`
      / `session-init` regenerate it (gate authority is the `hooks/lib/sdlc_state.py` glob, never
      the manifest).
-  3. Do **not** write an SRS or design specs, and do **not** force G1–G3. Those gates read
-     `pending`, which is **benign** — a stream-light stream is simply early on the greenfield
-     ladder by design, not broken.
+  3. Do **not** write an SRS or design specs, and do **not** force REQUIREMENT/DESIGN. Those
+     checkpoints read `pending`, which is **benign** — a stream-light stream is simply early on
+     the greenfield ladder by design, not broken, and closing it never depends on them (see
+     `status: done` in the SDLC reference).
 
 Stream-light *is* the brownfield entry-point: it gives an existing codebase a valid CBR
 work-stream without a full spec chain. (The three openers — `brainstorming` greenfield, `explore`

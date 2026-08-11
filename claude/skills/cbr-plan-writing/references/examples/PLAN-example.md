@@ -18,12 +18,12 @@
 
 ---
 
-## Phases & Gates
+## Phases & Checkpoints
 
-### Phase 1 — Requirements (G1)
+### Phase 1 — Requirements (REQUIREMENT)
 **Status**: ✅ COMPLETE
 **Output**: `docs/streams/payment-processing-20260320/requirements/SRS.md`
-**Gate criterion**: SRS approved by user, all user stories have acceptance criteria
+**Checkpoint criterion**: SRS approved by user, all user stories have acceptance criteria
 
 | Task | Owner | Status |
 |------|-------|--------|
@@ -33,10 +33,10 @@
 
 ---
 
-### Phase 2 — UI Design (G2)
+### Phase 2 — UI Design (process-only stop)
 **Status**: ✅ COMPLETE
 **Output**: `docs/streams/payment-processing-20260320/requirements/SCREEN.md`
-**Gate criterion**: All screen states defined (default/loading/error/success/empty)
+**Checkpoint criterion**: All screen states defined (default/loading/error/success/empty)
 
 | Task | Owner | Status |
 |------|-------|--------|
@@ -46,10 +46,10 @@
 
 ---
 
-### Phase 3a — Basic Design (G3a)
+### Phase 3a — Basic Design (Basic Design stop)
 **Status**: ✅ COMPLETE
 **Output**: `docs/streams/payment-processing-20260320/design/BASIC.md`
-**Gate criterion**: Module list, DB table list, API endpoint list approved
+**Checkpoint criterion**: Module list, DB table list, API endpoint list approved
 
 | Task | Owner | Status |
 |------|-------|--------|
@@ -59,10 +59,10 @@
 
 ---
 
-### Phase 3b — Detail Design (G3b)
+### Phase 3b — Detail Design (DESIGN)
 **Status**: ✅ COMPLETE
 **Output**: `docs/streams/payment-processing-20260320/design/TECH.md`
-**Gate criterion**: ORM schema, service methods, DTOs complete; TECH spec approved
+**Checkpoint criterion**: ORM schema, service methods, DTOs complete; TECH spec approved
 
 | Task | Owner | Status |
 |------|-------|--------|
@@ -73,7 +73,7 @@
 
 ---
 
-### Phase 3c — Test Viewpoint (G3c)
+### Phase 3c — Test Viewpoint (process-only stop)
 **Status**: ✅ COMPLETE
 **Output**: `docs/TEST_VIEWPOINT.md` (updated)
 
@@ -109,32 +109,32 @@
 
 ---
 
-### Phase 5a — Code Review (G4)
+### Phase 5a — Code Review (REVIEW)
 **Status**: ⏳ PENDING
 **Prerequisite**: Phase 4 complete
 
 ---
 
-### Phase 6 — Unit Tests (G6)
+### Phase 6 — Unit Tests (UNIT)
 **Status**: ⏳ PENDING
 **Target**: 100% pass, ≥85% coverage
 **Run**: `cd backend && npx jest --testPathPattern=payment --coverage`
 
 ---
 
-### Phase 7a — API Integration Tests (G7a)
+### Phase 7a — API Integration Tests (INTEGRATION)
 **Status**: ⏳ PENDING
 **Note**: Use Stripe test mode (sk_test_*), real test DB
 
 ---
 
-### Phase 5b — Security Re-scan (G5b)
+### Phase 5b — Security Re-scan (Pre-Delivery Re-scan stop)
 **Status**: ⏳ PENDING
 **Focus**: Payment Card Industry (PCI) surface — no card data in logs, HTTPS only, Stripe PK not in bundle
 
 ---
 
-### Phase 8 — Delivery (G8)
+### Phase 8 — Delivery
 **Status**: ⏳ PENDING
 
 ---

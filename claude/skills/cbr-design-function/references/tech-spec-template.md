@@ -111,7 +111,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 | Raw SQL? | Replace with ORM or justify |
 | Items not in BASIC? | STOP — retroactive gap, report to the user |
 
-## Quality Rubric (G3b gate — ALL ≥ 3)
+## Quality Rubric (DESIGN checkpoint — ALL ≥ 3)
 
 | Dimension | 3 — Acceptable |
 |-----------|----------------|
@@ -151,7 +151,7 @@ Replace all `[PLACEHOLDER]` with real values. Status: ⏳ PENDING APPROVAL.
 ## Step D3: E2E Scaffold
 
 If frontend + E2E framework declared → note scaffold files in TECH spec.
-If no E2E framework → note "G7b is N/A".
+If no E2E framework → note "the INTEGRATION E2E sub-criterion is N/A".
 
 
 

@@ -4,6 +4,61 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-08-10
+
+**The G1–G8 gate taxonomy is retired — stage-is-the-gate.** Six checkpoints are now code-tracked by
+function name (`REQUIREMENT`, `DESIGN`, `REVIEW`, `SECURITY`, `UNIT`, `INTEGRATION`); everything else
+(UI Design, Test Viewpoint, Design Review, Pre-Delivery Security Re-scan, Delivery) is a process-only
+stop — still a hard gate, just not its own row in derived state. This is a state-model redesign, not a
+find-and-replace: three real defects in the old model were fixed in the same pass, per
+`plans/260807-1828-.../reports/r2-state-model-design.md` (the design doc approved before this shipped).
+
+### Changed
+- **BREAKING — verdict filenames and the `gate` field rename.** `VERDICT-G4.json` → `VERDICT-REVIEW.json`,
+  `VERDICT-G5a.json` → `VERDICT-SECURITY.json`, `VERDICT-G6.json` → `VERDICT-UNIT.json`,
+  `VERDICT-G7.json` → `VERDICT-INTEGRATION.json` (per-batch form unchanged: `VERDICT-B[n]-<NAME>.json`).
+  `verdict-gate.py --gate` only accepts the four new names. **A pre-0.11.0-named verdict is still read**
+  for one release via a dual-glob shim and marked `(legacy)` in the progress display — display-only; see
+  the completion-predicate fix below for why it can't corrupt gate state. **The shim window closes in
+  0.12.0** — re-run any checkpoint still showing `(legacy)` before then.
+- **Stream completion is now authored, never inferred — fixes a real bug.** A stream closes only when
+  its `STREAM.md` frontmatter is stamped `status: done` (the template already had this value; nothing
+  read it before). Previously, closure required every one of `G1/G3/G4/G5a/G6/G7` to read "pass" — a
+  stream-light brownfield stream, which by design never writes an SRS or TECH spec, could **never**
+  satisfy that predicate and stayed "in flight" forever, however long ago the maintenance work actually
+  finished. ⚠️ **Migration consequence**: a pre-existing stream that was already all-pass under the old
+  predicate has no `status:` stamp yet, so it will show as in-flight once after this upgrade. Stamp
+  `status: done` on it (or let the next stage skill's stop-gate do it) to silence the one-time notice.
+- **SECURITY hardened**: now requires ≥1 passing `verification` entry (the audit command the scanner
+  already runs), and blocks on an unresolved *Major* finding in addition to Critical — the schema has
+  no separate "High" value, so the scanner's old workaround of inflating High findings to Critical
+  severity is retired along with the criterion it was compensating for. REVIEW/UNIT/INTEGRATION are
+  unaffected (Critical-only).
+- **The deleted "re-scan after every fix" mandate is now a code-enforced staleness check.** A SECURITY
+  verdict older than the stream's newest `work-logs/DEV-*.md` **or** `bug-reports/BUG-*.md` entry shows
+  `STALE` in the progress display and routes back to `vulnerability-scanner` — covering a fix made via
+  `fix-bug` alone, which never touches the DEV log.
+- Approval remains conversational, not a derived-state field — a deliberate non-change, re-verified: a
+  persisted "approved" marker would let a stale one survive a compaction or a long gap, which
+  `session-init.py`'s existing re-confirm-don't-assume policy exists to prevent.
+- `verdict-artifact.schema.json` documents the shape `verdict-gate.py` enforces by hand; it was never
+  loaded by the validator and stays that way — wiring real JSON-Schema validation would be a new
+  dependency for a ~10-line shape check.
+
+### Fixed
+- `session-init.py` needed no source edit for this rename (it carried zero gate-vocabulary tokens —
+  pure passthrough of `sdlc_state.py`'s output) and neither did `design-function`'s BASIC mid-stop
+  (`sdlc_state.py` only ever indexed `BASIC.md` for section-pointers, never gate-checked it) — both
+  smaller blast radius than the plan estimated.
+- **`status: done` had a reader but no writer.** The completion-predicate fix above shipped
+  `sdlc_state.py` reading the stamp, but no skill ever wrote it — every stream would have stayed
+  in-flight forever regardless of the fix. `cbr-retro` now stamps `status: done` on `STREAM.md` as a
+  matter of course for a `feature`-mode run (the design doc's own stated behavior); the upkeep
+  protocol in `sdlc-reference.md` documents that any stage MAY do the same at its own user-confirmed
+  terminal stop, for stream-light streams that never reach `retro`. The `STREAM.md` template's
+  `status:` comment also listed only `pending|in-progress|done|blocked`, omitting the `archived` and
+  `abandoned` values the code already recognized as closing — corrected.
+
 ## [0.10.0] — 2026-08-08
 
 **The rules layer went from 13 always-on files to one contract — resident cost 76,657 → 4,622 payload bytes (≈20K → ≈1.1K tokens, −94%; the installed copy is a few hundred bytes larger once the three citation paths bake absolute).** That text was loaded on every turn *and* inherited by every spawned subagent, so the saving compounds. What was cut was apparatus, not judgment: prescriptive process taxonomies (CMMI/ISTQB/PMP branding, per-round pass-rate ladders, severity/priority grids, story points and velocity, risk P×I scoring, weighted decision matrices, checklist evidence tables). What survives moved into `claude/rules/agent-contract.md` — the invariants and interfaces an agent must hold on every turn — or into three references a skill opens when its task needs them.

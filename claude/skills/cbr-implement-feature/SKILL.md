@@ -172,9 +172,10 @@ Create `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[YYYYMMDD].md`:
 ## Deliver / open PR (user-invoked — NOT part of the run above)
 
 **Do not run this after Step 5.** Implementation stops at the work log; the
-quality gates (`review-code` G4, `vulnerability-scanner` G5a, `unit-test` G6,
-`integration-test` G7) come first and each is gated by the user. Open the PR
-only when the user explicitly asks for it and those gates are green.
+checkpoints (`review-code` REVIEW, `vulnerability-scanner` SECURITY,
+`unit-test` UNIT, `integration-test` INTEGRATION) come first and each is
+gated by the user. Open the PR only when the user explicitly asks for it
+and those checkpoints are green.
 
 1. Read git conventions from `docs/CODING_RULES.md` (branch naming, commit
    convention, PR checklist) if it exists.

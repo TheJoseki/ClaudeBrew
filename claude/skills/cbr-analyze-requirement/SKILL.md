@@ -86,6 +86,6 @@ File: `docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md`
 | Direction | Skill | When |
 |-----------|-------|------|
 | Prerequisite | `brainstorming` | Run first if requirements are ambiguous or undefined |
-| On success | `design-screen` | After G1 — design UI screens for the feature |
-| On success | `design-function` | After G1 — design API endpoints and ORM schema |
+| On success | `design-screen` | After REQUIREMENT — design UI screens for the feature |
+| On success | `design-function` | After REQUIREMENT — design API endpoints and ORM schema |
 | On FAIL (scope unclear) | `brainstorming` | Revisit and scope requirements before retrying |

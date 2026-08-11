@@ -23,7 +23,7 @@ Do NOT hardcode framework assumptions.
 | --- | --- |
 | Step 0 | Always — detect test framework first |
 | Mode A: Create ITC | When writing test cases (supports `--parallel`) |
-| Mode B: Execute | When running the suite as the G7 gate |
+| Mode B: Execute | When running the suite as the INTEGRATION checkpoint |
 | Parallel mode | Mode A only, when invoked with `--parallel` |
 
 ## Determine Operating Mode
@@ -33,9 +33,9 @@ Do NOT hardcode framework assumptions.
 - Output: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 - This is execution work; it may run `--parallel`.
 
-**Mode B (EXECUTE R[n])** — the **G7 quality gate**
+**Mode B (EXECUTE R[n])** — the **INTEGRATION checkpoint**
 - Input: `docs/streams/[feature]-*/test-cases/ITC.md`
-- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md` + the G7 verdict artifact
+- Output: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md` + the INTEGRATION verdict artifact
 - Run by a freshly spawned `cbr-tester`, never graded here — see Mode B below.
 - **Precondition**: Grep for `docs/streams/[feature]-*/test-cases/ITC.md` before proceeding.
   If NOT FOUND → STOP: "ITC not found. Run `/integration-test` Mode A first to create the test cases."
@@ -83,7 +83,7 @@ decides when the gate runs.
 
 ---
 
-## Mode B: Execute Round R[n] — the G7 gate (fresh eyes)
+## Mode B: Execute Round R[n] — the INTEGRATION checkpoint (fresh eyes)
 
 **Do not run the suite and grade it yourself.** A freshly spawned `cbr-tester`
 executes the tests and writes the verdict; this skill owns the criteria and the
@@ -109,7 +109,7 @@ Round gates — each round (`R[n]`, max R5) fixes only the failures the previous
 reported, then re-runs the full suite. The gate is met when the targeted suite is
 **100% green**; if it is not green by R5, escalate to the user rather than pass.
 
-G7 covers both the API integration suite and, where the project has a UI, the
+INTEGRATION covers both the API integration suite and, where the project has a UI, the
 critical-journey E2E suite. Run against a production-equivalent database, and
 require 100% of BASIC workflows plus the TECH API contracts to be covered
 (Workflow-API Matrix). E2E browser coverage is **N/A for backend-only projects**
@@ -129,20 +129,20 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 - **Outputs**, both mandatory:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md`
     (template: [`references/itr-template.md`](references/itr-template.md))
-  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json`, conforming
-    to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
-    `producedBy: "cbr-tester"` and **`gate: "G7"` exactly** — the API/E2E split
-    is reported inside the ITR, never as a `G7a`/`G7b` gate value, which the
-    validator rejects.
+  - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-INTEGRATION.json`,
+    conforming to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
+    `producedBy: "cbr-tester"` and **`gate: "INTEGRATION"` exactly** — the API/E2E
+    split is reported inside the ITR, never as a separate `gate` value; the
+    schema has no other value for either and the validator rejects one.
 - **Evidence requirement**: `verification` MUST hold the actual command(s) run
-  and their result — G7 blocks without at least one `result: "pass"` entry.
+  and their result — INTEGRATION blocks without at least one `result: "pass"` entry.
   Summarize output; never paste raw dumps or secrets into the artifact.
 - `decision: PASS` only when the targeted suite is fully green at this round's bar.
 
 ### Step 2 — Validate
 
 ```bash
-python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate G7 --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json
+python "{{CBR_ROOT}}/hooks/verdict-gate.py" --gate INTEGRATION --artifact docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-INTEGRATION.json
 ```
 
 Exit `0` = PASS. Exit `2` = BLOCK (FAIL decision, unresolved Critical, **no
@@ -177,9 +177,9 @@ the user re-invokes `/fix-bug` and then this skill for R[n+1].
 - Artifact (Mode A): `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 - Artifacts (Mode B, written by the spawned `cbr-tester`):
   `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-R[n].md` and
-  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-G7.json`
-- Quality gate: G7 — all key business workflows covered, R5 = 100% pass rate,
-  `verdict-gate.py --gate G7` run with its exit code reported
+  `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-INTEGRATION.json`
+- Checkpoint: INTEGRATION — all key business workflows covered, R5 = 100% pass rate,
+  `verdict-gate.py --gate INTEGRATION` run with its exit code reported
 
 ---
 
