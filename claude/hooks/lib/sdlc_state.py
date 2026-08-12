@@ -24,13 +24,15 @@ STREAMS_DIR = os.path.join("docs", "streams")
 
 # Checkpoint -> the stage skill that advances it (drives next_action). REQUIREMENT/DESIGN are
 # artifact-existence checkpoints (no verdict); REVIEW/SECURITY/UNIT/INTEGRATION are verdict-backed.
+# Values are BARE stage-name tokens, never "cbr-"-prefixed — next_action's f-string supplies the
+# prefix. Mixing the two produces a nonexistent "/cbr-cbr-plan" invocation (R3 design doc D7).
 GATE_SKILL = {
-    "REQUIREMENT": "analyze-requirement",
-    "DESIGN": "design-function",
-    "REVIEW": "review-code",
-    "SECURITY": "vulnerability-scanner",
-    "UNIT": "unit-test",
-    "INTEGRATION": "integration-test",
+    "REQUIREMENT": "plan",
+    "DESIGN": "plan",
+    "REVIEW": "verify",
+    "SECURITY": "verify",
+    "UNIT": "verify",
+    "INTEGRATION": "verify",
 }
 GATE_ORDER = ["REQUIREMENT", "DESIGN", "REVIEW", "SECURITY", "UNIT", "INTEGRATION"]
 
@@ -222,8 +224,11 @@ def infer_gate_progress(project_dir, slug):
     next_action = None
     for g in GATE_ORDER:
         if gates[g] != "pass":
-            skill = "fix-bug" if gates[g] == "fail" else GATE_SKILL[g]
-            next_action = f"/cbr-{skill} {slug}"
+            if gates[g] == "fail":
+                skill, hint = "implement", "fix"
+            else:
+                skill, hint = GATE_SKILL[g], g.lower()
+            next_action = f"/cbr-{skill} {slug} --phase {hint}"
             break
 
     icon = {"pass": "PASS", "fail": "FAIL", "partial": "PARTIAL", "pending": "pending", "stale": "STALE"}

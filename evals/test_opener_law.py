@@ -15,7 +15,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OPENERS = [
     "claude/skills/cbr-brainstorming/SKILL.md",
     "claude/skills/cbr-explore/SKILL.md",
-    "claude/skills/cbr-plan-writing/SKILL.md",
+    "claude/skills/cbr-plan/SKILL.md",
 ]
 
 fail = []

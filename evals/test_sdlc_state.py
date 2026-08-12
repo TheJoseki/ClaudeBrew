@@ -116,7 +116,7 @@ def test_infer_gates_empty():
     with tempfile.TemporaryDirectory() as d:
         p = S.infer_gate_progress(d, "payment")  # no stream folder -> all pending
         check(all(v == "pending" for v in p["gates"].values()), f"all pending: {p['gates']}")
-        check(p["next_action"] == "/cbr-analyze-requirement payment", p["next_action"])
+        check(p["next_action"] == "/cbr-plan payment --phase requirement", p["next_action"])
         check("REQUIREMENT pending" in p["gate_line"], p["gate_line"])
 
 
@@ -126,7 +126,7 @@ def test_infer_gates_srs_tech():
         write(d, f"{sd('payment')}/design/TECH.md", "x")
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["REQUIREMENT"] == "pass" and p["gates"]["DESIGN"] == "pass", str(p["gates"]))
-        check(p["next_action"] == "/cbr-review-code payment", p["next_action"])
+        check(p["next_action"] == "/cbr-verify payment --phase review", p["next_action"])
 
 
 def test_infer_gates_verdict_pass():
@@ -136,7 +136,7 @@ def test_infer_gates_verdict_pass():
         write(d, f"{sd('payment')}/reviews/VERDICT-REVIEW.json", '{"decision":"PASS"}')
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["REVIEW"] == "pass", str(p["gates"]))
-        check(p["next_action"] == "/cbr-vulnerability-scanner payment", p["next_action"])
+        check(p["next_action"] == "/cbr-verify payment --phase security", p["next_action"])
 
 
 def test_infer_gates_verdict_fail_routes_fixbug():
@@ -146,7 +146,7 @@ def test_infer_gates_verdict_fail_routes_fixbug():
         write(d, f"{sd('payment')}/reviews/VERDICT-REVIEW.json", '{"decision":"FAIL"}')
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["REVIEW"] == "fail", str(p["gates"]))
-        check(p["next_action"] == "/cbr-fix-bug payment", p["next_action"])
+        check(p["next_action"] == "/cbr-implement payment --phase fix", p["next_action"])
 
 
 def test_stream_dir_no_prefix_collision():
@@ -198,8 +198,9 @@ def test_gate_verdict_mixed_era():
 # --- SECURITY staleness (R2 design doc §6 -- replaces the deleted G5b mandate) #
 def test_infer_gates_security_stale():
     """A SECURITY verdict older than the stream's newest bug-report entry shows
-    STALE and re-routes to vulnerability-scanner -- the case a DEV-log-only check
-    would miss, since `fix-bug` writes bug-reports/, not work-logs/.
+    STALE and re-routes to cbr-verify's SECURITY phase -- the case a DEV-log-only
+    check would miss, since `cbr-implement`'s fix loop writes bug-reports/, not
+    work-logs/.
     """
     with tempfile.TemporaryDirectory() as d:
         write(d, f"{sd('payment')}/requirements/SRS.md", "x")
@@ -209,7 +210,7 @@ def test_infer_gates_security_stale():
         write(d, f"{sd('payment')}/bug-reports/BUG-20260801-01.md", "x", mtime=2_000_000)
         p = S.infer_gate_progress(d, "payment")
         check(p["gates"]["SECURITY"] == "stale", str(p["gates"]))
-        check(p["next_action"] == "/cbr-vulnerability-scanner payment", p["next_action"])
+        check(p["next_action"] == "/cbr-verify payment --phase security", p["next_action"])
         check("SECURITY STALE" in p["gate_line"], p["gate_line"])
 
 
