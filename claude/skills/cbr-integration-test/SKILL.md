@@ -76,7 +76,7 @@ Workers are always `cbr-developer`. **Never spawn `cbr-tester` as a parallel
 worker** — it is reserved for the Mode B gate, where its value is that it did
 not author what it runs.
 
-> **Procedure**: `{{CBR_ROOT}}/skills/cbr-implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md`
 
 Mode A ends at the ITC document. It does **not** roll on into Mode B — the user
 decides when the gate runs.
@@ -189,6 +189,5 @@ the user re-invokes `/fix-bug` and then this skill for R[n+1].
 |-----------|-------|------|
 | Parallel with | `implement-feature` | Mode A — write ITC alongside implementation (Phase 4c) |
 | Parallel with | `unit-test` | Mode A — both created concurrently; unit tests execute first |
-| After Mode A | `validate-and-test` | Mode B — execute the ITC document just created |
 | On FAIL (Mode B) | `fix-bug` | Fix integration test failures |
 | Related | `architecture` | For REST API test patterns and endpoint chain design |

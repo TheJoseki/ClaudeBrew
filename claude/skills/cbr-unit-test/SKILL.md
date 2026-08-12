@@ -78,7 +78,7 @@ Workers are always `cbr-developer`. **Never spawn `cbr-tester` as a parallel
 worker** — it is reserved for the Mode B gate, where its value is that it did
 not author what it runs.
 
-> **Procedure**: `{{CBR_ROOT}}/skills/cbr-implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md`
 
 Mode A ends at the UTC document. It does **not** roll on into Mode B — the user
 decides when the gate runs.
@@ -187,6 +187,5 @@ skill for R[n+1].
 |-----------|-------|------|
 | Parallel with | `implement-feature` | Mode A — write UTC alongside implementation (Phase 4b) |
 | Parallel with | `integration-test` | Mode A — both test types created in same phase concurrently |
-| After Mode A | `validate-and-test` | Mode B — execute the UTC document just created |
 | On FAIL (Mode B) | `fix-bug` | Fix failing tests found during execution round |
 | Related | `testing-strategy` | For strict TDD — write tests *before* implementation |

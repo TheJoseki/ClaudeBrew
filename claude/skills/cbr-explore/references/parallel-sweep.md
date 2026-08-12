@@ -6,7 +6,7 @@ For a broad topic with several independent angles, `explore --parallel` runs one
 go-ahead first. For a narrow topic, the sequential single-researcher flow is cheaper; do not
 reach for `--parallel` by default.
 
-The file-ownership contract mirrors `cbr-implement-feature/references/parallel-mode.md` (the
+The file-ownership contract mirrors `{{CBR_ROOT}}/docs/references/parallel-mode.md` (the
 suite's **File Ownership Rules**): each worker owns a disjoint set of files; no worker ever
 writes a path another worker owns.
 

@@ -72,7 +72,7 @@ synthesize the slices into the single SCREEN spec here. The design-system
 decisions from Step 1b are shared context passed to every worker, so the screens
 stay visually consistent; a worker never re-picks the palette or typography.
 
-> **Procedure**: `{{CBR_ROOT}}/skills/cbr-implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md`
 > — when to split, disjoint file ownership, the hard File Ownership Rules to
 > restate in every spawn prompt, and how to synthesize.
 

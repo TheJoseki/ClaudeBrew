@@ -50,7 +50,7 @@ chain itself (schema → service → controller feeds forward; it is a chain, no
 fan-out), and keep cross-cutting decisions — shared entities, the API prefix,
 auth strategy — in this context so workers cannot contradict each other.
 
-> **Procedure**: `{{CBR_ROOT}}/skills/cbr-implement-feature/references/parallel-mode.md`
+> **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md`
 > — when to split, disjoint file ownership, the hard File Ownership Rules to
 > restate in every spawn prompt, and how to synthesize.
 
@@ -90,7 +90,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md` (template: [`reference
 
 File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 
-> **Template**: See [`references/template.md`](references/template.md) for the full output document template.
+> **Template**: See [`references/tech-spec-template.md`](references/tech-spec-template.md) for the full output document template.
 
 ## Checklist before Done
 - [ ] ORM schema: soft delete, audit cols, PK, FK on delete (per project conventions)

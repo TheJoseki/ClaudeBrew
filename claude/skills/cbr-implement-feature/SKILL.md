@@ -61,7 +61,7 @@ subagents in one message, each with an explicit **file-ownership boundary**, the
 synthesize their work here: integrate the shared files no worker owned, run
 Step 4 across the merged result, and write **one** work log.
 
-> **Procedure**: [`references/parallel-mode.md`](references/parallel-mode.md) —
+> **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md` —
 > when to split, how to assign disjoint ownership, the hard File Ownership Rules
 > to restate in every spawn prompt, and how to synthesize.
 

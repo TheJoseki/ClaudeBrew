@@ -3,7 +3,7 @@
 > Shared by every execution skill (`implement-feature`, `design-screen`,
 > `design-function`, `unit-test` Mode A, `integration-test` Mode A).
 > Other skills reference this file at
-> `{{CBR_ROOT}}/skills/cbr-implement-feature/references/parallel-mode.md` —
+> `{{CBR_ROOT}}/docs/references/parallel-mode.md` —
 > do not copy it.
 
 Parallel mode is **opt-in**: it runs only when the invocation carries
