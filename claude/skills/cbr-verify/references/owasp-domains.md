@@ -1,6 +1,6 @@
 # OWASP Scan Domains
 
-> Reference for vulnerability-scanner. Loaded on-demand during security scan execution.
+> Reference for `cbr-verify`'s Security internal phase. Loaded on-demand during security scan execution.
 
 ## 1. Source Code (OWASP Top 10:2025)
 
@@ -113,7 +113,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/security/SEC-[YYYYMMDD].md`
 # Security Assessment: [Feature / Full Audit]
 **Date**: [YYYY-MM-DD]
 **Mode**: Mode A (Feature) / Mode B (Full Audit)
-**Author**: vulnerability-scanner
+**Author**: cbr-verify
 **Scope**: [files/modules/endpoints scanned]
 **Tech Stack**: [detected stack]
 

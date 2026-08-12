@@ -1,0 +1,60 @@
+{
+  "skill_name": "cbr-verify",
+  "notes": "Merged fresh-eyes gate skill (absorbs review-code, vulnerability-scanner, and the Mode B / verdict-producing half of unit-test and integration-test). Holds NO Write/Edit -- the single most safety-critical property in the whole R3 merge. Every phase spawns a fresh cbr-reviewer or cbr-tester to write the verdict; this skill never grades or fixes anything itself. Evaluate that: the fresh-eyes spawn boundary holds for all 4 phases with zero exceptions; the '3+ Major -> FAIL' prose rule appears verbatim in the Review spawn; Security always produces a verdict (no silent audit-only mode); Unit/Integration correctly precondition on cbr-implement's UTC.md/ITC.md existing rather than re-authoring test cases; Mode C (browser-live) is used for UI features, not silently skipped in favor of Mode B; every FAIL routes to cbr-implement --phase fix and this skill never attempts a fix itself; and --auto stops the user on risk-trigger domains (auth/secrets/payments/DB-schema/public-API/deploy/destructive-fs) even though it never skips a verdict.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the code for the payment feature -- implementation is done at docs/streams/payment-20260804/.",
+      "expected_output": "Step 1 (Review) assembles the checklist (security/correctness/framework standards from references/leader-review-checklist.md) itself, then spawns ONE fresh cbr-reviewer carrying the checklist, the TECH spec, and the verdict rubric table VERBATIM including the '3+ Major findings -> FAIL' row -- this skill does not grade the code itself. The reviewer writes reviews/REVIEW-[YYYYMMDD].md and reviews/VERDICT-REVIEW.json (gate: REVIEW, producedBy: cbr-reviewer). verdict-gate.py --gate REVIEW is run and its exit code reported before the user is gated in.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Run a full OWASP security scan on the payment module.",
+      "expected_output": "Step 2 (Security) runs references/../scripts/run_audit.sh itself first (evidence-gathering, not grading) and summarizes the result -- does NOT branch on the script's exit code, just summarizes it as evidence for the spawn prompt. Spawns ONE fresh cbr-reviewer with the OWASP checklist + owasp-domains.md + the run_audit.sh summary, severity mapped via severity-vocabulary.md (OWASP High -> Major). This ALWAYS produces a verdict (security/SEC-[YYYYMMDD].md + VERDICT-SECURITY.json, gate: SECURITY) -- there is no silent 'just audit, no gate' mode. Blocks on Critical OR Major (MAJOR_BLOCKS), not Critical alone.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run the unit tests for the order service as the quality gate.",
+      "expected_output": "Step 3 (Unit) checks that docs/streams/order-*/test-cases/UTC.md already exists (authored by cbr-implement, NOT by this skill) -- if missing, STOPS and tells the user to run cbr-implement first rather than authoring test cases itself. If present, spawns ONE fresh cbr-tester to execute the suite and write test-reports/UTR-R[n].md + VERDICT-UNIT.json (gate: UNIT). Blocks without at least one verification entry with result: pass -- an unrun suite cannot pass.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Run integration tests for the checkout flow. There's a SCREEN spec with a full user journey and Playwright MCP is connected.",
+      "expected_output": "Mode C priority. Because a SCREEN spec defines user flows AND a browser MCP is available, this skill uses Mode C (live MCP tool calls against the real browser via references/mode-c-browser.md) rather than Mode B scripted tests -- this is stated as the PRIORITY path, not an optional enhancement, and is not silently dropped in favor of the simpler Mode B. Writes gate: INTEGRATION exactly (never a separate value for the E2E vs API split -- that distinction lives inside the ITR body only).",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Run integration tests for a purely backend batch job with no UI and no SCREEN spec.",
+      "expected_output": "Mode B, correctly, not Mode C -- no SCREEN spec exists so there is nothing for Mode C to drive. Runs the API integration suite via a spawned cbr-tester. E2E browser coverage is explicitly stated as N/A for this backend-only feature rather than silently omitted or silently passed.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "The code review came back FAIL with 2 Critical findings. What happens next?",
+      "expected_output": "cbr-verify does NOT fix anything itself -- it holds no Write/Edit tool, so this is mechanically impossible, not just a policy choice. AskUserQuestion presents the blocking reason and each Critical finding (file:line), with an option to fix now via cbr-implement --phase fix. In --interactive mode this names cbr-implement as the next step and stops; it does not loop, re-spawn, or silently retry.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Run the full verify sweep with --auto on a change that only touches internal logging formatting, no auth/payments/schema/API changes.",
+      "expected_output": "--auto runs ALL FOUR verdicts (Review/Security/Unit/Integration) unconditionally -- no verdict is ever skipped in any mode. Since nothing in this change matches a risk trigger (auth/secrets/payments/DB-schema/public-API/deploy/destructive-fs) and every gate passes, --auto does NOT stop the user at any point -- proceeds straight through and reports the final result.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Run the full verify sweep with --auto on a change that adds a new database migration and a new public API endpoint.",
+      "expected_output": "--auto risk-trigger negative. Even in --auto mode, because this change touches DB schema/migrations AND a public API contract, cbr-verify STOPS the user (AskUserQuestion) at the relevant gate(s) rather than auto-approving through -- the verdict itself is still always produced, but the human-approval stop fires despite --auto.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Implement the order module and write its unit tests.",
+      "expected_output": "Should route to cbr-implement / not fire, because this asks to WRITE code and author test cases, which cbr-verify never does under any mode -- it only grades work that already exists.",
+      "files": []
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Mode C — Browser Live Testing (Chrome DevTools MCP)
 
-> Reference for integration-test. Loaded on-demand when executing Mode C.
+> Reference for `cbr-verify`'s Integration internal phase. Loaded on-demand when executing Mode C.
 
 ## When to Use
 
@@ -59,7 +59,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-browser-R[n].md`
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
 **Round**: R[n]
-**Author**: integration-test
+**Author**: cbr-verify
 **Tool**: Playwright MCP (mcp__playwright__*)
 **Mode**: C — Browser Live (interactive MCP tool calls)
 **App URL**: [base url]

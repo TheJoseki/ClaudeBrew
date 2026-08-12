@@ -4,7 +4,7 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIE
 
 ```markdown
 # Code Review: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Reviewer**: review-code
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Reviewer**: cbr-verify
 **Tech Stack**: [detected from PROJECT.md]
 
 ---

@@ -1,6 +1,6 @@
 # Code Review Checklist — Tech Lead Review
 
-> Reference for `review-code`. Check all dimensions before issuing verdict.
+> Reference for `cbr-verify`'s Review internal phase. Check all dimensions before issuing verdict.
 > Input: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (scope list of files for this batch only).
 
 ---
@@ -65,7 +65,7 @@ Write findings in `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIEW-BN.md`:
 
 ```markdown
 # Code Review — [Feature] Batch N
-**Date**: [YYYY-MM-DD] | **Reviewer**: review-code | **Verdict**: PASS / FAIL
+**Date**: [YYYY-MM-DD] | **Reviewer**: cbr-verify | **Verdict**: PASS / FAIL
 
 ## Checklist Summary
 | Section | Status | Finding Count |
