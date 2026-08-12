@@ -1,6 +1,6 @@
 # The input-contract — detecting the source of truth
 
-`plan-writing`'s Step 1 is mandatory: a plan is only as trustworthy as the source it is
+`cbr-plan`'s Plan internal phase Step 1 is mandatory: a plan is only as trustworthy as the source it is
 built on. This reference is the full method behind the priority table in `SKILL.md` — how
 to detect the source of truth, what to do when several exist, and how to refuse cleanly
 when there is nothing to plan from.
@@ -73,7 +73,26 @@ Do not fabricate requirements, and do not silently plan against the whole repo. 
 ## Greenfield is not regressed
 
 When `requirements/SRS.md` is present it is the top-priority input. The established
-`brainstorming → analyze-requirement (SRS) → plan-writing` flow is unchanged: the plan
-consumes the SRS first, exactly as before the rewrite. The input-contract only *adds*
-lower-priority sources (brainstorm, research, code) for the flows that had none — it never
-demotes the SRS.
+`brainstorming → cbr-plan (Requirement phase produces SRS) → cbr-plan (Plan phase consumes it)`
+flow is unchanged in substance — the Plan internal phase still finds and consumes the SRS
+first, exactly as `plan-writing` did before the merge. What changed is only that the producer
+and the consumer are now internal phases of the same skill invocation rather than two separate
+skill invocations. The input-contract only *adds* lower-priority sources (brainstorm, research,
+code) for the flows that had none — it never demotes the SRS.
+
+## A 5th case: cbr-plan can now produce what it consumes
+
+The four sources above (SRS/brainstorm/research/code) assume `cbr-plan` is reading an artifact
+someone else produced. That is no longer always true: `cbr-plan`'s own Requirement internal
+phase can *produce* `requirements/SRS.md`, so "detect the source of truth" needs one more case
+before Step 1 runs at all — resolved once, at the top of `cbr-plan`'s own flow, not inside this
+priority table:
+
+- If `cbr-plan` is invoked **fresh** (not resuming a stream already past REQUIREMENT) and
+  **none** of SRS/brainstorm/research/code are present → this is not "nothing to plan from."
+  Treat it as the ordinary case of running the Requirement internal phase to produce the SRS,
+  then continuing to Plan. Hard gate 1 (refuse to plan on nothing) does not fire here — refusing
+  would block the exact greenfield case `cbr-plan` exists to serve.
+- Hard gate 1 still fires when `cbr-plan` is invoked in a mode/context that assumes an existing
+  source and skips straight past Requirement (e.g. `--fast` jumping directly to Plan) and finds
+  nothing — that is the genuine "nothing to plan from" case this contract exists to catch.

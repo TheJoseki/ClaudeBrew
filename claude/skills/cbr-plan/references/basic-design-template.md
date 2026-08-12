@@ -1,6 +1,6 @@
 # BASIC_DESIGN Output Template
 
-> Reference for `design-function`. Loaded on-demand when producing the Basic Design (BD) — module structure, DB table list, API endpoint list.
+> Reference for `cbr-plan`'s Basic-Design internal phase. Loaded on-demand when producing the Basic Design (BD) — module structure, DB table list, API endpoint list.
 
 ## Template
 
@@ -10,7 +10,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md`
 # Basic Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: design-function
+**Author**: cbr-plan
 **Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **Status**: DRAFT
 

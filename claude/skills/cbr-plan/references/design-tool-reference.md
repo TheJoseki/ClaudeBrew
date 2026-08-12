@@ -1,11 +1,11 @@
 # Design Tool Reference
 
-> Reference for design-screen. Loaded on-demand during Step 6 visual design output.
-> Contains all 5 design tool paths: Figma (6B), SVG Fallback (6C), Pencil Dev (6D), Google Stitch (6E).
+> Reference for `cbr-plan`'s Screen internal phase. Loaded on-demand during Step 2.3 visual design output.
+> Contains all 5 design tool paths: Figma (2.3B), SVG Fallback (2.3C), Pencil Dev (2.3D), Google Stitch (2.3E).
 
 ---
 
-## 6A. Design Tool Selection (MANDATORY — ask user before proceeding)
+## 2.3A. Design Tool Selection (MANDATORY — ask user before proceeding)
 
 Ask the user:
 
@@ -17,20 +17,20 @@ Ask the user:
 
 | User Response | Next Step |
 |---------------|-----------|
-| Figma | → **Step 6B** |
-| Pencil / Pencil Dev | → **Step 6D** |
-| Stitch / Google Stitch | → **Step 6E** |
-| SVG / Skip / unsure | → **Step 6C** (safe default) |
+| Figma | → **Step 2.3B** |
+| Pencil / Pencil Dev | → **Step 2.3D** |
+| Stitch / Google Stitch | → **Step 2.3E** |
+| SVG / Skip / unsure | → **Step 2.3C** (safe default) |
 
 ---
 
-## 6B. Figma Path — HTML Prototype → Figma Canvas
+## 2.3B. Figma Path — HTML Prototype → Figma Canvas
 
 > **First action**: Call `figma whoami` MCP tool to verify authentication.
-> If returns error or auth failure → inform user and fall through to **Step 6C**.
+> If returns error or auth failure → inform user and fall through to **Step 2.3C**.
 
 > Uses Figma MCP `generate_figma_design` to push screens as editable layers into a new Figma file.
-> **If ANY step in 6B fails → stop immediately and execute Step 6C.**
+> **If ANY step in 2.3B fails → stop immediately and execute Step 2.3C.**
 
 ### Phase 1: Generate HTML Prototypes (Desktop + Mobile)
 
@@ -171,7 +171,7 @@ Step 2 — Poll every 5s with `desktopCaptureId`, up to 10 attempts:
 |----------------|--------|
 | `"completed"` | Extract `desktopFileKey` + frame `nodeId`s → save |
 | `"processing"` / `"pending"` | Wait 5s, retry |
-| Error or 10 attempts exceeded | → Stop server, execute **Step 6C** |
+| Error or 10 attempts exceeded | → Stop server, execute **Step 2.3C** |
 
 **Capture Mobile (390×844):**
 
@@ -205,12 +205,12 @@ Store all frame references in the SCREEN spec **Figma Frames** table (see output
 
 ---
 
-## 6C. SVG Fallback
+## 2.3C. SVG Fallback
 
 > **MUST execute this step when:**
-> - (a) User chose "SVG" in Step 6A, OR
-> - (b) User chose "Figma" but `figma whoami` failed or any 6B step failed, OR
-> - (c) User chose "Pencil" but `get_editor_state()` failed or any 6D step failed
+> - (a) User chose "SVG" in Step 2.3A, OR
+> - (b) User chose "Figma" but `figma whoami` failed or any 2.3B step failed, OR
+> - (c) User chose "Pencil" but `get_editor_state()` failed or any 2.3D step failed
 >
 > **DO NOT skip. DO NOT produce only design markdown. Always create artifact files.**
 
@@ -265,17 +265,17 @@ Write each SVG file completely — render all zones with actual shapes, not plac
 
 ---
 
-## 6D. Pencil Dev Path — Create .pen Design on Canvas via Pencil MCP
+## 2.3D. Pencil Dev Path — Create .pen Design on Canvas via Pencil MCP
 
 > **Requires**: Pencil Dev extension installed in VS Code/Cursor (MCP auto-configured by extension).
 > Agent calls Pencil MCP tools **programmatically** — NOT Pencil Studio's Cmd+K prompt.
 > `batch_design` creates/modifies elements directly on canvas with structured operations.
-> **If ANY step in 6D fails → stop immediately and execute Step 6C.**
+> **If ANY step in 2.3D fails → stop immediately and execute Step 2.3C.**
 
 ### Phase 1: Initialize & Check Availability
 
 1. Call `get_editor_state()` to verify Pencil MCP is available and get current context.
-   - If error/not connected → inform user: "Pencil MCP not available. Falling back to SVG." → execute **Step 6C**
+   - If error/not connected → inform user: "Pencil MCP not available. Falling back to SVG." → execute **Step 2.3C**
 2. Call `get_guidelines(topic: "web-app")` (or `"mobile-app"` / `"landing-page"` based on product type from Step 1).
    - Extract layout rules, spacing conventions, component patterns.
 3. Call `get_style_guide_tags()` → get available style tags.
@@ -410,16 +410,16 @@ For each screen frame:
 
 ---
 
-## 6E. Google Stitch Path — AI Screen Generation via Stitch MCP
+## 2.3E. Google Stitch Path — AI Screen Generation via Stitch MCP
 
 > **Requires**: Google Cloud CLI + GCP project + `GOOGLE_CLOUD_PROJECT` env var + `gcloud auth application-default login`. See `.mcp.json` `_setup` for full steps.
 > Free tier: 350 AI generations/month — sufficient for most feature sprints.
-> **If ANY step in 6E fails → inform user and execute Step 6C.**
+> **If ANY step in 2.3E fails → inform user and execute Step 2.3C.**
 
 ### Phase 1: Initialize Stitch Project
 
 1. Call `list_projects` to view existing Stitch projects.
-   - If error/not connected → inform user: "Stitch MCP not available. Falling back to SVG." → **Step 6C**
+   - If error/not connected → inform user: "Stitch MCP not available. Falling back to SVG." → **Step 2.3C**
 2. If existing project fits this feature → use it (note project ID).
 3. If new project needed → call `create_project` with a descriptive name: `[ProjectName]-[feature]`.
 4. Call `list_screens` on the project to check existing screens (for Design DNA extraction).
@@ -483,7 +483,7 @@ For each generated screen:
 
 2. Call `get_screen_code(projectId, screenId)` → HTML/CSS/React reference code.
    - Save to: `docs/streams/[feature]-[YYYYMMDD]/assets/stitch/[SCR-XX]-[state].html`
-   - Note: reference/prototype code — implement-feature adapts to actual project framework.
+   - Note: reference/prototype code — `cbr-implement` adapts to actual project framework.
 
 3. Call `get_screen_metadata(projectId, screenId)` → verify screen title, dimensions, creation date.
 
@@ -516,7 +516,7 @@ Add **Stitch Screens** table to the SCREEN spec. Record project ID, screen IDs, 
 
 ---
 
-## Step 7: DrawIO Navigation Map
+## Step 2.4: DrawIO Navigation Map
 
 For features with 2+ screens, include a **Screen Navigation Map** in DrawIO XML:
 

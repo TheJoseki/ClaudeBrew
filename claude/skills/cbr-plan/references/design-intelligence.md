@@ -1,6 +1,6 @@
 # Design Intelligence Reference
 
-> Reference for `design-screen`. Loaded on-demand during Step 1 design intelligence.
+> Reference for `cbr-plan`'s Screen internal phase. Loaded on-demand during Step 2.1 design intelligence.
 
 ## Extract from SRS Input
 
@@ -27,8 +27,8 @@ python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "[style_keywords]
 python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "[product_type]" --domain color
 ```
 
-If Python is unavailable → use the `design-system` skill's Product Type → Style Guide
-fallback table in `references/ux-intelligence.md`. Do NOT skip design intelligence.
+If Python is unavailable → use the Design System Fallback Table below. Do NOT skip design
+intelligence.
 
 ## Design System Fallback Table
 

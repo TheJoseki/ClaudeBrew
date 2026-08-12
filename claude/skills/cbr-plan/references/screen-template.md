@@ -4,7 +4,7 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/requirements/
 
 ```markdown
 # Screen Design: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: design-screen
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: cbr-plan
 **Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **UI Library**: [detected from PROJECT.md]
 **Design Style**: [selected from design-system output]
@@ -82,21 +82,21 @@ ViewName.[ext]
 | 375px | Mobile stack, bottom nav |
 
 ## Figma Frames
-<!-- Populated by Step 6B (Figma MCP path) — only if user chose Figma -->
+<!-- Populated by Step 2.3B (Figma MCP path) — only if user chose Figma -->
 <!-- Developer: use get_design_context(fileKey, nodeId) to fetch component structure -->
 
 | Screen | Figma Frame URL | File Key | Node ID |
 |--------|----------------|----------|---------|
 | [SCR-XX] [Name] | https://figma.com/design/[fileKey]/[name]?node-id=[nodeId] | [fileKey] | [nodeId] |
 
-<!-- Figma MCP tools for implement-feature:
+<!-- Figma MCP tools for cbr-implement:
      get_design_context(fileKey, nodeId) → component structure + reference code + screenshot
      get_variable_defs(fileKey, nodeId)  → design tokens (colors, spacing, typography)
      get_screenshot(fileKey, nodeId)     → rendered screenshot for reference
      get_code_connect_suggestions()      → map Figma nodes to real codebase components -->
 
 ## Pencil Frames
-<!-- Populated by Step 6D (Pencil Dev MCP path) — only if user chose Pencil Dev -->
+<!-- Populated by Step 2.3D (Pencil Dev MCP path) — only if user chose Pencil Dev -->
 <!-- Developer: use batch_get(filePath, nodeIds) to read component structure for implementation -->
 
 **Pencil File**: `docs/streams/[feature]-[YYYYMMDD]/assets/pencil/SCREEN.pen`
@@ -107,14 +107,14 @@ ViewName.[ext]
 | [SCR-XX] [Name] Loading | [frameId] | [frame name] | 1440x900 | [exports/[frameId].png](../assets/pencil/exports/[frameId].png) |
 | [SCR-XX] [Name] Mobile  | [frameId] | [frame name] | 390x844  | [exports/[frameId].png](../assets/pencil/exports/[frameId].png) |
 
-<!-- Pencil MCP tools for implement-feature:
+<!-- Pencil MCP tools for cbr-implement:
      batch_get(filePath, nodeIds, readDepth:3) → full node tree with layout/styles/component refs
      get_variables(filePath)                   → all design tokens with theme values
      get_screenshot(filePath, nodeId)          → visual reference screenshot
      get_guidelines(topic:"code")              → code generation guidelines for target framework -->
 
 ## SVG Wireframes
-<!-- Populated by Step 6C (SVG fallback) — used when Figma/Pencil unavailable or user chose SVG -->
+<!-- Populated by Step 2.3C (SVG fallback) — used when Figma/Pencil unavailable or user chose SVG -->
 
 | Screen | Desktop SVG | Mobile SVG |
 |--------|-------------|------------|

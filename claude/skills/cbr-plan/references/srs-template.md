@@ -4,7 +4,7 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/requirements/
 
 ```markdown
 # SRS: [Feature Name]
-**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: analyze-requirement | **Status**: DRAFT
+**Feature ID**: [feature] | **Date**: [YYYY-MM-DD] | **Author**: cbr-plan | **Status**: DRAFT
 
 ## 1. Description
 

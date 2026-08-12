@@ -76,9 +76,9 @@ still gated and started by the user.
 
 | Phase | Task | Owner | Status |
 |-------|------|-------|--------|
-| 3a | Implementation | `implement-feature` (`--parallel` fans out to `cbr-developer` workers) | PENDING |
-| 3b | Unit test cases | `unit-test` (Mode A) | PENDING |
-| 3c | Integration test cases | `integration-test` (Mode A) | PENDING |
+| 3a | Implementation | `cbr-implement` (`--parallel` fans out to `cbr-developer` workers) | PENDING |
+| 3b | Unit test cases | `cbr-implement` (Unit Mode A) | PENDING |
+| 3c | Integration test cases | `cbr-implement` (Integration Mode A) | PENDING |
 
 3b and 3c can be authored alongside 3a — they do not depend on each other.
 

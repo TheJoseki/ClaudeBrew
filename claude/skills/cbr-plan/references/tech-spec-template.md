@@ -1,6 +1,6 @@
 # DETAIL_DESIGN Output Template
 
-> Reference for `design-function`. Loaded on-demand when producing the Detail Design (DD / TECH spec) — ORM schema, service methods, DTOs.
+> Reference for `cbr-plan`'s Tech-Design internal phase. Loaded on-demand when producing the Detail Design (DD / TECH spec) — ORM schema, service methods, DTOs.
 
 ## Architecture Patterns
 
@@ -33,7 +33,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 # Technical Design: [Feature Name]
 **Feature ID**: [feature-name]
 **Date**: [YYYY-MM-DD]
-**Author**: design-function
+**Author**: cbr-plan
 **Input SRS**: docs/streams/[feature]-[YYYYMMDD]/requirements/SRS.md
 **Input Basic Design**: docs/streams/[feature]-[YYYYMMDD]/design/BASIC.md
 **Status**: DRAFT
@@ -141,7 +141,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 ## Step D1: CODING-CHECKLIST Template
 
 File: `docs/CODING-CHECKLIST.md` — create if missing, update if exists.
-[See full template in `design-function/SKILL.md` § Step D1]
+[See full template in `cbr-plan/SKILL.md` § Step D1]
 
 ## Step D2: TEST_VIEWPOINT Section 0
 

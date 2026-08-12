@@ -1,6 +1,6 @@
 # Implementation Plan: payment-processing
 
-> **Worked example** — demonstrates the expected output format from `/plan-writing`.
+> **Worked example** — demonstrates the expected output format from `/cbr-plan`.
 > Feature: "Payment Processing — Stripe integration, checkout flow, invoice generation"
 
 ---
@@ -27,8 +27,8 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Write SRS with user stories (checkout, invoice, refund) | `analyze-requirement` | ✅ |
-| Define acceptance criteria for FR-PAY-01 through FR-PAY-08 | `analyze-requirement` | ✅ |
+| Write SRS with user stories (checkout, invoice, refund) | `cbr-plan` | ✅ |
+| Define acceptance criteria for FR-PAY-01 through FR-PAY-08 | `cbr-plan` | ✅ |
 | User review + approval | User | ✅ |
 
 ---
@@ -40,9 +40,9 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Checkout page: cart summary, payment form, order confirmation | `design-screen` | ✅ |
-| Invoice PDF template design | `design-screen` | ✅ |
-| Error states: card declined, network error, 3DS redirect | `design-screen` | ✅ |
+| Checkout page: cart summary, payment form, order confirmation | `cbr-plan` | ✅ |
+| Invoice PDF template design | `cbr-plan` | ✅ |
+| Error states: card declined, network error, 3DS redirect | `cbr-plan` | ✅ |
 
 ---
 
@@ -53,9 +53,9 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| Module structure: PaymentModule, InvoiceModule, WebhookModule | `design-function` | ✅ |
-| DB tables: payments, invoices, payment_methods | `design-function` | ✅ |
-| API endpoints: POST /payments, GET /invoices/:id, POST /webhooks/stripe | `design-function` | ✅ |
+| Module structure: PaymentModule, InvoiceModule, WebhookModule | `cbr-plan` | ✅ |
+| DB tables: payments, invoices, payment_methods | `cbr-plan` | ✅ |
+| API endpoints: POST /payments, GET /invoices/:id, POST /webhooks/stripe | `cbr-plan` | ✅ |
 
 ---
 
@@ -66,10 +66,10 @@
 
 | Task | Owner | Status |
 |------|-------|--------|
-| ORM entities: Payment, Invoice, PaymentMethod | `design-function` | ✅ |
-| Service design: PaymentService.createIntent(), confirmPayment(), refund() | `design-function` | ✅ |
-| Stripe webhook signature verification flow | `design-function` | ✅ |
-| DTO validation: CreatePaymentDto, ConfirmPaymentDto | `design-function` | ✅ |
+| ORM entities: Payment, Invoice, PaymentMethod | `cbr-plan` | ✅ |
+| Service design: PaymentService.createIntent(), confirmPayment(), refund() | `cbr-plan` | ✅ |
+| Stripe webhook signature verification flow | `cbr-plan` | ✅ |
+| DTO validation: CreatePaymentDto, ConfirmPaymentDto | `cbr-plan` | ✅ |
 
 ---
 
@@ -81,10 +81,10 @@
 
 ### Phase 4 — Implementation
 **Status**: ⏳ IN PROGRESS
-**Stages**: `implement-feature` (`--parallel`), then `unit-test` (Mode A) and
-`integration-test` (Mode A) — each its own gated stage, started by the user.
+**Stages**: `cbr-implement` (`--parallel`), then `cbr-implement`'s Unit Mode A and
+Integration Mode A test-authoring phases — each its own gated internal phase, started by the user.
 
-#### `implement-feature` tasks:
+#### `cbr-implement` tasks:
 | # | Task | File | Status |
 |---|------|------|--------|
 | 4.1 | Payment entity + migration | `src/payment/payment.entity.ts` | ✅ |
@@ -97,12 +97,12 @@
 | 4.8 | Checkout FE component | `src/components/Checkout.vue` | ⏳ |
 | 4.9 | Payment store (Pinia) | `src/stores/payment.ts` | ⏳ |
 
-#### `unit-test` (Mode A):
+#### `cbr-implement` Unit Mode A:
 | Task | Output | Status |
 |------|--------|--------|
 | UTC document for PaymentService + InvoiceService | `docs/streams/payment-processing-20260320/test-cases/UTC.md` | ⏳ |
 
-#### `integration-test` (Mode A):
+#### `cbr-implement` Integration Mode A:
 | Task | Output | Status |
 |------|--------|--------|
 | ITC document for /payments + /invoices + /webhooks/stripe | `docs/streams/payment-processing-20260320/test-cases/ITC.md` | ⏳ |
@@ -145,14 +145,14 @@
 |---|------|-------------|-------|
 | 1 | Decision | PDF generation library — pdfkit vs puppeteer? | Architect |
 | 2 | Config | STRIPE_SECRET_KEY env var needs CI/CD secret | DevOps |
-| 3 | Risk | Webhook replay attack window — need idempotency key | `implement-feature` |
+| 3 | Risk | Webhook replay attack window — need idempotency key | `cbr-implement` |
 
 ---
 
 ## Resume
 
 ```
-Next stage: /cbr-implement-feature payment-processing
+Next stage: /cbr-implement payment-processing
 Plan file: docs/streams/payment-processing-20260320/plan/PLAN.md
 Resume at Phase 4 (Implementation) — status ⏳ IN PROGRESS
 Continue from task 4.4 (confirmPayment)
