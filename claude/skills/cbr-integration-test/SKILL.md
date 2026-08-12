@@ -52,8 +52,8 @@ Do NOT hardcode framework assumptions.
 
 File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md`
 
-> **Template**: See [`references/itc-template.md`](references/itc-template.md) for the full ITC document template.
-> **Script templates**: See [`references/script-templates.md`](references/script-templates.md) for Playwright and HTTP integration test script templates.
+> **Template**: See `{{CBR_ROOT}}/docs/references/itc-template.md` for the full ITC document template.
+> **Script templates**: See `{{CBR_ROOT}}/docs/references/script-templates.md` for Playwright and HTTP integration test script templates.
 
 **MUST cover**:
 - Auth flow: login → token → protected route → refresh → logout

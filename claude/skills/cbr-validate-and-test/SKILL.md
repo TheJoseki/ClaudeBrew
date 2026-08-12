@@ -173,10 +173,10 @@ When called by another skill or a pool agent, output results in this format:
 - Unit coverage: meets the target in `docs/TEST_VIEWPOINT.md`
 - R5 pass rate: 100% (gate for delivery)
 
-> **Auto-routing on FAIL**: route to `/fix-bug` with the failed test name and
+> **Auto-routing on FAIL**: route to `cbr-implement --phase fix` with the failed test name and
 > error. When the failure is intermittent, has no clear cause, or a fix has
-> already been attempted, say so — `fix-bug` (its systematic-debugging
-> methodology) covers those cases.
+> already been attempted, say so — its fix-loop's systematic-debugging
+> escalation covers those cases.
 
 ## Verification
 
@@ -205,6 +205,6 @@ When called by another skill or a pool agent, output results in this format:
 |-----------|-------|------|
 | Called from | `implement-feature` | Always — type check + lint immediately after implementation |
 | Called from | `unit-test` / `integration-test` | Mode B — execute the UTC/ITC document just created |
-| On FAIL | `fix-bug` | Any failing test — it escalates internally when the cause is unclear or intermittent |
+| On FAIL | `cbr-implement --phase fix` | Any failing test — it escalates internally when the cause is unclear or intermittent |
 | After PASS | `review-code` | Mandatory quality gate before PR |
 | Related | `vulnerability-scanner` | Deep security audit — beyond this skill's light dependency audit |

@@ -52,7 +52,7 @@ Do NOT hardcode framework assumptions.
 
 File: `docs/streams/[feature]-[YYYYMMDD]/test-cases/UTC.md`
 
-> **Template**: See [`references/utc-template.md`](references/utc-template.md) for the full UTC and UTR document templates.
+> **Template**: See `{{CBR_ROOT}}/docs/references/utc-template.md` for the full UTC and UTR document templates.
 
 **MUST cover**:
 - Auth 401 (no token) and RBAC 403 (wrong role)
@@ -127,7 +127,7 @@ Single `Agent` call, Mode EXECUTE, with a prompt carrying:
 - **Round**: which R[n] this is (fix only this round's reported failures).
 - **Outputs**, both mandatory:
   - Test report → `docs/streams/[feature]-[YYYYMMDD]/test-reports/UTR-R[n].md`
-    (template: [`references/utc-template.md`](references/utc-template.md))
+    (template: `{{CBR_ROOT}}/docs/references/utc-template.md`)
   - Verdict artifact → `docs/streams/[feature]-[YYYYMMDD]/test-reports/VERDICT-UNIT.json`, conforming
     to `{{CBR_ROOT}}/schemas/verdict-artifact.schema.json`, with
     `gate: "UNIT"` and `producedBy: "cbr-tester"`.

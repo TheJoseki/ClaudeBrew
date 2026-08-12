@@ -4,7 +4,7 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/test-cases/IT
 
 ```markdown
 # Integration Test Cases: [Feature]
-Date: [YYYY-MM-DD] | Author: integration-test
+Date: [YYYY-MM-DD] | Author: cbr-implement
 Integration test framework: [detected from PROJECT.md]
 E2E test framework: [detected from PROJECT.md — e.g. Playwright, Cypress, Selenium]
 

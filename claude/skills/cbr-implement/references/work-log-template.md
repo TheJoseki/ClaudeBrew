@@ -1,17 +1,20 @@
 # Developer Work Log Template
 
-> Reference for implement-feature. Loaded on-demand when creating work log after implementation.
+> Reference for `cbr-implement`'s Implement internal phase. Loaded on-demand when creating the
+> work log after implementation.
 
 ## Work Log Output Template
 
-File: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (replace BN with actual batch: B1, B2, B3)
+File: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-[YYYYMMDD].md` (the canonical, date-based
+name — see `{{CBR_ROOT}}/docs/references/sdlc-reference.md`'s Artifact Paths table; this is not a
+per-batch file).
 
 ```markdown
-# Work Log: [Feature Name] — Batch N
+# Work Log: [Feature Name]
 **Feature ID**: [feature-name]
-**Batch**: Batch-N | **Scope**: [modules/deliverables in this batch]
+**Scope**: [modules/deliverables covered]
 **Date**: [YYYY-MM-DD]
-**Developer**: implement-feature
+**Developer**: cbr-implement
 **Input TECH spec**: docs/streams/[feature]-[YYYYMMDD]/design/TECH.md
 **Status**: COMPLETED
 
@@ -70,11 +73,11 @@ File: `docs/streams/[feature]-[YYYYMMDD]/work-logs/DEV-BN.md` (replace BN with a
 [Any deviations from TECH spec, decisions made, known limitations]
 
 ## Known Gaps / TODO for QA
-[Anything QA (unit-test, integration-test) should pay attention to]
+[Anything cbr-verify's testing phases should pay attention to]
 
 ## Self-Review Result
-> Complete the checklist at `docs/CODING-CHECKLIST.md` (or `.claude/skills/review-code/references/self-review-checklist.md` if not available)
-> then summarize results here before submitting for code review.
+> Complete the checklist at `docs/CODING-CHECKLIST.md` per `checklist-driven-development.md` §3,
+> then summarize results here before handing off to `cbr-verify`.
 
 | Category | Status | Notes |
 |----------|--------|-------|

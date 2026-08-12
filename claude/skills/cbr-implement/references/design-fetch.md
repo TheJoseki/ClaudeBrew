@@ -1,6 +1,6 @@
 # Design Context Fetch — Figma & Pencil MCP
 
-> Reference for implement-feature. Loaded on-demand when SCREEN spec has Figma or Pencil Frames.
+> Reference for `cbr-implement`'s Implement internal phase. Loaded on-demand when SCREEN spec has Figma or Pencil Frames.
 
 ## Figma Design Context Fetch
 

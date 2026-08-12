@@ -1,6 +1,6 @@
 # Coding Patterns Reference
 
-> Reference for implement-feature. Loaded on-demand for framework-specific implementation patterns.
+> Reference for `cbr-implement`'s Implement internal phase. Loaded on-demand for framework-specific implementation patterns.
 
 ## Backend Coding Standards
 

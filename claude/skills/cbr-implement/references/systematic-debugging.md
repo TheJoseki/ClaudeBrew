@@ -169,7 +169,7 @@ Apply the minimal fix, then verify thoroughly.
 |-------|-----|
 | Phase 3 (root cause identified) | Return to `SKILL.md` Step 4 and implement the minimal fix |
 | Phase 4 (fix verified) | Run `validate-and-test` for the full regression suite, then write the bug report in `SKILL.md` Step 6 |
-| Root cause is a security vulnerability | Pair with `vulnerability-scanner` before closing |
+| Root cause is a security vulnerability | Pair with `cbr-verify`'s Security phase before closing |
 
 ---
 

@@ -1,6 +1,7 @@
 # Integration Test Script Templates
 
-> Reference for integration-test Mode B. Loaded on-demand when creating test scripts.
+> Reference for `cbr-implement`'s Integration Mode A. Loaded on-demand when authoring the actual
+> test script files an ITC document describes.
 
 ## Playwright E2E Script Template
 
