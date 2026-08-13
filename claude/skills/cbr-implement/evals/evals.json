@@ -43,6 +43,18 @@
       "prompt": "Design the ORM schema and API endpoints for the notifications feature.",
       "expected_output": "Should route to cbr-plan / not fire, because this asks for technical design (TECH spec authoring), which is cbr-plan's Tech-Design phase, not implementation of an already-designed spec.",
       "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "cbr-implement checkout -- resume implementing this feature in a brand-new session; its plan/PLAN.md was written earlier and has several unchecked phases.",
+      "expected_output": "cross-session task pickup. At Step 1 entry, TaskList returns empty (tasks died with the old session), so cbr-implement re-hydrates from plan/PLAN.md's unchecked [ ] phase items (already-[x] items are done, skipped) rather than re-doing completed work -- per references/task-management.md. If the Task tools error entirely, it falls back to working straight from PLAN.md's unchecked items. Then implements normally.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "I finished implementing phases 2 and 3 of the checkout feature -- the work log is written and self-check passes.",
+      "expected_output": "sync-back at Step 4 / Hand-off. Before stopping, cbr-implement TaskUpdates the session tasks to their real status and backfills plan/PLAN.md -- flipping [ ] -> [x] for every completed phase across ALL phases (not just this batch), updating PLAN.md's status line and STREAM.md's board from the actual checkbox state. A completed task that maps to no phase is reported, not silently marked done. Then names cbr-verify as next and stops -- no verdict produced here.",
+      "files": []
     }
   ]
 }

@@ -2,7 +2,7 @@
 name: cbr-plan
 description: "Business Analyst + UI/UX Designer + System Architect that turns a raw feature request into requirements, screen design, technical design, and an actionable implementation plan for any project — the single spec/plan-authoring skill in the SDLC. Internal phases: Scope Challenge → Requirement (SRS) → Screen (UI, FE-only) → Basic-Design (cheap checkpoint) → Tech-Design (DESIGN checkpoint) → Plan (PLAN.md). Detects and asks between competing sources of truth (SRS / brainstorm / research report / code) when writing the plan; refuses to plan on nothing. Opens its own stream-light work-stream when none exists — the brownfield entry-point for adopting CBR into an existing codebase. TRIGGER: user asks to analyze requirements, write SRS, define user stories or acceptance criteria, design UI screens or wireframes, design API endpoints or ORM schema or technical architecture, or plan/break down a feature into phases and tasks — 'plan this', 'design the API for X', 'write the SRS for X', 'design the screens for X', 'break this down', 'we already have the code, plan the work'. NOT FOR: writing implementation code or fixing bugs (use cbr-implement), reviewing code / security / running tests (use cbr-verify), or scoping a raw unformed idea with no direction yet (use brainstorming)."
 allowed-tools: Read, Grep, Glob, Write, Edit, Task, Agent, AskUserQuestion
-argument-hint: "[feature or requirement description] [--fast|--hard|--deep|--parallel|--two] [--tdd] [--phase requirement|design]"
+argument-hint: "[feature | red-team {slug} | validate {slug}] [--fast|--hard|--deep|--parallel|--two] [--tdd] [--phase requirement|design]"
 metadata:
   version: "1.0"
   category: core-sdlc
@@ -380,6 +380,16 @@ frontmatter. Then the mandatory stream upkeep: append/update the PLAN row in `ST
 membership table, set the board status for planned phases. Never touch the derived Gate Status
 zone.
 
+### Hydrate tasks (default on; 3-Task Rule)
+
+After `PLAN.md` is written, hydrate its phases into live tasks so `cbr-implement` can track progress
+against a plan authored in an earlier session — `TaskCreate` per phase with `addBlockedBy` chains for
+sequenced phases, metadata `{phase, priority, streamDir, planFile}`. **Skip when `PLAN.md` has fewer
+than 3 phases** (the 3-Task Rule — overhead exceeds benefit) or under `--fast`. Full recipe (metadata
+schema, dependency chains, the Task-tools-unavailable fallback to plan-file-as-source-of-truth):
+[`references/task-management.md`](references/task-management.md). Hydration is an optimization — if the
+Task tools error, the plan file alone is always enough.
+
 ### Self-review before showing the user
 
 Placeholders ("TBD", "TODO") resolved or converted to an explicit open item; no vague
@@ -415,6 +425,23 @@ replaces the old routing-negative evals between the 4 now-merged skills.
   traceability intact (BASIC/DESIGN); every task verifiable (PLAN).
 
 ---
+
+## Subcommands (optional, user-invoked)
+
+Beyond authoring a plan, `cbr-plan` offers two **optional** review subcommands that operate on an
+already-written plan/design artifact in a stream. Neither runs as part of the default authoring flow
+above — a user invokes them deliberately, exactly as `ck-plan` gates its own red-team/validate to its
+heavier modes and skips them in `--fast`.
+
+| Subcommand | Reference | Purpose |
+|------------|-----------|---------|
+| `cbr-plan red-team {slug}` | [`references/red-team-workflow.md`](references/red-team-workflow.md) | Adversarial review: spawn hostile-lens reviewers (`cbr-reviewer` + `cbr-strategist` per the D9 split), evidence-filter their findings (`file:line` or auto-reject), cap at 15, user adjudicates, apply accepted → `## Red Team Review` on `PLAN.md`. |
+| `cbr-plan validate {slug}` | [`references/validate-workflow.md`](references/validate-workflow.md) | Critical-questions interview: tiered verification pass against the live repo, then a batched `AskUserQuestion` interview, decisions recorded to `## Validation Log` and propagated to the artifacts. |
+
+Run **red-team before validate** when using both (a red-team edit would invalidate a prior
+validation). Both end with the **Whole-Plan Consistency Sweep**
+([`references/verification-roles.md`](references/verification-roles.md)) and **stop** — neither
+auto-invokes `cbr-implement`. The verification roles both subcommands share live in that one file.
 
 ## Skill Connections
 
