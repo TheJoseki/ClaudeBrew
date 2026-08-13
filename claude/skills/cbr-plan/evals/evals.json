@@ -73,6 +73,30 @@
       "prompt": "Take the login feature from requirements all the way through design, implementation, and tests end to end.",
       "expected_output": "delivery-boundary negative -- should NOT fire as a single continuous run, because this asks for end-to-end feature delivery across all SDLC stages, not just the plan-authoring phases cbr-plan owns. Correct response names the stage sequence (cbr-plan for Requirement/Screen/Design/Plan, then cbr-implement, then cbr-verify) and starts at cbr-plan -- each stage still gates on user approval, so nothing runs the whole chain in one invocation.",
       "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "cbr-plan red-team payment-processing -- adversarially review the plan before we build it.",
+      "expected_output": "red-team subcommand. Resolves the stream docs/streams/payment-processing-*/, reads plan/PLAN.md + any SRS/BASIC/TECH present. Scales lens count by PLAN.md phase count (1-2 phases -> 2 lenses, 3-5 -> 3, 6+ -> 4). Spawns reviewers per the D9 split -- Security Adversary + Failure Mode Analyst on cbr-reviewer, Assumption Destroyer + Scope Critic on cbr-strategist -- in one message. Evidence-filters findings (any without a file:line citation auto-rejected before merit), dedupes, caps at 15. User adjudicates via AskUserQuestion (apply accepted / review each / reject all). Applies accepted findings, adds a ## Red Team Review section to PLAN.md, runs the Whole-Plan Consistency Sweep, then STOPS -- does not auto-invoke cbr-implement.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "cbr-plan validate payment-processing -- run the critical-questions interview on the plan.",
+      "expected_output": "validate subcommand. Reads the stream's PLAN.md + design artifacts. Runs the Step 2.5 tiered verification pass against the live repo (Fact Checker always; +Contract Verifier at Standard; all 4 roles at Full -- all via cbr-reviewer), UNLESS a ## Red Team Review with verification evidence already exists (then it skips to the interview, only resolving remaining [UNVERIFIED] tags). Emits a mandatory pre-question recap (5-10 bullets, since validate may run in a fresh session), then a batched AskUserQuestion interview (max 4 per call, per agent-contract.md:13). Records a ## Validation Log, propagates decisions to the artifacts, runs the Whole-Plan Consistency Sweep, and only recommends cbr-implement if Failed:0 and zero unresolved contradictions.",
+      "files": []
+    },
+    {
+      "id": 15,
+      "prompt": "A red-team reviewer reports: 'Phase 3's PaymentService.refund() will fail under concurrent calls.' but gives no file:line citation.",
+      "expected_output": "evidence-filter negative. The finding is auto-Rejected at Step 5.5 with rationale 'No codebase evidence' BEFORE its merit is evaluated -- a plausible-sounding claim with no file:line citation never reaches the user's adjudication. This is the mechanism that keeps unfounded findings out of the review, and applies regardless of how severe the finding sounds.",
+      "files": []
+    },
+    {
+      "id": 16,
+      "prompt": "cbr-plan validate payment-processing -- the PLAN.md already has a ## Red Team Review section with verification evidence from an earlier red-team pass.",
+      "expected_output": "validate skip-guard + consistency sweep. Because a ## Red Team Review section with verification evidence already exists in PLAN.md, Step 2.5's tiered verification pass is SKIPPED (the red-team already fact-checked those claims) -- validate goes straight to the interview, only resolving any remaining [UNVERIFIED] tags rather than re-running Fact Checker/Contract Verifier against the same claims. After the interview propagates decisions, the Whole-Plan Consistency Sweep still runs across the whole SRS->BASIC->TECH->PLAN chain and must report zero unresolved contradictions before cbr-implement is recommended.",
+      "files": []
     }
   ]
 }
