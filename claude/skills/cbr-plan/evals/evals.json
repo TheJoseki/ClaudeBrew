@@ -97,6 +97,12 @@
       "prompt": "cbr-plan validate payment-processing -- the PLAN.md already has a ## Red Team Review section with verification evidence from an earlier red-team pass.",
       "expected_output": "validate skip-guard + consistency sweep. Because a ## Red Team Review section with verification evidence already exists in PLAN.md, Step 2.5's tiered verification pass is SKIPPED (the red-team already fact-checked those claims) -- validate goes straight to the interview, only resolving any remaining [UNVERIFIED] tags rather than re-running Fact Checker/Contract Verifier against the same claims. After the interview propagates decisions, the Whole-Plan Consistency Sweep still runs across the whole SRS->BASIC->TECH->PLAN chain and must report zero unresolved contradictions before cbr-implement is recommended.",
       "files": []
+    },
+    {
+      "id": 17,
+      "prompt": "Plan the checkout feature -- it breaks into 5 phases (auth, cart, payment, confirmation, receipts).",
+      "expected_output": "hydration on write. After writing plan/PLAN.md, because it has 5 phases (>= 3, so the 3-Task Rule does NOT skip), cbr-plan hydrates one TaskCreate per phase with metadata {phase, priority, streamDir, planFile} and addBlockedBy chains for the sequenced phases (per references/task-management.md). A <3-phase plan, or a --fast run, would hydrate nothing. Hydration is an optimization -- if the Task tools error, it falls back to the plan file as source of truth and still stops normally.",
+      "files": []
     }
   ]
 }

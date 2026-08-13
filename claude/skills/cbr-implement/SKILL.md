@@ -60,6 +60,15 @@ flowchart TD
 
 ## Step 1: Implement
 
+### Pick up hydrated tasks (entry)
+
+If `cbr-plan` hydrated tasks for this stream, pick them up rather than re-creating: `TaskList` first
+(same session — the tasks are already there). If it returns empty (a fresh session resuming an older
+plan), re-hydrate from `plan/PLAN.md`'s unchecked `[ ]` phase items; if the Task tools error at all,
+fall back to working straight from `PLAN.md`'s unchecked items — hydration is an optimization, the
+plan file is always enough. Mark a task `in_progress` when you start it. Full contract:
+`{{CBR_ROOT}}/skills/cbr-plan/references/task-management.md`.
+
 ### Read Input (in addition to Step 0's TECH.md)
 - SCREEN spec: `docs/streams/[feature]-[YYYYMMDD]/requirements/SCREEN.md`, if frontend work.
 - `docs/CODING_RULES.md`, `docs/CODING_CONVENTION.md` — project conventions.
@@ -161,6 +170,16 @@ large batches, per `context-degradation-awareness.md`) and the Self-Review Resul
 - [ ] Self-check: all commands PASS
 - [ ] UTC.md and ITC.md written (Step 2)
 - [ ] Work log CREATED ✅
+
+### Sync hydrated tasks back to PLAN.md
+
+If tasks were hydrated (or you re-hydrated at Step 1 entry), sync them back before handing off:
+`TaskUpdate` each to its real status, then **backfill `plan/PLAN.md` — flip `[ ]` → `[x]` for every
+completed phase across ALL phases, not just this batch's** — and update `PLAN.md`'s status/progress
+line from the actual checkbox state. A completed task that maps to no phase → report it, don't
+silently claim completion. If the Task tools weren't used, just edit the checkboxes in `PLAN.md`
+directly. Then update `STREAM.md`'s board to match. Full contract:
+`{{CBR_ROOT}}/skills/cbr-plan/references/task-management.md`.
 
 ### Hand off and STOP
 

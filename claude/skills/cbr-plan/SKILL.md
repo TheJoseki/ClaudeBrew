@@ -380,6 +380,16 @@ frontmatter. Then the mandatory stream upkeep: append/update the PLAN row in `ST
 membership table, set the board status for planned phases. Never touch the derived Gate Status
 zone.
 
+### Hydrate tasks (default on; 3-Task Rule)
+
+After `PLAN.md` is written, hydrate its phases into live tasks so `cbr-implement` can track progress
+against a plan authored in an earlier session — `TaskCreate` per phase with `addBlockedBy` chains for
+sequenced phases, metadata `{phase, priority, streamDir, planFile}`. **Skip when `PLAN.md` has fewer
+than 3 phases** (the 3-Task Rule — overhead exceeds benefit) or under `--fast`. Full recipe (metadata
+schema, dependency chains, the Task-tools-unavailable fallback to plan-file-as-source-of-truth):
+[`references/task-management.md`](references/task-management.md). Hydration is an optimization — if the
+Task tools error, the plan file alone is always enough.
+
 ### Self-review before showing the user
 
 Placeholders ("TBD", "TODO") resolved or converted to an explicit open item; no vague
