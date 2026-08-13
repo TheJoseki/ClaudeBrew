@@ -1,6 +1,6 @@
 # Test Viewpoint — [PROJECT_NAME — e.g. Acme Store]
 
-> Created/updated by `design-function` (Step D2 fills Section 0 from PROJECT.md); consumed by `unit-test`, `integration-test`, and `validate-and-test`; gate verdict by a fresh `cbr-tester` + user.
+> Created/updated by `cbr-plan` (Step D2 fills Section 0 from PROJECT.md); consumed by `cbr-implement` (Unit/Integration Mode A), `cbr-verify` (Unit/Integration phase), and `validate-and-test`; gate verdict by a fresh `cbr-tester` + user.
 > A short, project-specific judgment prompt: **what to test, where the risk is, and how the test gates map** — not a technique-cataloguing exercise.
 > Copy this template to `docs/TEST_VIEWPOINT.md`, then replace every `[… — e.g. …]` slot with real project values. The Test Viewpoint stop requires zero remaining placeholder brackets.
 
@@ -8,7 +8,7 @@
 
 ## Section 0 — Test Layer Infrastructure
 
-> Machine-read contract. Keep the table shape and the two labelled lines below intact and greppable — `design-function` writes here (Step D2) and `validate-and-test` reads the coverage line back.
+> Machine-read contract. Keep the table shape and the two labelled lines below intact and greppable — `cbr-plan` writes here (Step D2) and `validate-and-test` reads the coverage line back.
 
 Coverage target: BE ≥[NN — e.g. 80]% | FE ≥[NN — e.g. 80]%
 Coverage tool: [tool — e.g. coverage.py / c8 / v8]
@@ -29,9 +29,9 @@ Which test activity satisfies which checkpoint. Pass criteria and deciding autho
 | Checkpoint | Test activity | Pass criteria | Decided by |
 |-----------|---------------|---------------|------------|
 | Test Viewpoint (process-only stop) | This viewpoint approved | Section 0 filled, all layers defined, zero placeholder brackets | User approval |
-| UNIT | Unit tests | 100% pass, 100% TECH-spec functions covered | `unit-test` verdict (fresh `cbr-tester`) + user |
-| INTEGRATION — API | API integration tests | 100% pass, all BASIC workflows + TECH API contracts covered | `integration-test` verdict (fresh `cbr-tester`) + user |
-| INTEGRATION — E2E | E2E browser tests | 100% pass, all critical journeys covered — N/A for backend-only | `integration-test` verdict (fresh `cbr-tester`) + user |
+| UNIT | Unit tests | 100% pass, 100% TECH-spec functions covered | `cbr-verify` verdict (fresh `cbr-tester`) + user |
+| INTEGRATION — API | API integration tests | 100% pass, all BASIC workflows + TECH API contracts covered | `cbr-verify` verdict (fresh `cbr-tester`) + user |
+| INTEGRATION — E2E | E2E browser tests | 100% pass, all critical journeys covered — N/A for backend-only | `cbr-verify` verdict (fresh `cbr-tester`) + user |
 
 > Verdict-artifact note: API and E2E are sub-criteria of the same checkpoint and both report under `gate: "INTEGRATION"` in the verdict JSON — the schema has no separate value for either. Record the API-vs-E2E split inside the integration test report (ITR), not in the `gate` field.
 
@@ -57,7 +57,7 @@ Fill in per project:
 
 ## Section 3 — Test Case Catalog
 
-Seed with representative cases per layer; expand during `unit-test` / `integration-test` Mode A. Every row's `Checkpoint` must be one of UNIT / INTEGRATION-API / INTEGRATION-E2E.
+Seed with representative cases per layer; expand during `cbr-implement`'s Unit/Integration Mode A. Every row's `Checkpoint` must be one of UNIT / INTEGRATION-API / INTEGRATION-E2E.
 
 | TC-ID | Layer | Scenario | Expected | Checkpoint |
 |-------|-------|----------|----------|-----------|

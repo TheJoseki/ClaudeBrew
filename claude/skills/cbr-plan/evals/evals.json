@@ -1,0 +1,78 @@
+{
+  "skill_name": "cbr-plan",
+  "notes": "Merged spec/plan-authoring skill (absorbs analyze-requirement, design-screen, design-function, plan-writing). Internal phases: Scope Challenge -> Requirement (SRS, REQUIREMENT checkpoint) -> Screen (SCREEN, FE-only, no hard stop) -> Basic-Design (BASIC, cheap checkpoint stop) -> Tech-Design (TECH, DESIGN checkpoint) -> Plan (PLAN.md, no machine checkpoint). Evaluate that: each of the 4 absorbed identities still fires correctly on its own trigger phrasing; a request naming technical/design detail during an earlier internal phase transitions INTERNALLY (never 'invoke a different skill' -- that routing boundary no longer exists between these 4); the BASIC checkpoint stop and the SRS->BASIC section 6.5->TECH section 4.3 traceability chain both survive; the input-contract's three hard gates (plan from a real source, never guess, no cascade) still hold at the Plan phase; the FE-only Screen phase is skipped for backend-only work; and requests for implementation or code review still route OUT to cbr-implement / cbr-verify, since those remain separate skills.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze the requirements for the user management module and write the SRS.",
+      "expected_output": "Runs Step 0 context detection, then Step 1 (Requirement): actors/roles, Given-When-Then user stories, testable acceptance criteria (1:1 with test cases), business rules, edge cases (empty state, error, permission denied, soft delete), at least one Mermaid process-flow diagram. Writes docs/streams/user-management-[YYYYMMDD]/requirements/SRS.md and stops for REQUIREMENT user approval -- does not continue into Screen/Basic-Design/Tech-Design without that approval.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Design the UI screens and wireframes for the order management feature.",
+      "expected_output": "Step 2 (Screen) runs: Step 2.1 design intelligence via the design-system skill (style/color/typography, anti-pattern avoidance), Step 2.2 ASCII wireframes with correct UI-library components from PROJECT.md, role-based visibility, i18n keys, loading/empty/error states, Step 2.3 visual design output via one of the Figma/SVG/Pencil/Stitch paths. Writes docs/streams/order-management-[YYYYMMDD]/requirements/SCREEN.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Design the API endpoints and ORM schema for the order module.",
+      "expected_output": "Step 3 (Basic-Design) produces module structure, DB table list, API endpoint list, and section 6.5 Business Flow Scenarios (BF-xxx rows) in docs/streams/order-[YYYYMMDD]/design/BASIC.md, stopping for Basic-Design user approval. Then Step 4 (Tech-Design) designs the full ORM schema, controller endpoints with auth+role guards, service methods, DTOs, error handling, pagination, N+1 mitigation, and section 4.3 Business Flow -> Implementation Mapping tracing every BASIC section 6.5 row, writing docs/streams/order-[YYYYMMDD]/design/TECH.md. Also creates/updates docs/CODING-CHECKLIST.md (Step D1) and docs/TEST_VIEWPOINT.md section 0 (Step D2).",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "We have an approved SRS for the order-export feature at docs/streams/order-export-20260804/requirements/SRS.md. Write the implementation plan.",
+      "expected_output": "greenfield-no-regression. Step 5's input-contract detects requirements/SRS.md as the single, top-priority source of truth and plans directly from it -- no ask needed. Produces docs/streams/order-export-20260804/plan/PLAN.md naming specific files/endpoints, done-conditions, explicit dependencies, status values; states the source of truth was the SRS. Updates STREAM.md membership row + board.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "This existing repo has no CBR docs. Plan the work to add pagination to the existing product-list API.",
+      "expected_output": "brownfield code-only. Step 5's input-contract finds no SRS/brainstorm/research, so the source of truth is the code -- scouts relevant modules (Glob/Grep) before decomposing. No stream exists, so it OPENS ONE STREAM-LIGHT: creates docs/streams/<slug>-<YYYYMMDD>/, scaffolds STREAM.md with lane: brownfield, copies the derived Gate Status zone verbatim (authors no gate values), does NOT force a Requirement/Screen/Basic-Design/Tech-Design pass. Writes plan/PLAN.md with tasks naming real files. Ends and stops -- no cascade to cbr-implement.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Plan the checkout-refactor. The stream has both requirements/SRS.md and research/RES-checkout-audit.md present.",
+      "expected_output": "multi-source-of-truth, user-selectable. Step 5's input-contract detects MORE THAN ONE source (SRS + research report). It does NOT silently apply priority order and auto-pick the SRS -- lists what it found and asks the user which to plan from (AskUserQuestion, pre-analyzed options grounded in files on disk). Only after the user chooses does it write plan/PLAN.md, recording the chosen source.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Plan the work for our new billing system.",
+      "expected_output": "refuse-on-empty. Step 5's input-contract finds no SRS, no brainstorm, no research report, and no code it has been pointed at. It REFUSES to plan on nothing -- but this is distinct from the true refuse case: since nothing exists AND this is a fresh invocation (not resuming past REQUIREMENT), the correct behavior is actually to treat this as the 5th case and run Step 1 (Requirement) to produce the SRS first, not to refuse outright. Refusal only fires when invoked in a mode/context that assumes an existing source (e.g. --fast jumping straight to Plan) and finds nothing.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "During the Requirement phase, the user adds: 'also make sure the API returns a 409 on duplicate email and the DB has a unique index on email.'",
+      "expected_output": "internal-transition, not a routing negative. This is technical/API/schema detail surfacing while Step 1 (Requirement) is active. Correct behavior: capture it as a business rule / edge case in the SRS being written now, and note it will be detailed further in Step 4 (Tech-Design) -- it does NOT produce a message like 'that's a different skill, use design-function' or stop and hand off. The 4 merged identities no longer have a skill-invocation boundary between them, only an internal phase transition.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Design the API endpoints for a purely backend batch-processing job with no UI at all.",
+      "expected_output": "FE-gating negative. Step 0 context detection + the SRS content show no frontend component (no screens/actors implying UI). Step 2 (Screen) is skipped entirely -- no SCREEN.md is produced, no design-system invocation happens -- and the flow goes straight from Step 1 (Requirement, if run) to Step 3 (Basic-Design).",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Go ahead and implement the order module controllers and services in code.",
+      "expected_output": "Should route to cbr-implement / not fire, because this asks to write real implementation code, which cbr-plan never does regardless of internal phase.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Review the order module code for security issues and run the test suite.",
+      "expected_output": "Should route to cbr-verify / not fire, because this asks for code review and test execution, which are cbr-verify's job -- cbr-plan produces no verdicts and holds no test-execution or review responsibility.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Take the login feature from requirements all the way through design, implementation, and tests end to end.",
+      "expected_output": "delivery-boundary negative -- should NOT fire as a single continuous run, because this asks for end-to-end feature delivery across all SDLC stages, not just the plan-authoring phases cbr-plan owns. Correct response names the stage sequence (cbr-plan for Requirement/Screen/Design/Plan, then cbr-implement, then cbr-verify) and starts at cbr-plan -- each stage still gates on user approval, so nothing runs the whole chain in one invocation.",
+      "files": []
+    }
+  ]
+}

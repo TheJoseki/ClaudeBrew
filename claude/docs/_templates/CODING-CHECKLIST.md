@@ -1,7 +1,7 @@
 # Coding Checklist — [PROJECT_NAME]
 
-> Project-specific checklist created by `design-function` (Step D1).
-> Used by `implement-feature` (self-review before work-log) and `review-code` + a fresh `cbr-reviewer` verdict (audit).
+> Project-specific checklist created by `cbr-plan` (Step D1).
+> Used by `cbr-implement` (self-review before work-log) and `cbr-verify` + a fresh `cbr-reviewer` verdict (audit).
 > Fill every `[… — e.g. …]` placeholder with actual values from PROJECT.md.
 
 ---

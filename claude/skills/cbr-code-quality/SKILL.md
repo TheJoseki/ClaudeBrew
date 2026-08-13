@@ -1,6 +1,6 @@
 ---
 name: cbr-code-quality
-description: "Clean-code principles and code-review checklists for any codebase. Covers SRP, DRY, KISS, YAGNI, naming, function rules, refactor guidance, AI coding style, plus comprehensive review checklists for correctness, security, performance, quality, and testing, with comment conventions and verdict criteria. TRIGGER: user wants clean-code principles, refactor guidance, coding standards, a code-review checklist, or review criteria to apply. NOT FOR: actively reviewing a specific diff or PR and producing findings/verdict (review-code)."
+description: "Clean-code principles and code-review checklists for any codebase. Covers SRP, DRY, KISS, YAGNI, naming, function rules, refactor guidance, AI coding style, plus comprehensive review checklists for correctness, security, performance, quality, and testing, with comment conventions and verdict criteria. TRIGGER: user wants clean-code principles, refactor guidance, coding standards, a code-review checklist, or review criteria to apply. NOT FOR: actively reviewing a specific diff or PR and producing findings/verdict (cbr-verify)."
 allowed-tools: Read, Grep, Glob
 metadata:
   version: "3.1"
@@ -183,7 +183,7 @@ streams:
 **Re-check**: [suggest when to re-run — e.g., "after next feature addition to UserService"]
 ```
 
-This log lets `review-code` reference prior analysis and prevents duplicate work.
+This log lets `cbr-verify` reference prior analysis and prevents duplicate work.
 
 ---
 

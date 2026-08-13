@@ -37,7 +37,7 @@ One report whether the evidence is code, prior art, or both — not an A/B mode 
 3. **Inference** — anything not directly cited is **labelled** as inference, kept separate from
    evidence.
 4. **Trade-offs & unknowns** — surface options and open questions rather than a single answer;
-   this is what `plan-writing` will resolve.
+   this is what `cbr-plan` will resolve.
 5. **Status** — `DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT` + a one-line summary.
 
 ## Citation & trust rules

@@ -1,0 +1,48 @@
+{
+  "skill_name": "cbr-implement",
+  "notes": "Merged implementation skill (absorbs implement-feature, fix-bug, and the Mode A / test-authoring half of unit-test and integration-test). Holds Write/Edit, produces NO verdicts -- review, security scan, and test execution (Mode B) move to cbr-verify, a separate no-Write skill. Evaluate that: the TECH-spec precondition stop fires correctly; code + UTC.md + ITC.md all get produced; ITC test cases are business-flow chains tracing BASIC section 6.5 through TECH section 4.3, not CRUD-unit dressed up as integration tests; the fix-loop's 2-round escalation to systematic debugging fires; and -- the most safety-critical assertion -- cbr-implement never spawns cbr-reviewer or cbr-tester as a grading/verdict role, and never produces a verdict artifact itself, regardless of mode.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implement the order module controllers and services from the TECH spec at docs/streams/order-20260804/design/TECH.md.",
+      "expected_output": "Step 0 confirms TECH.md exists. Step 1 implements following the detected framework's module order (ORM/DTOs/services/controllers or equivalent), applying soft delete filter, audit columns, auth+role guards, input validation, API docs -- citing references/coding-patterns.md for the pattern detail. Step 2 authors docs/streams/order-20260804/test-cases/UTC.md and ITC.md alongside (never executes them). Step 3 checks the live diff against simplify thresholds. Step 4 runs self-check, writes docs/streams/order-20260804/work-logs/DEV-[YYYYMMDD].md, then stops naming cbr-verify as next -- does NOT spawn any reviewer/tester itself.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Implement the checkout feature, but there's no TECH spec for it yet.",
+      "expected_output": "precondition-stop. Step 0 finds no docs/streams/checkout-*/design/TECH.md, STOPS immediately: 'Cannot implement -- the TECH spec doesn't exist yet... run cbr-plan to produce it.' Does not approximate or infer the missing spec, does not write any code.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write unit tests for the PaymentService and integration tests for the checkout workflow.",
+      "expected_output": "Step 2 (Unit-ModeA + Integration-ModeA) runs. UTC.md covers auth/RBAC, CRUD happy paths, business-workflow transitions, input validation, soft delete. ITC.md is a BUSINESS-FLOW CHAIN -- at least 3 business steps spanning at least 2 actors/modules, tracing BASIC.md section 6.5's BF-xxx rows through TECH.md section 4.3's implementation mapping, NOT a sequence of isolated CRUD calls on one actor. Both documents only -- neither is executed. Workers spawned (if --parallel) are cbr-developer, never cbr-tester.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Fix the failing login test -- it's throwing a 401 even with a valid token.",
+      "expected_output": "Fix-loop direct-fix path: reads the failing report/reproduction, roots the cause by layer (auth middleware, token handling), applies a minimal-blast-radius fix (no surrounding refactor), verifies with the affected test then full regression, writes docs/streams/[feature]-*/bug-reports/BUG-[YYYYMMDD]-[nn].md with root cause + fix + verification.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "The webhook signature bug fix has now failed 2 rounds in a row -- same intermittent failure keeps recurring.",
+      "expected_output": "escalation. After the 2nd failed round, STOPS patching symptoms and loads references/systematic-debugging.md, working its 4-phase methodology (reproduce, isolate, root cause, fix and verify) instead of attempting a 3rd direct-fix guess. Notes this 2-round threshold is distinct from the project's 3-strike rule -- it counts attempts at this one bug, not consecutive different approaches.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Implementation is done and the work log is written -- go ahead and review the code for quality and security issues, then run the test suite as the gate.",
+      "expected_output": "Should route to cbr-verify / not fire for the review+security+test-execution part. cbr-implement's own Step 4 already stopped and named cbr-verify as next; this skill holds no Write-adjacent review/scan/test-execution responsibility and produces no verdict artifact under any mode, including --auto (which invokes cbr-verify via the Skill tool rather than doing the work itself).",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Design the ORM schema and API endpoints for the notifications feature.",
+      "expected_output": "Should route to cbr-plan / not fire, because this asks for technical design (TECH spec authoring), which is cbr-plan's Tech-Design phase, not implementation of an already-designed spec.",
+      "files": []
+    }
+  ]
+}

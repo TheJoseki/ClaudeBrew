@@ -1,9 +1,0 @@
-{
-  "skill_name": "review-code",
-  "notes": "Fires when the user asks to review already-written code or a diff for a feature; produces docs/streams/<feature>-<YYYYMMDD>/reviews/REVIEW-<date>.md with a PASS/FAIL verdict. Boundary separates it from the checklist reference when no concrete code is named.",
-  "evals": [
-    {"id": 1, "prompt": "Review the code for the payment feature — check security, correctness, and performance.", "expected_output": "Detects tech stack from CLAUDE.md/PROJECT.md, reviews the payment implementation by dimension (security/correctness/framework standards), and writes docs/streams/payment-<YYYYMMDD>/reviews/REVIEW-<YYYYMMDD>.md with per-finding file+line refs and a clear PASS/FAIL verdict.", "files": []},
-    {"id": 2, "prompt": "Can you do a code review on the order module I just implemented? Flag anything blocking before I open a PR.", "expected_output": "Reads the order-module source (and any DEV work log), reviews against the security/correctness dimensions, and produces docs/streams/order-<YYYYMMDD>/reviews/REVIEW-<date>.md with Critical/Major/Minor findings and a PASS/FAIL verdict per the decision rules.", "files": []},
-    {"id": 3, "prompt": "What should I look for when reviewing pull requests? Give me a code review checklist to apply.", "expected_output": "Should route to code-quality / not fire, because no specific code, diff, or feature is named to review — the user wants the reusable checklist reference, not an active review that produces a REVIEW artifact and verdict.", "files": []}
-  ]
-}

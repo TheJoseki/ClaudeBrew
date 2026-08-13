@@ -4,7 +4,7 @@
 > Scenario: Mid-sprint handoff at Phase 6 (Unit Tests). Developer handing off to another team member.
 
 **Date**: 2026-03-20
-**Created by**: `implement-feature` (session ending)
+**Created by**: `cbr-implement` (session ending)
 **Recipient**: next session / incoming developer
 **Feature**: User Authentication — register, login, JWT, password reset, auth guards
 
@@ -75,7 +75,7 @@ Expected: 16/16 pass, coverage ≥ 85%
 ## Resume Instructions
 
 ```
-Next stage: /cbr-unit-test user-authentication
+Next stage: /cbr-verify user-authentication --phase unit
 Plan file: docs/streams/user-auth-20260318/plan/PLAN.md
 Resume at Phase 6 (Unit Tests) — status ⏳ PENDING
 

@@ -1,6 +1,6 @@
 # Coding Convention — [PROJECT_NAME — e.g. Acme Orders]
 
-> Created/updated by `design-function`; consumed by `implement-feature`, `design-screen`, and `fix-bug`; enforced at the REVIEW checkpoint by `review-code` + a fresh `cbr-reviewer` verdict.
+> Created/updated by `cbr-plan`; consumed by `cbr-implement` (incl. its `--phase fix` fix-loop) and `cbr-plan`'s Screen step; enforced at the REVIEW checkpoint by `cbr-verify` + a fresh `cbr-reviewer` verdict.
 > Copy this template to `docs/CODING_CONVENTION.md` and fill in per project.
 > Reference: `docs/CODING_RULES.md` (enforcement rules), `docs/ARCHITECTURE.md` (system design).
 

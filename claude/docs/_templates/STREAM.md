@@ -2,14 +2,14 @@
 stream: "[slug]-[YYYYMMDD]"
 title: "[Feature title — e.g. Order Export]"
 status: pending            # pending | in-progress | blocked | done | archived | abandoned -- done/archived/abandoned CLOSE the stream
-lane: greenfield           # greenfield | brownfield (stream-light — opened by plan-writing without REQUIREMENT/DESIGN)
+lane: greenfield           # greenfield | brownfield (stream-light — opened by cbr-plan without REQUIREMENT/DESIGN)
 created: "[YYYY-MM-DD]"
 ---
 
 # Stream: [Feature title — e.g. Order Export]
 
 > Work-stream manifest. Created by `brainstorming` at stream start (greenfield), or by
-> `plan-writing` when it opens a **stream-light** stream for brownfield work; each stage skill
+> `cbr-plan` when it opens a **stream-light** stream for brownfield work; each stage skill
 > appends its artifact row and updates the board. `lane:` is descriptive metadata only —
 > `brownfield` marks a stream-light stream (opened without REQUIREMENT/DESIGN), but gate authority
 > stays with `hooks/lib/sdlc_state.py`, never this marker. **`status: done` is the ONLY thing that

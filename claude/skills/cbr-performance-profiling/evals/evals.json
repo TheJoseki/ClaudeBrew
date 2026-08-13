@@ -1,6 +1,6 @@
 {
   "skill_name": "performance-profiling",
-  "notes": "performance-profiling is a measure-first optimization skill. Boundary distinguishes it from fix-bug, which handles correctness defects rather than measured performance bottlenecks.",
+  "notes": "performance-profiling is a measure-first optimization skill. Boundary distinguishes it from cbr-implement's fix-loop, which handles correctness defects rather than measured performance bottlenecks.",
   "evals": [
     {
       "id": 1,
@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "There's a bug where the checkout total is calculated wrong for orders with a discount code.",
-      "expected_output": "Should route to fix-bug, not performance-profiling — this is a correctness defect to root-cause, not a measured performance bottleneck to profile and optimize.",
+      "expected_output": "Should route to cbr-implement --phase fix, not performance-profiling — this is a correctness defect to root-cause, not a measured performance bottleneck to profile and optimize.",
       "files": []
     }
   ]

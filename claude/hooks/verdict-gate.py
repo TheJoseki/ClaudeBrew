@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Skill-invoked verdict gate for cbr SDLC checkpoints (REVIEW/SECURITY/UNIT/INTEGRATION).
 
-A gate-owning skill (review-code, vulnerability-scanner, unit-test,
-integration-test) spawns a fresh reviewer/tester agent, which writes a verdict
+A gate-owning skill (cbr-verify, across its REVIEW/SECURITY/UNIT/INTEGRATION
+internal phases) spawns a fresh reviewer/tester agent, which writes a verdict
 artifact (schema: schemas/verdict-artifact.schema.json). The skill
 then runs this validator BEFORE its user-facing AskUserQuestion:
 
