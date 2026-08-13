@@ -1,6 +1,6 @@
 ---
 name: cbr-testing-strategy
-description: "Testing strategy and patterns for any project — the testing pyramid, test-type selection, mocking boundaries, test organization and naming, test-data strategies, anti-patterns, and the test-first RED-GREEN-REFACTOR cycle with the Three Laws of TDD and the AAA pattern. TRIGGER: deciding what mix of unit, integration, and E2E tests to write, structuring or reviewing a test suite's quality, choosing what to test first, or running a tests-first TDD loop for new functionality. NOT FOR: writing the actual test cases for a specific module (use unit-test), integration tests (use integration-test), or executing an existing suite (use validate-and-test)."
+description: "Testing strategy and patterns for any project — the testing pyramid, test-type selection, mocking boundaries, test organization and naming, test-data strategies, anti-patterns, and the test-first RED-GREEN-REFACTOR cycle with the Three Laws of TDD and the AAA pattern. TRIGGER: deciding what mix of unit, integration, and E2E tests to write, structuring or reviewing a test suite's quality, choosing what to test first, or running a tests-first TDD loop for new functionality. NOT FOR: writing the actual unit or integration test cases for a specific module (use cbr-implement), or executing an existing suite (use validate-and-test)."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 metadata:
   version: "3.1"
@@ -12,7 +12,7 @@ metadata:
 $ARGUMENTS
 
 You decide **what** to test and **when** to write it. The concrete test cases are
-authored by `unit-test` / `integration-test`, and the suite is executed by
+authored by `cbr-implement` (Unit/Integration Mode A), and the suite is executed by
 `validate-and-test` — this skill supplies the strategy those stages follow.
 
 ## Content Map
@@ -131,10 +131,10 @@ Rules:
 
 | Stage | Responsibility |
 | ----- | -------------- |
-| `unit-test` (Mode A) | Writes the UTC document (RED specification) |
-| `implement-feature` | Implements production code (GREEN) |
-| `unit-test` (Mode B) | Executes tests via `cbr-tester`, reports failures |
-| `fix-bug` | Fixes failures |
+| `cbr-implement` (Unit Mode A) | Writes the UTC document (RED specification) |
+| `cbr-implement` | Implements production code (GREEN) |
+| `cbr-verify` (Unit phase) | Executes tests via `cbr-tester`, reports failures |
+| `cbr-implement --phase fix` | Fixes failures |
 
 ### Optional: decision log
 
@@ -179,8 +179,8 @@ session, record it in the active feature's stream at
 
 **Skill does NOT trigger for:**
 
-- "Write the unit tests for applyDiscount" (use `unit-test`)
-- "Write integration tests for the order API" (use `integration-test`)
+- "Write the unit tests for applyDiscount" (use `cbr-implement`)
+- "Write integration tests for the order API" (use `cbr-implement`)
 - "Run the test suite" (use `validate-and-test`)
 
 **Expected outputs:**
@@ -194,8 +194,8 @@ session, record it in the active feature's stream at
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Feeds | `unit-test` | Strategy and TDD cycle the UTC document follows |
-| Feeds | `integration-test` | Which boundaries warrant an integration test |
+| Feeds | `cbr-implement` (Unit Mode A) | Strategy and TDD cycle the UTC document follows |
+| Feeds | `cbr-implement` (Integration Mode A) | Which boundaries warrant an integration test |
 | Then | `validate-and-test` | Execute the suite once the tests exist |
-| On FAIL | `fix-bug` | A failing test has a clear root cause |
-| Related | `review-code` | Reviewing test quality alongside code quality |
+| On FAIL | `cbr-implement --phase fix` | A failing test has a clear root cause |
+| Related | `cbr-verify` | Reviewing test quality alongside code quality |

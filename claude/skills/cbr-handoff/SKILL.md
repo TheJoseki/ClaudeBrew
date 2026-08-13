@@ -1,6 +1,6 @@
 ---
 name: cbr-handoff
-description: "Creates a session handoff document capturing feature state — what's done, what's pending, key decisions, open issues. TRIGGER: user says \"create handoff\", \"summarize progress for handoff\", \"I'm transferring this\", \"session is ending\", \"create context for next session\". NOT FOR: creating implementation plans (use plan-writing), or full retrospectives (use retro)."
+description: "Creates a session handoff document capturing feature state — what's done, what's pending, key decisions, open issues. TRIGGER: user says \"create handoff\", \"summarize progress for handoff\", \"I'm transferring this\", \"session is ending\", \"create context for next session\". NOT FOR: creating implementation plans (use cbr-plan), or full retrospectives (use retro)."
 allowed-tools: Read, Grep, Glob, Write, Edit
 argument-hint: "[feature name]"
 metadata:
@@ -217,7 +217,7 @@ Last gate passed: [G-n]. The user starts the next stage; nothing cascades on its
 |-----------|-------|------|
 | Prerequisite | Any in-progress skill | Complete or checkpoint current work before creating handoff |
 | On resume | The stage skill named in Resume Instructions | Read the handoff first, then start that stage |
-| Related | `plan-writing` | PLAN file is the primary input for handoff state assessment |
+| Related | `cbr-plan` | PLAN file is the primary input for handoff state assessment |
 | Related | `retro` | After delivery: use retro instead of handoff for formal review |
 
 ---

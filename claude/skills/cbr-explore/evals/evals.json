@@ -1,11 +1,11 @@
 {
   "skill_name": "explore",
-  "notes": "explore is the SDLC discovery / scout front-door, built on invariants + an adaptive toolbox of moves (not a fixed phase machine). Like brainstorming it is human-in-the-loop (never-guess scope questions via AskUserQuestion), so primary evaluation is qualitative: run it and judge whether it dials scout depth to stakes, cites evidence (file:line / URL), respects the no-autonomous-search + untrusted-content invariants, resolves the stream by topic-slug (open-if-none / join-if-exists — never resolve_active_feature), and STOPS. Triggering evals also discriminate explore from its neighbours: brainstorming (undecided idea), plain Grep (one-off lookup), plan-writing (writing the plan). Judge with/without the skill on the same prompts.",
+  "notes": "explore is the SDLC discovery / scout front-door, built on invariants + an adaptive toolbox of moves (not a fixed phase machine). Like brainstorming it is human-in-the-loop (never-guess scope questions via AskUserQuestion), so primary evaluation is qualitative: run it and judge whether it dials scout depth to stakes, cites evidence (file:line / URL), respects the no-autonomous-search + untrusted-content invariants, resolves the stream by topic-slug (open-if-none / join-if-exists — never resolve_active_feature), and STOPS. Triggering evals also discriminate explore from its neighbours: brainstorming (undecided idea), plain Grep (one-off lookup), cbr-plan (writing the plan). Judge with/without the skill on the same prompts.",
   "evals": [
     {
       "id": 1,
       "prompt": "Scout how authentication works in this codebase before I plan a change to it.",
-      "expected_output": "Treats this as a real code-scout. Explores context first (CLAUDE.md/README/docs), then Glob/Grep/Read the auth area citing file:line for every non-obvious claim. Resolves the stream by topic-slug (glob docs/streams/*, slug-match) — opens docs/streams/<auth-slug>-[YYYYMMDD]/ with lane: brownfield when none matches (NOT via resolve_active_feature). Writes research/RES-<auth-slug>-R1.md (<=150 lines, stream: frontmatter, evidence vs inference separated), does STREAM.md upkeep, then STOPS with a pointer that this RES is plan-writing's input. Does NOT write the plan.",
+      "expected_output": "Treats this as a real code-scout. Explores context first (CLAUDE.md/README/docs), then Glob/Grep/Read the auth area citing file:line for every non-obvious claim. Resolves the stream by topic-slug (glob docs/streams/*, slug-match) — opens docs/streams/<auth-slug>-[YYYYMMDD]/ with lane: brownfield when none matches (NOT via resolve_active_feature). Writes research/RES-<auth-slug>-R1.md (<=150 lines, stream: frontmatter, evidence vs inference separated), does STREAM.md upkeep, then STOPS with a pointer that this RES is cbr-plan's input. Does NOT write the plan.",
       "files": []
     },
     {
@@ -28,8 +28,8 @@
     },
     {
       "id": 5,
-      "prompt": "plan-writing told me there's no source of truth to plan the billing exports from. Go find out how the current export code works.",
-      "expected_output": "Acts as the front-door plan-writing pointed at. Scouts the existing export code (file:line citations). Resolves the stream by topic-slug: if a billing/export stream already matches, JOINS it strictly additively (appends the RES row, never re-scaffolds STREAM.md, never overwrites a prior round); otherwise opens one (lane: brownfield). Produces research/RES-<export-slug>-R1.md that plan-writing's input-contract can then consume, and STOPS.",
+      "prompt": "cbr-plan told me there's no source of truth to plan the billing exports from. Go find out how the current export code works.",
+      "expected_output": "Acts as the front-door cbr-plan pointed at. Scouts the existing export code (file:line citations). Resolves the stream by topic-slug: if a billing/export stream already matches, JOINS it strictly additively (appends the RES row, never re-scaffolds STREAM.md, never overwrites a prior round); otherwise opens one (lane: brownfield). Produces research/RES-<export-slug>-R1.md that cbr-plan's input-contract can then consume, and STOPS.",
       "files": []
     },
     {

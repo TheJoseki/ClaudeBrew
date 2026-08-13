@@ -13,7 +13,7 @@ The three openers and their lanes:
 |--------|---------------|------|
 | `cbr-brainstorming` | a new idea with no matching stream | `greenfield` |
 | `cbr-explore` | a scout/discovery with no matching stream | `brownfield` (code) / `greenfield` (prior-art) |
-| `cbr-plan-writing` | brownfield maintenance with no matching stream (stream-light) | `brownfield` |
+| `cbr-plan` | brownfield maintenance with no matching stream (stream-light) | `brownfield` |
 
 ## Deriving the slug
 

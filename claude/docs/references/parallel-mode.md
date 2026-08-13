@@ -1,7 +1,7 @@
 # Parallel Mode — Slice by File Ownership
 
-> Shared by every execution skill (`implement-feature`, `design-screen`,
-> `design-function`, `unit-test` Mode A, `integration-test` Mode A).
+> Shared by every execution skill (`cbr-implement`, `cbr-plan`'s Screen and
+> Tech-Design steps, `cbr-implement`'s Unit/Integration Mode A).
 > Other skills reference this file at
 > `{{CBR_ROOT}}/docs/references/parallel-mode.md` —
 > do not copy it.
@@ -44,11 +44,11 @@ Natural seams by skill:
 
 | Skill | Splits cleanly by |
 |-------|-------------------|
-| `implement-feature` | Independent modules / bounded contexts; backend module vs frontend feature |
-| `design-screen` | One screen (or screen group) per worker |
-| `design-function` | One bounded context / service boundary per worker |
-| `unit-test` (Mode A) | One test target per worker (service, controller, component) |
-| `integration-test` (Mode A) | One workflow / endpoint chain per worker |
+| `cbr-implement` (Step 1: Implement) | Independent modules / bounded contexts; backend module vs frontend feature |
+| `cbr-plan` (Step 2: Screen) | One screen (or screen group) per worker |
+| `cbr-plan` (Step 4: Tech-Design) | One bounded context / service boundary per worker |
+| `cbr-implement` (Unit Mode A) | One test target per worker (service, controller, component) |
+| `cbr-implement` (Integration Mode A) | One workflow / endpoint chain per worker |
 
 ## Step 2 — Assign disjoint file ownership
 
@@ -111,6 +111,5 @@ Agent(subagent_type="cbr-developer",
 ## Step 5 — Stop
 
 Parallel mode changes **how the stage is executed, not what happens next.** The
-skill still stops after its own artifact. Do not spawn `review-code`,
-`unit-test`, or any downstream stage — the user decides when the next stage
-begins.
+skill still stops after its own artifact. Do not spawn `cbr-verify`, or any
+downstream stage — the user decides when the next stage begins.

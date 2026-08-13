@@ -362,7 +362,7 @@ Essentials:
 
 > Principles for testing API security: OWASP API Top 10, authentication and
 > authorization testing. For a full audit pass, hand off to
-> `vulnerability-scanner`.
+> `cbr-verify`.
 
 ### OWASP API Security Top 10
 

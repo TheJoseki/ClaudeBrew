@@ -1,9 +1,9 @@
 {
   "skill_name": "code-quality",
-  "notes": "Fires when the user wants clean-code principles / refactor guidance OR the reusable code-review checklist and review standards. Boundary routes an active review of a specific diff or PR (findings + verdict) to review-code.",
+  "notes": "Fires when the user wants clean-code principles / refactor guidance OR the reusable code-review checklist and review standards. Boundary routes an active review of a specific diff or PR (findings + verdict) to cbr-verify.",
   "evals": [
     {"id": 1, "prompt": "Refactor this UserService — it has 150-line functions, deep nesting, and magic numbers everywhere. Clean it up.", "expected_output": "Applies the clean-code principles: splits functions to one-thing, replaces magic numbers with named constants, flattens nesting with guard clauses/early returns, and fixes naming; optionally records an ADR-code-quality-<date>.md decision log.", "files": []},
     {"id": 2, "prompt": "What should I check before approving a PR? Give me a comprehensive code review checklist.", "expected_output": "Returns the review checklist — correctness/security/performance/code-quality/testing/documentation items, the anti-patterns table, review comment conventions (BLOCKING/SUGGESTION/NIT/QUESTION), and PASS/NEEDS WORK/BLOCKED verdict criteria — as reusable review criteria, without reviewing any particular codebase.", "files": []},
-    {"id": 3, "prompt": "Review my auth service diff for bugs and security issues and give me a PASS/FAIL verdict.", "expected_output": "Should route to review-code / not fire, because the user names specific code to actively review and wants concrete findings plus a verdict — code-quality supplies principles and checklists, not an active review of a specific diff or PR.", "files": []}
+    {"id": 3, "prompt": "Review my auth service diff for bugs and security issues and give me a PASS/FAIL verdict.", "expected_output": "Should route to cbr-verify / not fire, because the user names specific code to actively review and wants concrete findings plus a verdict — code-quality supplies principles and checklists, not an active review of a specific diff or PR.", "files": []}
   ]
 }

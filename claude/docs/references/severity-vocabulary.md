@@ -17,7 +17,7 @@
 
 The verdict artifact's `severity` field has no separate `High` value. When a `cbr-reviewer` runs the
 SECURITY checkpoint against the OWASP Top 10:2025 Report Format's own `Critical/High/Medium/Low` scale
-(`cbr-vulnerability-scanner/SKILL.md`'s Report Format table), map on write:
+(`cbr-verify/references/owasp-domains.md`'s SEC Report Output Template), map on write:
 
 | OWASP label | Verdict artifact `severity` |
 |-------------|-----------------------------|

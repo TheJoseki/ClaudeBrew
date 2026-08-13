@@ -37,5 +37,5 @@ Use this template when creating `docs/streams/[feature]-[YYYYMMDD]/reviews/REVIE
 
 ## Action
 - PASS → Phase 6: Unit Test Execution
-- FAIL → implement-feature fix Critical/Major → re-review
+- FAIL → cbr-implement fix Critical/Major → re-review
 ```

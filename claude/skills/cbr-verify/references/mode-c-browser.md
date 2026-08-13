@@ -80,11 +80,11 @@ File: `docs/streams/[feature]-[YYYYMMDD]/test-reports/ITR-browser-R[n].md`
 | TC-ID | Failure Step | Browser State | Screenshot | Action |
 |-------|-------------|---------------|-----------|--------|
 
-## Bug Reports (for fix-bug)
+## Bug Reports (for cbr-implement --phase fix)
 | Bug ID | TC ID | Description | Steps to Reproduce | Expected | Actual | Severity |
 |--------|-------|-------------|-------------------|---------|--------|---------|
 
 ## Next Action
-- FAIL → fix-bug fixes bugs → re-run R[n+1]
+- FAIL → cbr-implement --phase fix fixes bugs → re-run R[n+1]
 - R5 PASS → report to the user with the verdict artifact: Integration Tests 100% PASS
 ```

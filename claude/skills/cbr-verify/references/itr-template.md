@@ -20,11 +20,11 @@ Date: [YYYY-MM-DD] | ITC: docs/streams/[feature]-[YYYYMMDD]/test-cases/ITC.md
 | TC ID | Error | Severity |
 |-------|-------|---------|
 
-## Bug Reports (→ fix-bug)
+## Bug Reports (→ cbr-implement --phase fix)
 | Bug ID | TC ID | Description | Steps | Expected | Actual | Severity |
 |--------|-------|-------------|-------|---------|--------|---------|
 
 ## Next
-- FAIL: fix-bug fixes → re-run R[n+1]
+- FAIL: cbr-implement --phase fix fixes → re-run R[n+1]
 - R5 PASS: report to the user with the verdict artifact
 ```

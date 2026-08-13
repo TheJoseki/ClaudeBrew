@@ -1,6 +1,6 @@
 {
   "skill_name": "architecture",
-  "notes": "architecture is the merged design-decision skill covering three sub-areas: system structure (SKILL.md), API contracts (references/api-design.md), and data models (references/database-design.md) — it absorbed the former api-patterns and database-design skills. Eval 1 exercises the structural decision tree and ADR; eval 2 spans the two absorbed sub-areas at once (pagination model + supporting index), which is the behavior the merge exists to enable. It overlaps with design-function (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
+  "notes": "architecture is the merged design-decision skill covering three sub-areas: system structure (SKILL.md), API contracts (references/api-design.md), and data models (references/database-design.md) — it absorbed the former api-patterns and database-design skills. Eval 1 exercises the structural decision tree and ADR; eval 2 spans the two absorbed sub-areas at once (pagination model + supporting index), which is the behavior the merge exists to enable. It overlaps with cbr-plan (the per-feature TECH spec executor); the boundary eval keeps them distinct.",
   "evals": [
     {
       "id": 1,
@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "Write the technical design — endpoints, DTOs, ORM schema, and service methods — for the payments module.",
-      "expected_output": "Should route to design-function (produces docs/streams/payments-[YYYYMMDD]/design/TECH.md), not architecture — architecture supplies the style, structure, and data-model decision frameworks, whereas this asks for a named feature's concrete tech-spec artifact.",
+      "expected_output": "Should route to cbr-plan (produces docs/streams/payments-[YYYYMMDD]/design/TECH.md), not architecture — architecture supplies the style, structure, and data-model decision frameworks, whereas this asks for a named feature's concrete tech-spec artifact.",
       "files": []
     }
   ]

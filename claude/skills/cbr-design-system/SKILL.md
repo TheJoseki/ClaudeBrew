@@ -143,6 +143,6 @@ installer, Tailwind config generator, token validators, slide tooling),
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Pairs with | `design-screen` | Run design intelligence before wireframing; include the token table in every SCREEN spec |
-| Input to | `implement-feature` | Developer builds components against these tokens and patterns |
-| On accessibility findings | `review-code` | Accessibility violations → flag in code review |
+| Pairs with | `cbr-plan` (Step 2: Screen) | Run design intelligence before wireframing; include the token table in every SCREEN spec |
+| Input to | `cbr-implement` | Developer builds components against these tokens and patterns |
+| On accessibility findings | `cbr-verify` | Accessibility violations → flag in code review |

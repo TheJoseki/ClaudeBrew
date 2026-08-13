@@ -1,6 +1,6 @@
 {
   "skill_name": "validate-and-test",
-  "notes": "Merged from the two former command-runner skills (lint/type-check and suite execution). Fires to execute a project's existing quality commands: lint/type-check/light static analysis after code changes, and the test suite on demand. Two overlaps are handled by the description rather than a second boundary eval: deep code-level security auditing (OWASP, injection, secrets, attack surface) belongs to vulnerability-scanner — this skill only runs a light dependency audit like npm audit — and test strategy questions belong to testing-strategy. The boundary eval covers the nearest-neighbor confusion: authoring test cases.",
+  "notes": "Merged from the two former command-runner skills (lint/type-check and suite execution). Fires to execute a project's existing quality commands: lint/type-check/light static analysis after code changes, and the test suite on demand. Two overlaps are handled by the description rather than a second boundary eval: deep code-level security auditing (OWASP, injection, secrets, attack surface) belongs to cbr-verify — this skill only runs a light dependency audit like npm audit — and test strategy questions belong to testing-strategy. The boundary eval covers the nearest-neighbor confusion: authoring test cases.",
   "evals": [
     {
       "id": 1,
@@ -11,13 +11,13 @@
     {
       "id": 2,
       "prompt": "Run the full test suite and tell me whether everything passes.",
-      "expected_output": "Detects test commands from PROJECT.md, type-checks first as a gate, runs the backend and frontend suites with coverage, emits the Test Run Result table (totals/passed/failed/coverage/status), checks the quality gates, and on failure routes to fix-bug with the failing test name and error. Does not author new tests.",
+      "expected_output": "Detects test commands from PROJECT.md, type-checks first as a gate, runs the backend and frontend suites with coverage, emits the Test Run Result table (totals/passed/failed/coverage/status), checks the quality gates, and on failure routes to cbr-implement --phase fix with the failing test name and error. Does not author new tests.",
       "files": []
     },
     {
       "id": 3,
       "prompt": "Write test cases for the payment module.",
-      "expected_output": "Should route to unit-test (or integration-test), not fire, because validate-and-test only executes existing checks and suites — authoring test cases is NOT FOR this skill.",
+      "expected_output": "Should route to cbr-implement, not fire, because validate-and-test only executes existing checks and suites — authoring test cases is NOT FOR this skill.",
       "files": []
     }
   ]

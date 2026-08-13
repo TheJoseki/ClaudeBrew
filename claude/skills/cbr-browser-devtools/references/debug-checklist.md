@@ -90,10 +90,10 @@ evaluate_script(function: "() => JSON.stringify([...document.querySelectorAll('.
 
 | Finding | Route To |
 |---------|---------|
-| JS runtime error | `fix-bug` |
-| API 401/403 | Check auth config → `fix-bug` |
-| API 500 | `fix-bug` (backend) |
-| Framework error | `context7` MCP for docs → `fix-bug` |
-| DOM structure wrong | `fix-bug` (frontend template fix) |
-| CSS/layout issue | `fix-bug` (frontend style fix) |
-| Root cause unknown | `fix-bug` |
+| JS runtime error | `cbr-implement --phase fix` |
+| API 401/403 | Check auth config → `cbr-implement --phase fix` |
+| API 500 | `cbr-implement --phase fix` (backend) |
+| Framework error | `context7` MCP for docs → `cbr-implement --phase fix` |
+| DOM structure wrong | `cbr-implement --phase fix` (frontend template fix) |
+| CSS/layout issue | `cbr-implement --phase fix` (frontend style fix) |
+| Root cause unknown | `cbr-implement --phase fix` |

@@ -14,7 +14,11 @@ open them when the task needs them.
   multiple-choice questions rather than assuming. When you ask, re-ground first (project + stage + task),
   say what the choice DOES in plain terms, and recommend one option with a one-line reason.
 - **Hard gate, no auto-cascade.** A stage does its work, writes its artifact, and STOPS for the user.
-  Never silently begin the next stage.
+  Never silently begin the next stage. A *verdict* is never skipped, in any mode; a *stop* is
+  mode-scaled — an explicit `--auto` mode may proceed past a clean, low-risk pass without pausing, but a
+  high-risk stop (auth, secrets, payments, DB schema/migrations, a public API contract, deploy/release,
+  or a destructive filesystem op) is never skipped either. No-self-grading stays absolute regardless of
+  mode — only a *fresh* pool agent that did not do the work may produce its verdict.
 - **Evidence over assertion.** Cite code, tests, or sources for load-bearing claims; report failures
   verbatim. End substantive work with exactly one of DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT —
   never DONE without evidence, never fail silently.

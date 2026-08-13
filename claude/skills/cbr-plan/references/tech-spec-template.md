@@ -64,7 +64,7 @@ File: `docs/streams/[feature]-[YYYYMMDD]/design/TECH.md`
 
 ### 4.3 Business Flow → Implementation Mapping
 
-> Maps each BASIC Business Flow (§6.5) to API call sequence + state transitions. Direct input for `integration-test` — each row = 1 test step.
+> Maps each BASIC Business Flow (§6.5) to API call sequence + state transitions. Direct input for `cbr-implement`'s Integration Mode A — each row = 1 test step.
 
 | Flow ID | Source | Reference |
 |---------|--------|-----------|

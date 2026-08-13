@@ -1,6 +1,6 @@
 ---
 name: cbr-architecture
-description: "Design-decision framework covering system structure, API contracts, and data models. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: choosing module boundaries or system structure; picking an API style (REST/GraphQL/tRPC) or reviewing endpoint conventions — versioning, pagination, response format, auth, rate limiting, API security; choosing a database type, designing schemas/indexes, planning migrations, or optimizing queries; weighing a hard-to-reverse structural trade-off or writing an ADR. NOT FOR: producing a feature's endpoint/ORM tech-spec artifact (use design-function)."
+description: "Design-decision framework covering system structure, API contracts, and data models. Tech stack detected from PROJECT.md/CLAUDE.md. TRIGGER: choosing module boundaries or system structure; picking an API style (REST/GraphQL/tRPC) or reviewing endpoint conventions — versioning, pagination, response format, auth, rate limiting, API security; choosing a database type, designing schemas/indexes, planning migrations, or optimizing queries; weighing a hard-to-reverse structural trade-off or writing an ADR. NOT FOR: producing a feature's endpoint/ORM tech-spec artifact (use cbr-plan)."
 allowed-tools: Read, Write, Edit, Grep, Glob
 metadata:
   version: "3.1"
@@ -162,6 +162,6 @@ say so and move on.
 
 | Skill | When to use alongside |
 | ----- | --------------------- |
-| `design-function` | Translating these decisions into a feature's endpoint/ORM tech spec |
-| `vulnerability-scanner` | Security audit of the implemented endpoints |
-| `review-code` | Verifying implementation matches intent |
+| `cbr-plan` | Translating these decisions into a feature's endpoint/ORM tech spec |
+| `cbr-verify` | Security audit of the implemented endpoints |
+| `cbr-verify` | Verifying implementation matches intent |

@@ -1,6 +1,6 @@
 {
   "skill_name": "testing-strategy",
-  "notes": "Merged from the two former testing knowledge skills (patterns/strategy and the test-first cycle). Knowledge/strategy skill covering what to test (pyramid, type selection, mocking, test data, anti-patterns) and when to write it (tests-first red-green-refactor). It overlaps the executors unit-test / integration-test / validate-and-test; the description keeps executing a suite routed to validate-and-test, and the boundary eval covers the nearest-neighbor confusion: authoring the concrete tests for a named function.",
+  "notes": "Merged from the two former testing knowledge skills (patterns/strategy and the test-first cycle). Knowledge/strategy skill covering what to test (pyramid, type selection, mocking, test data, anti-patterns) and when to write it (tests-first red-green-refactor). It overlaps the executors cbr-implement (test-authoring) / validate-and-test (suite execution); the description keeps executing a suite routed to validate-and-test, and the boundary eval covers the nearest-neighbor confusion: authoring the concrete tests for a named function.",
   "evals": [
     {
       "id": 1,
@@ -17,7 +17,7 @@
     {
       "id": 3,
       "prompt": "Write the unit tests for the applyDiscount function.",
-      "expected_output": "Should route to unit-test (which authors the concrete tests), not fire, because testing-strategy is strategy and quality guidance — it decides what to test and when to write it, not the test-authoring executor.",
+      "expected_output": "Should route to cbr-implement (which authors the concrete tests), not fire, because testing-strategy is strategy and quality guidance — it decides what to test and when to write it, not the test-authoring executor.",
       "files": []
     }
   ]

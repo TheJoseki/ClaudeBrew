@@ -154,7 +154,7 @@ escalate to the user rather than pass.
 | Round | Trigger |
 |-------|---------|
 | R1 | First run after Code Review PASS |
-| R2 | After fix-bug fixes R1 failures |
-| R3 | After fix-bug fixes R2 failures |
+| R2 | After `cbr-implement --phase fix` fixes R1 failures |
+| R3 | After `cbr-implement --phase fix` fixes R2 failures |
 | R4 | Full regression |
 | R5 | Final verification — 100% gate |

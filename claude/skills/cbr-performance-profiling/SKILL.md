@@ -115,7 +115,7 @@ $ARGUMENTS
 | Direction | Skill | When |
 |-----------|-------|------|
 | Prerequisite | Application running with measurable baseline | Profile only against a functional, deployed app |
-| On regressions found | `fix-bug` | Fix performance regressions in implementation |
+| On regressions found | `cbr-implement --phase fix` | Fix performance regressions in implementation |
 | On structural bottlenecks | `architecture` | When bottleneck requires architecture-level change |
-| Escalate | `fix-bug` | For complex perf issues needing deeper root cause analysis |
+| Escalate | `cbr-implement --phase fix` | For complex perf issues needing deeper root cause analysis |
 | Related | `code-quality` | After profiling, apply clean code to remove unnecessary computation |

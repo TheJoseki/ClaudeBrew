@@ -3,7 +3,7 @@
 > **Version**: 1.0
 > **Standards**: OWASP 2025 · ISO/IEC 25010:2023 · Clean Code · SOLID
 > **Applies to**: All agents (human & AI) working on this codebase
-> Created/updated by `design-function`; enforced by `review-code` + fresh `cbr-reviewer` verdict + user.
+> Created/updated by `cbr-plan`; enforced by `cbr-verify` + fresh `cbr-reviewer` verdict + user.
 > Framework specifics are PROJECT.md-driven — fill each `[… — e.g. …]` slot from your stack.
 > Copy this template to `docs/CODING_RULES.md` and fill in per project.
 
@@ -265,6 +265,6 @@ Types: `feat` | `fix` | `refactor` | `test` | `docs` | `chore` | `style` | `perf
 | Form validation | UI framework rules | Frontend input |
 | Unit tests | [BE_TEST_RUNNER] + [FE_TEST_RUNNER] | All modules |
 | Integration tests | [INTEGRATION_RUNNER] | Workflows |
-| Code review | `review-code` + fresh `cbr-reviewer` verdict | Pre-merge |
+| Code review | `cbr-verify` + fresh `cbr-reviewer` verdict | Pre-merge |
 | Type check CI | [TYPE_CHECKER — e.g. `tsc --noEmit`] | CI pipeline |
 | Test coverage | ≥ [COVERAGE — e.g. 80]% | CI pipeline |

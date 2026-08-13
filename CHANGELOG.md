@@ -4,6 +4,102 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.12.0] — 2026-08-13
+
+**The R3 merge — 10 SDLC stage-executor skills collapse into 3.** `cbr-plan` (analyze-requirement +
+design-screen + design-function + plan-writing), `cbr-implement` (implement-feature + fix-bug + the
+test-*authoring* half of unit-test/integration-test), and `cbr-verify` (review-code +
+vulnerability-scanner + the test-*execution* half of unit-test/integration-test). Total skill count
+24 → 17. This was a red-teamed, validated architecture change, not a find-and-replace: an initial
+2-skill draft was rejected mid-plan specifically because a merged implement+verify skill could never
+mechanically deny itself `Write` during a review/security/test-execution phase — Claude Code skills
+have no per-internal-phase tool scoping. The 3-skill split exists to preserve that control as a
+*capability* fact, not a *prose* one: `cbr-verify`'s `allowed-tools` grant has no `Write`/`Edit`,
+identical to today's `review-code`/`vulnerability-scanner` grant, so self-grading stays mechanically
+impossible rather than merely discouraged. Plan: `plans/260811-2321-cbr-r3-flexible-sdlc-core-skills/`.
+
+### Changed
+- **BREAKING — `next_action` hints and slash-command names.** `sdlc_state.py`'s `GATE_SKILL` values
+  become the bare tokens `plan`/`verify` (REQUIREMENT/DESIGN → `plan`; REVIEW/SECURITY/UNIT/INTEGRATION
+  → `verify`; a FAIL routes to `implement`). `next_action` now carries a `--phase <hint>` suffix, e.g.
+  `/cbr-verify payment-20260812 --phase security`. Old commands (`/cbr-review-code`,
+  `/cbr-unit-test`, …) no longer exist.
+- **`cbr-plan`'s internal phases replace 4 separate skill invocations** with one: Scope Challenge →
+  Requirement (SRS) → Screen (SCREEN, FE-only, no hard stop) → Basic-Design (BASIC, cheap-checkpoint
+  stop preserved) → Tech-Design (TECH, DESIGN stop) → Plan (PLAN.md). Same 4 user-facing stop count as
+  before (REQUIREMENT/BASIC/DESIGN/PLAN), one skill instead of four. The SRS → BASIC §6.5 → TECH §4.3
+  business-flow traceability chain — the most structurally load-bearing cross-artifact link in the
+  SDLC — survives verbatim across the merge.
+- **`cbr-verify`'s Mode C (browser-live MCP testing) promoted from a dead file to a first-class,
+  prioritized step.** It previously lived only in an unreferenced `mode-c-browser.md` that no
+  `Content Map` listed — nearly lost during this very migration's own research. It now takes priority
+  over scripted Mode B for any UI feature with an available browser MCP, stated explicitly rather than
+  as a footnote.
+- **`cbr-implement`'s fix-loop** folds `fix-bug`'s direct-fix path and its 2-round escalation to
+  `systematic-debugging.md`, invoked as `cbr-implement --phase fix`. Kept deliberately distinct from
+  the project's 3-strike rule (different metric, same numbers coincidentally close).
+- **Shared Mode-A/Mode-B templates promoted to `claude/docs/references/`** (`utc-template.md`,
+  `itc-template.md`, `script-templates.md`, alongside the existing `parallel-mode.md`), since
+  `cbr-implement` (authors) and `cbr-verify` (executes/grades) both need the same template — matching
+  the existing `parallel-mode.md` precedent rather than forking two copies.
+- New `claude/docs/references/severity-vocabulary.md`: the canonical Critical/Major/Minor/Info scale,
+  the OWASP High→Major mapping, and the per-gate blocking table (REVIEW blocks on Critical only, plus a
+  prose-only "3+ Major→FAIL" reviewer rule the validator doesn't enforce; SECURITY blocks on Critical
+  **or** Major; UNIT/INTEGRATION require ≥1 passing verification entry) — cited instead of re-derived
+  in each of `cbr-verify`'s four gate phases.
+
+### Fixed
+- **Several genuinely orphaned reference files, unlinked from their own skill despite claiming
+  otherwise, are now actually wired up.** `design-fetch.md` (Figma/Pencil MCP context-fetch during
+  frontend implementation — the gap meant `cbr-implement`'s frontend step never used the MCP tool
+  sequence the SCREEN spec's own template already documented), `coding-patterns.md`, and
+  `work-log-template.md` (adopted for its richer context-checkpoint and self-review mechanics, with its
+  stale `DEV-BN.md` batch-only naming corrected to the canonical `DEV-[YYYYMMDD].md`). Also fixed:
+  `cbr-design-function`'s TECH.md template link pointed at a thin 36-line stub instead of the 157-line
+  template with the §4.3 Business Flow → Implementation Mapping section the project's own Detail Design
+  gate requires; a pre-existing Step-6A–6E numbering drift in the screen design-tool reference (never
+  matched any real `SKILL.md` step) renumbered to match `cbr-plan`'s own phase numbering; a dead
+  `ux-intelligence.md` citation.
+- Six more duplicate/orphaned template files retired after confirming zero references anywhere in the
+  repo (not just the invoking skill): `srs-template.md`, `screen-spec-template.md`, two
+  `test-templates.md`, `review-template.md` (also carried a stale weighted 1–5 review score model
+  superseded by the PASS/FAIL rubric already authoritative elsewhere), and a design-function `template.md`
+  stub. One more found and retired during the `cbr-verify` build: `self-review-checklist.md` —
+  developer-side content misplaced in the reviewer's own skill, already superseded by the
+  `CODING-CHECKLIST.md` self-review mechanism.
+- Blast-radius sweep across ~40 surviving files (evals.json routing assertions, skill frontmatter
+  `NOT FOR` clauses, pool-agent identity docs in `claude/agents/`, and the 9 `claude/docs/_templates/`
+  files shipped into every user's own `docs/` root) — every reference to one of the 10 retired skill
+  names now points at `cbr-plan`/`cbr-implement`/`cbr-verify`. Two new structural evals
+  (`test_r3_retired_skill_refs.py`, `test_fresh_eyes_mechanism.py`) guard both the sweep and the
+  no-Write mechanism itself against future regression.
+
+### Deferred
+- **The `LEGACY_GATE_NAME` shim** (`VERDICT-G4.json` etc. read-compatibility, `sdlc_state.py`) was
+  slated to be removed in this release per 0.11.0's own note. It is **not** removed here — it fell
+  outside this release's actual scope (the R3 skill merge) and removing it was never planned,
+  red-teamed, or validated alongside this change. Tracked for a follow-up release.
+- **EXPANSION-scope stretch items** from the R3 plan — `cbr-plan`'s `red-team`/`validate` subcommands
+  and task-hydration + `--team` multi-agent extension for `cbr-implement` — did not ship in this
+  release. They were explicitly scoped as deferrable at plan-validation time and remain a natural
+  follow-up stream, not a regression.
+
+**No migrator.** Pre-1.0, no external consumers. Verified by a two-case upgrade rehearsal: a
+pristine pre-R3 install updates cleanly, all 10 retired skill directories emptied completely. ⚠️
+**If you had hand-edited any of the 10 retired skill files** (`cbr-analyze-requirement`,
+`cbr-design-screen`, `cbr-design-function`, `cbr-plan-writing`, `cbr-implement-feature`,
+`cbr-fix-bug`, `cbr-review-code`, `cbr-unit-test`, `cbr-integration-test`,
+`cbr-vulnerability-scanner`) before upgrading, `claudebrew update` correctly never clobbers that
+edit — but it does delete that skill's now-unedited sibling files (`references/*.md`,
+`evals/evals.json`), leaving the edited `SKILL.md` alone in its directory. Claude Code discovers
+skills by directory scan, so that orphaned file **stays live and keeps triggering**, with dead
+links to the files it lost — manually delete that skill's directory under `.claude/skills/`
+after upgrading. This is a narrow case (requires having edited one of these 10 specific files),
+and the underlying `update.mjs` question — how a retired file should behave when it breaks its
+skill directory's identity, not just its own content — is real but deliberately out of scope for
+this release; it deserves its own considered design pass, not a change bolted onto an
+already-large release under time pressure.
+
 ## [0.11.0] — 2026-08-10
 
 **The G1–G8 gate taxonomy is retired — stage-is-the-gate.** Six checkpoints are now code-tracked by

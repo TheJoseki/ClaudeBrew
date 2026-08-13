@@ -1,6 +1,6 @@
 ---
 name: cbr-validate-and-test
-description: "Runs a project's quality commands after code changes — linting, type checking, light static analysis, then the backend and frontend test suites — and reports the result against the quality gates. Commands come from PROJECT.md/CLAUDE.md or are auto-detected from project config; never hardcoded. TRIGGER: user asks to run lint, type-check, validate code quality, run the test suite, check test results, or verify everything passes before calling the work done. NOT FOR: writing test cases (use unit-test or integration-test), choosing what to test (use testing-strategy), or deep security auditing (use vulnerability-scanner)."
+description: "Runs a project's quality commands after code changes — linting, type checking, light static analysis, then the backend and frontend test suites — and reports the result against the quality gates. Commands come from PROJECT.md/CLAUDE.md or are auto-detected from project config; never hardcoded. TRIGGER: user asks to run lint, type-check, validate code quality, run the test suite, check test results, or verify everything passes before calling the work done. NOT FOR: writing test cases (use cbr-implement), choosing what to test (use testing-strategy), or deep security auditing (use cbr-verify)."
 allowed-tools: Read, Grep, Glob, Bash
 argument-hint: "[feature or module name (optional)]"
 metadata:
@@ -88,7 +88,7 @@ checks.
 
 The dependency audit here is deliberately light. Deep code-level vulnerability
 analysis (OWASP Top 10, injection paths, secrets, attack surface) is
-`vulnerability-scanner`, not this skill.
+`cbr-verify` (Security phase), not this skill.
 
 ### Quality loop
 
@@ -188,9 +188,9 @@ When called by another skill or a pool agent, output results in this format:
 
 **Skill does NOT trigger for:**
 
-- "Write test cases for the payment module" (use `unit-test` / `integration-test`)
+- "Write test cases for the payment module" (use `cbr-implement`)
 - "What mix of unit and E2E tests should we have?" (use `testing-strategy`)
-- "Do an OWASP audit of the codebase" (use `vulnerability-scanner`)
+- "Do an OWASP audit of the codebase" (use `cbr-verify`)
 
 **Expected outputs:**
 
@@ -203,8 +203,8 @@ When called by another skill or a pool agent, output results in this format:
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Called from | `implement-feature` | Always — type check + lint immediately after implementation |
-| Called from | `unit-test` / `integration-test` | Mode B — execute the UTC/ITC document just created |
+| Called from | `cbr-implement` | Always — type check + lint immediately after implementation |
+| Called from | `cbr-verify` (Unit/Integration phase) | Execute the UTC/ITC document just created |
 | On FAIL | `cbr-implement --phase fix` | Any failing test — it escalates internally when the cause is unclear or intermittent |
-| After PASS | `review-code` | Mandatory quality gate before PR |
-| Related | `vulnerability-scanner` | Deep security audit — beyond this skill's light dependency audit |
+| After PASS | `cbr-verify` | Mandatory quality gate before PR |
+| Related | `cbr-verify` (Security phase) | Deep security audit — beyond this skill's light dependency audit |

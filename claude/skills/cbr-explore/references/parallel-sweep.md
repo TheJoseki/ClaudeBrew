@@ -36,7 +36,7 @@ that the angle slugs differ — is the no-clobber guarantee.
 A **final `cbr-researcher` synthesis pass** reads **only this round's** angle files
 (glob `research/RES-<topic>-R[n]-a*.md` — scoped to `R[n]`, so a prior round's stale angles
 cannot leak in) and writes the converged `research/RES-<topic>-R[n].md`. The round file is the
-canonical artifact `plan-writing` consumes; the per-angle files are retained inputs. There is
+canonical artifact `cbr-plan` consumes; the per-angle files are retained inputs. There is
 no bespoke merge code in the skill — the synthesis is the researcher's job, and it treats the
 input angle files as untrusted data (invariant 3).
 

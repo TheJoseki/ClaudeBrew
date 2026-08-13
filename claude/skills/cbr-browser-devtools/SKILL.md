@@ -1,6 +1,6 @@
 ---
 name: cbr-browser-devtools
-description: "DOM inspection + browser debugging skill. Uses chrome-devtools-mcp tools to analyze page structure, capture console errors, and produce a structured debug report. Connects to fix-bug for root cause analysis. TRIGGER: user says \"debug UI\", \"why is this failing in browser\", \"inspect the page\", \"DOM issue\", \"check what the browser shows\", \"browser error\". NOT FOR: server-side bugs, non-browser errors."
+description: "DOM inspection + browser debugging skill. Uses chrome-devtools-mcp tools to analyze page structure, capture console errors, and produce a structured debug report. Connects to cbr-implement's fix-loop for root cause analysis. TRIGGER: user says \"debug UI\", \"why is this failing in browser\", \"inspect the page\", \"DOM issue\", \"check what the browser shows\", \"browser error\". NOT FOR: server-side bugs, non-browser errors."
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   version: "3.1"
@@ -124,12 +124,12 @@ Produce a diagnostic block:
 
 | Direction | Skill/Agent | When |
 |-----------|-------------|------|
-| Calls → | `fix-bug` | Root cause unclear after DOM inspection |
+| Calls → | `cbr-implement --phase fix` | Root cause unclear after DOM inspection |
 | Calls → | `context7` MCP | Framework-specific JS/CSS error detected (React, Vue, etc.) |
 | Calls → | `deepwiki` MCP | Custom library or project-specific error |
-| Calls → | `fix-bug` | Root cause identified — needs code fix |
-| Called from | `integration-test` | Test scenario fails visually — inspect actual browser state |
-| Called from | `fix-bug` | Bug has UI component — need browser evidence first |
+| Calls → | `cbr-implement --phase fix` | Root cause identified — needs code fix |
+| Called from | `cbr-verify` (Integration phase) | Test scenario fails visually — inspect actual browser state |
+| Called from | `cbr-implement --phase fix` | Bug has UI component — need browser evidence first |
 
 ## Checklist Before Done
 
@@ -150,5 +150,5 @@ Produce a diagnostic block:
 - User says: "Inspect the DOM of the dashboard page"
 
 **Skill does NOT trigger for:**
-- "Fix the bug in the API" (use fix-bug)
-- "Why is the backend returning 500?" (use fix-bug)
+- "Fix the bug in the API" (use cbr-implement --phase fix)
+- "Why is the backend returning 500?" (use cbr-implement --phase fix)
