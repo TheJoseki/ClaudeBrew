@@ -55,6 +55,18 @@
       "prompt": "I finished implementing phases 2 and 3 of the checkout feature -- the work log is written and self-check passes.",
       "expected_output": "sync-back at Step 4 / Hand-off. Before stopping, cbr-implement TaskUpdates the session tasks to their real status and backfills plan/PLAN.md -- flipping [ ] -> [x] for every completed phase across ALL phases (not just this batch), updating PLAN.md's status line and STREAM.md's board from the actual checkbox state. A completed task that maps to no phase is reported, not silently marked done. Then names cbr-verify as next and stops -- no verdict produced here.",
       "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "cbr-implement order-management --team 3 -- this feature has independent backend, frontend, and webhook modules.",
+      "expected_output": "team mode. First checks CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 is set (if not, STOPS and tells the user -- never silently degrades to --parallel) and confirms the token cost with the user. Writes a file-ownership map (backend/frontend/webhook disjoint, shared files like routers/migrations kept for the lead), then spawns 3 NAMED cbr-developer teammates in one message (naming is what enrols them as real team members with SendMessage/Task tools -- an unnamed spawn would be a plain worker), each with its owned paths and the hard File-Ownership Rules (optionally isolation:'worktree', provisioning hooks in the worktree first per team-mode.md, or file-ownership alone). Teammates coordinate live (claim tasks, escalate conflicts to the lead); lead integrates the shared files + runs Self-Check across the merged result + writes ONE work log, then shutdown_requests each teammate. Per references/team-mode.md -- no TeamCreate needed.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "cbr-implement checkout --team 3, but CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS is not set in this environment.",
+      "expected_output": "team-precondition negative. Because CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 is absent, --team STOPS with a clear message telling the user to enable agent teams (e.g. via claudebrew install) -- it does NOT silently fall back to --parallel's unnamed fire-and-collect workers, since that would quietly deliver a weaker execution model than the user asked for.",
+      "files": []
     }
   ]
 }
