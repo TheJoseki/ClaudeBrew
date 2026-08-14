@@ -39,10 +39,6 @@ GATE_ORDER = ["REQUIREMENT", "DESIGN", "REVIEW", "SECURITY", "UNIT", "INTEGRATIO
 # Verdict checkpoint -> the stream sub-folder its VERDICT-*.json lives in (beside its report).
 VERDICT_SUBDIR = {"REVIEW": "reviews", "SECURITY": "security", "UNIT": "test-reports", "INTEGRATION": "test-reports"}
 
-# Pre-0.11.0 filename token for each verdict checkpoint — one release's read-compat shim
-# (R2 design doc §3). Drop this map and the shim it feeds once the shim window closes.
-LEGACY_GATE_NAME = {"REVIEW": "G4", "SECURITY": "G5a", "UNIT": "G6", "INTEGRATION": "G7"}
-
 # Large specs get section-range pointers (H6-style); stream-relative locations.
 _STREAM_SPECS = (
     ("SRS", os.path.join("requirements", "SRS.md")),
@@ -137,30 +133,22 @@ def _verdict_decision(path):
 
 
 def _verdict_files(project_dir, slug, gate):
-    """Glob every verdict file for `gate` in its stream sub-folder: current name + the
-    pre-0.11.0 LEGACY_GATE_NAME token for one release (R2 design doc §3 shim).
+    """Glob every verdict file for `gate` in its stream sub-folder — the exact
+    `VERDICT-<gate>.json` plus any per-batch `VERDICT-*<gate>.json`.
     """
     d = _stream_dir(project_dir, slug)
     if not d:
         return []
     subdir = VERDICT_SUBDIR[gate]
-    tokens = [gate] + ([LEGACY_GATE_NAME[gate]] if gate in LEGACY_GATE_NAME else [])
-    hits = set()
-    for tok in tokens:
-        hits.update(glob.glob(os.path.join(d, subdir, f"VERDICT-*{tok}.json")))
-        hits.add(os.path.join(d, subdir, f"VERDICT-{tok}.json"))
+    hits = set(glob.glob(os.path.join(d, subdir, f"VERDICT-*{gate}.json")))
+    hits.add(os.path.join(d, subdir, f"VERDICT-{gate}.json"))
     return sorted(p for p in hits if os.path.isfile(p))
 
 
-def _verdict_legacy_only(hits, gate):
-    """True if verdict files exist for `gate` but every one uses only the pre-0.11.0 name."""
-    return bool(hits) and not any(gate in os.path.basename(h) for h in hits)
-
-
 def _gate_verdict(project_dir, slug, gate):
-    """Aggregate verdict status for a gate across its (possibly per-batch, possibly
-    legacy-named) files. fail/blocked on any -> 'fail'; all pass -> 'pass'; some pass ->
-    'partial'; none found -> None.
+    """Aggregate verdict status for a gate across its (possibly per-batch) files.
+    fail/blocked on any -> 'fail'; all pass -> 'pass'; some pass -> 'partial';
+    none found -> None.
     """
     hits = _verdict_files(project_dir, slug, gate)
     decisions = [x for x in (_verdict_decision(h) for h in hits) if x]
@@ -197,15 +185,15 @@ def infer_gate_progress(project_dir, slug):
     DESIGN `design/TECH.md`) and verdict decisions (REVIEW/SECURITY/UNIT/INTEGRATION), all
     within the stream folder — this drives the progress DISPLAY only; stream completion
     (resolve_active_feature) no longer reads any of it (R2 design doc §1). next_action is
-    the first non-'pass' checkpoint's skill (fix-bug when that checkpoint is 'fail'); a
-    'stale' SECURITY verdict routes back to vulnerability-scanner via the same fallthrough.
+    the first non-'pass' checkpoint's skill (`cbr-implement --phase fix` when that checkpoint
+    is 'fail'); a 'stale' SECURITY verdict routes back to `cbr-verify --phase security` via
+    the same fallthrough.
     """
     d = _stream_dir(project_dir, slug)
     gates = {
         "REQUIREMENT": "pass" if (d and os.path.isfile(os.path.join(d, "requirements", "SRS.md"))) else "pending",
         "DESIGN": "pass" if (d and os.path.isfile(os.path.join(d, "design", "TECH.md"))) else "pending",
     }
-    legacy = {}
     for gate in ("REVIEW", "SECURITY", "UNIT", "INTEGRATION"):
         hits = _verdict_files(project_dir, slug, gate)
         decisions = [x for x in (_verdict_decision(h) for h in hits) if x]
@@ -217,7 +205,6 @@ def infer_gate_progress(project_dir, slug):
             gates[gate] = "pass"
         else:
             gates[gate] = "partial"
-        legacy[gate] = _verdict_legacy_only(hits, gate)
     if gates["SECURITY"] == "pass" and _security_stale(project_dir, slug):
         gates["SECURITY"] = "stale"
 
@@ -234,7 +221,7 @@ def infer_gate_progress(project_dir, slug):
     icon = {"pass": "PASS", "fail": "FAIL", "partial": "PARTIAL", "pending": "pending", "stale": "STALE"}
     gate_line = "Feature {}: {}".format(
         slug,
-        " | ".join(f"{g} {icon[gates[g]]}{' (legacy)' if legacy.get(g) else ''}" for g in GATE_ORDER),
+        " | ".join(f"{g} {icon[gates[g]]}" for g in GATE_ORDER),
     )
     return {"gates": gates, "next_action": next_action, "gate_line": gate_line}
 

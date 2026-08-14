@@ -35,11 +35,11 @@ checkpoint opens. No agent auto-passes one. Exactly four checkpoints are machine
 decides. The severities a verdict blocks on are defined in the verdict schema's `findings.severity`
 description (SECURITY blocks on Critical-or-Major; every other checkpoint blocks on Critical only).
 
-**Reading a pre-0.11.0 verdict:** a stream that hasn't been re-reviewed since the rename may still carry
-old-named files (`VERDICT-G4.json` etc.) — `sdlc_state.py`'s `LEGACY_GATE_NAME` shim reads those for one
-release and marks them `(legacy)` in the progress display. This is a display concern only: whether a
-stream is open or closed depends solely on `STREAM.md`'s `status:` field (below), never on which
-verdict-naming era produced a file.
+**Pre-0.11.0 verdict names are no longer read (shim removed in 0.14.0).** Verdict lookup keys strictly
+on the current `VERDICT-<REVIEW|SECURITY|UNIT|INTEGRATION>.json` names. The one-release read-compat shim
+for old `VERDICT-G4.json`/`G5a`/`G6`/`G7` files is gone — a stream still carrying only old-named verdicts
+reads as `pending` at that checkpoint; re-run the checkpoint to produce a current-named verdict. Stream
+open/closed still depends solely on `STREAM.md`'s `status:` field (below), never on verdict files.
 
 ### Process-only stops (no individually-tracked derived state)
 

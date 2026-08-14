@@ -168,33 +168,6 @@ def test_gate_verdict_partial_and_batch():
         check(got == "partial", f"partial -> {got!r}")
 
 
-# --- legacy-verdict shim (R2 design doc §3) --------------------------------- #
-def test_gate_verdict_legacy_shim():
-    """A pre-0.11.0-named verdict (VERDICT-G4.json, no VERDICT-REVIEW.json present)
-    is still recognized by the renamed lookup and flagged legacy in the display.
-    """
-    with tempfile.TemporaryDirectory() as d:
-        write(d, f"{sd('payment')}/reviews/VERDICT-G4.json", '{"decision":"PASS"}')
-        got = S._gate_verdict(d, "payment", "REVIEW")
-        check(got == "pass", f"legacy-named verdict still decides -> {got!r}")
-        p = S.infer_gate_progress(d, "payment")
-        check("REVIEW PASS (legacy)" in p["gate_line"], p["gate_line"])
-
-
-def test_gate_verdict_mixed_era():
-    """Mixed-era stream: an old-named REVIEW verdict alongside a new-named UNIT
-    verdict in the same stream -- both read correctly, no contradiction, and only
-    the legacy one is marked.
-    """
-    with tempfile.TemporaryDirectory() as d:
-        write(d, f"{sd('payment')}/reviews/VERDICT-G4.json", '{"decision":"PASS"}')          # legacy
-        write(d, f"{sd('payment')}/test-reports/VERDICT-UNIT.json", '{"decision":"PASS"}')   # current
-        p = S.infer_gate_progress(d, "payment")
-        check(p["gates"]["REVIEW"] == "pass" and p["gates"]["UNIT"] == "pass", str(p["gates"]))
-        check("REVIEW PASS (legacy)" in p["gate_line"], p["gate_line"])
-        check("UNIT PASS (legacy)" not in p["gate_line"], p["gate_line"])
-
-
 # --- SECURITY staleness (R2 design doc §6 -- replaces the deleted G5b mandate) #
 def test_infer_gates_security_stale():
     """A SECURITY verdict older than the stream's newest bug-report entry shows
