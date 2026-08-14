@@ -18,7 +18,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "node --test scripts/**/*.test.mjs"
+    "test": "node --test scripts/**/*.test.mjs",
+    "prepack": "node scripts/clean-pycache.mjs"
   },
   "keywords": [
     "claude-code",

@@ -29,6 +29,10 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 - **`sdlc_state.py`'s `infer_gate_progress` docstring** no longer names the retired `fix-bug` /
   `vulnerability-scanner` skills (the R3 blast-radius sweep scanned `.md`/`.json`, not `.py`) — its
   `next_action` has emitted `cbr-implement --phase fix` / `cbr-verify --phase security` since 0.12.0.
+- **Python bytecode no longer leaks into the npm tarball.** A `prepack` script
+  (`scripts/clean-pycache.mjs`) strips `claude/hooks/**/__pycache__` before every `npm pack`/`publish` —
+  npm's `files` allowlist doesn't apply `.npmignore` exclusions inside included dirs, so dev-regenerated
+  `.pyc` files had been shipping (5 files, ~46 kB). The guard runs regardless of dev-tree state.
 
 ## [0.13.0] — 2026-08-14
 
