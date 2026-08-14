@@ -1,8 +1,8 @@
 ---
 name: cbr-implement
 description: "Full-stack Developer that implements a feature from an existing TECH spec, authors unit/integration test cases alongside the code, and fixes bugs reported by cbr-verify or the user. Tech stack detected from PROJECT.md/CLAUDE.md. Holds Write/Edit and produces no verdicts — review, security scan, and test execution are cbr-verify's job, never this skill's own judgment. TRIGGER: a TECH spec already exists and the user wants to implement code, write unit or integration test cases alongside implementation, or fix a reported bug/test failure/error — 'implement the X feature', 'write unit tests for X', 'fix this bug', 'the login test is failing'. NOT FOR: features without an existing TECH spec (design them with cbr-plan first), or reviewing/testing/scanning code you did not just write (use cbr-verify)."
-allowed-tools: Read, Grep, Glob, Write, Edit, Bash, Task, Agent, Skill
-argument-hint: "[feature name] [--fast|--auto|--parallel] [--tdd] [--phase fix]"
+allowed-tools: Read, Grep, Glob, Write, Edit, Bash, Task, Agent, Skill, SendMessage, TaskCreate, TaskUpdate, TaskList
+argument-hint: "[feature name] [--fast|--auto|--parallel|--team N] [--tdd] [--phase fix]"
 metadata:
   version: "1.0"
   category: core-sdlc
@@ -39,7 +39,8 @@ exists.
 | `--interactive` (default) | Stops after handoff and names `cbr-verify` as next step — a pointer, not an invocation. |
 | `--fast` | Minimal ceremony; still runs Self-Check and writes the work log. |
 | `--auto` | After Step 3 (Conditional Simplify) completes, invoke `cbr-verify` directly via the `Skill` tool instead of just naming it — no human is watching intermediate stops in this mode. |
-| `--parallel` | Step 1 fans out to N `cbr-developer` workers under strict file ownership (see Step 1). |
+| `--parallel` | Step 1 fans out to N unnamed `cbr-developer` workers under strict file ownership, fire-and-collect (see Step 1). |
+| `--team N` | Step 1 runs as a real agent team: N **named** `cbr-developer` teammates with live coordination + optional worktree isolation. Heavier than `--parallel`; requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (see Step 1 "Team mode"). |
 | `--tdd` (composable) | Step 1 splits into 1.T (write tests documenting current behavior) → 1.I (implement) → 1.V (verify 1.T tests still pass). |
 | `--phase fix` | Separate entry point — see **Fix-Loop** below. Not part of the main flow above. |
 
@@ -107,6 +108,21 @@ explicit file-ownership boundary, then integrate the shared files no worker owne
 -Check (Step 4) across the merged result.
 
 > **Procedure**: `{{CBR_ROOT}}/docs/references/parallel-mode.md`.
+
+### Team mode (`--team N`)
+
+The heavy end of parallel execution: instead of `--parallel`'s fire-and-collect unnamed workers,
+spawn N **named** `cbr-developer` teammates as a real agent team — they get live coordination
+(`SendMessage` + Task tools), optional `isolation:"worktree"`, claim tasks, escalate conflicts to
+the lead, and are torn down with `shutdown_request` when done. Precondition:
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` — **if unset, STOP and tell the user; never silently fall
+back to `--parallel`.** Confirm the token cost with the user before spawning. File-ownership is the
+conflict-prevention rule (an intentional, scoped extension of `teammate-mode.md`'s read-only-teammate
+rule — implementation teammates edit code within their owned paths).
+
+> **Procedure**: [`references/team-mode.md`](references/team-mode.md) — the verified spawn mechanism
+> (named-teammate enrolment, no `TeamCreate` needed), the worktree hooks caveat, coordination, merge,
+> and teardown.
 
 ## Step 2: Unit-ModeA + Integration-ModeA — author test cases
 
@@ -214,6 +230,15 @@ methodology (reproduce → isolate → root cause → fix and verify). This 2-ro
 distinct from the project's 3-strike rule (`coding-standards.md`) — it counts fix attempts for
 *one specific bug within this invocation*, not consecutive failed approaches across a task; the
 numbers are not meant to reconcile.
+
+### Adversarial team variant (`--team`, optional, non-default)
+
+Only when `--team` is explicit and a bug resists the 2-round fix: spawn 2-3 named `cbr-developer`
+teammates holding **competing root-cause hypotheses** and let the evidence decide, instead of a
+lone guess. **Sequential, never nested** — this may start **only after** any implementation team is
+fully torn down (`shutdown_request` completed for every member), per the one-team-at-a-time rule.
+Opt-in only; the default fix-loop above is unchanged. Procedure:
+[`references/team-mode.md`](references/team-mode.md) § "Adversarial fix-loop variant".
 
 ## Verification
 

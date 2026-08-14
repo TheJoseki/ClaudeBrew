@@ -38,14 +38,22 @@ role that needs broader tools or to write files.
 
 ## How the lead orchestrates
 
-The lead is the session running this skill. The concrete tool lifecycle below is
-**verified** (run end-to-end on this project), not just transcribed from docs:
+The lead is the session running this skill. The lifecycle below is written
+**capability-aware** — the spawn/message/shutdown core is verified on this project
+(2026-08-14 spike), while `TeamCreate`/`TeamDelete` are treated as **optional**, because
+some harnesses expose them and some do not. Check what your tools actually offer; do not
+assume either way.
 
-1. **Create the team.** `TeamCreate(team_name, agent_type, description)` — this
-   provisions both the team config and a shared task list.
+1. **Create the team (only if your harness has `TeamCreate`).** If `TeamCreate(team_name,
+   agent_type, description)` is available, call it to provision the team config + shared task
+   list. **If it is not available, skip this step** — naming the teammates in step 2 enrols
+   them in the session's *implicit* team on its own; no explicit create is required.
 2. **Spawn the roles** with the `Agent` tool, one call per teammate, all in one
-   message so they run concurrently. Set `team_name`, a role `name` (e.g.
-   `product-ux`, `architect`, `devils-advocate`), and `subagent_type`
+   message so they run concurrently. **Always set a role `name`** (e.g. `product-ux`,
+   `architect`, `devils-advocate`) — *the name is what enrols a teammate as a real team
+   member with `SendMessage`/Task tools injected*; an unnamed spawn is only a plain task
+   worker. (Pass `team_name` only if your harness's `Agent` schema accepts it — check first;
+   don't assume an unknown param is ignored.) Set `subagent_type`
    (`cbr-strategist` for the lens roles; `general-purpose` for a teammate that needs
    broader tools or to write files; read-only `Explore` works for pure research roles
    but can't write files). Give each a **self-contained spawn prompt** — teammates do
@@ -73,13 +81,14 @@ The lead is the session running this skill. The concrete tool lifecycle below is
    user's incremental approvals, and writes the single shared artifact
    (`artifact-template.md`). Teammates contribute; the lead owns the artifact so
    there is one coherent voice.
-7. **Tear down (verified sequence).** When the team's work is done, shut each
-   teammate down with `SendMessage(to: "<name>", message: {type:
-   "shutdown_request", reason: "..."})`; each replies `shutdown_approved` and
-   terminates. Once **all** members have terminated, call `TeamDelete` (it fails
-   if any member is still active, so always shut down first — only the lead should
-   run cleanup). The lead can finish synthesis and write the artifact solo after
-   teardown; it does not need the teammates alive for that.
+7. **Tear down.** When the team's work is done, shut each teammate down with
+   `SendMessage(to: "<name>", message: {type: "shutdown_request", reason: "..."})`; each
+   replies `shutdown_response` and terminates. `shutdown_request` **is the teardown** — it is
+   verified and sufficient on its own. Only **if you created the team with `TeamCreate`**,
+   call `TeamDelete` afterward (it fails if any member is still active, so always shut down
+   first; only the lead runs cleanup). Where `TeamCreate` was unavailable there is no
+   `TeamDelete` to call — the shutdowns complete the teardown. The lead can finish synthesis
+   and write the artifact solo after teardown; it does not need the teammates alive for that.
 
 ## Caveats (from the agent-teams docs)
 

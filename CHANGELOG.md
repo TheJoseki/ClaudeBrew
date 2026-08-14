@@ -4,6 +4,45 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-08-14
+
+**Wave 2 of the R3 plan — the EXPANSION-scope stretch items on top of the 0.12.0 skill merge.** Adds
+adversarial plan review + validation to `cbr-plan`, a task-hydration bridge between `cbr-plan` and
+`cbr-implement`, and a real multi-agent `--team` mode for `cbr-implement` — plus a correctness fix to
+the shipped `cbr-brainstorming` team mode.
+
+### Added
+- **`cbr-plan red-team {slug}` and `cbr-plan validate {slug}` subcommands.** Optional, user-invoked
+  reviews of a stream's `plan/PLAN.md` (+ SRS/BASIC/TECH). `red-team` scales hostile-lens reviewers by
+  phase count, spawns them per a charter split (Security Adversary + Failure Mode → `cbr-reviewer`;
+  Assumption Destroyer + Scope Critic → `cbr-strategist`), evidence-filters findings (`file:line` or
+  auto-reject *before* merit), caps at 15, user adjudicates, then a Whole-Plan Consistency Sweep.
+  `validate` runs a tiered verification pass against the live repo (skipped when a red-team already
+  fact-checked), a batched interview, and propagates decisions to a `## Validation Log`. Both stop —
+  no cascade to `cbr-implement`. Five new `cbr-plan/references/` files.
+- **Task-hydration bridge.** `cbr-plan`'s Plan phase hydrates one live task per `PLAN.md` phase on
+  write (3-Task Rule skips <3-phase plans and `--fast`); `cbr-implement` picks them up at Step 1
+  (same-session `TaskList`, cross-session re-hydrate from unchecked `[ ]`, plan-file fallback if the
+  Task tools error) and syncs `[x]` back at Step 4/Hand-off with a full-plan backfill sweep. New
+  `cbr-plan/references/task-management.md`.
+- **`cbr-implement --team N` — real agent-team execution.** N *named* `cbr-developer` teammates with
+  live coordination (`SendMessage` + Task tools), optional `isolation:"worktree"`, file-ownership
+  boundaries, and `shutdown_request` teardown — heavier than `--parallel`'s unnamed fire-and-collect.
+  Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`; stops with a clear message if unset (never
+  silently degrades to `--parallel`). Optional adversarial fix-loop variant (competing root-cause
+  teammates), gated sequential-after-teardown (no nested teams). New
+  `cbr-implement/references/team-mode.md`; `SendMessage`/`Task*` added to `cbr-implement`'s
+  `allowed-tools` to match what its body now invokes.
+
+### Fixed
+- **`cbr-brainstorming/references/teammate-mode.md` reconciled to the verified agent-team mechanism.**
+  An empirical spike established that in this harness a *named* `Agent` spawn is what enrols a teammate
+  (injecting `SendMessage`/Task tools) — there is no `TeamCreate`/`TeamDelete`, and `shutdown_request`
+  alone is the teardown. The doc previously described a `TeamCreate`→`TeamDelete` lifecycle as
+  "verified"; it is now **capability-aware** — `TeamCreate`/`TeamDelete` used only "if your harness
+  exposes them," named-spawn + `shutdown_request` otherwise — so it works across harness versions
+  rather than asserting tools that may be absent.
+
 ## [0.12.0] — 2026-08-13
 
 **The R3 merge — 10 SDLC stage-executor skills collapse into 3.** `cbr-plan` (analyze-requirement +
