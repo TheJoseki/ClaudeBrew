@@ -1,6 +1,6 @@
 # ClaudeBrew
 
-<!-- release: 0.13.0 -->
+<!-- release: 0.14.0 -->
 
 **A full software-development lifecycle, delivered as a suite of Claude Code skills.**
 
@@ -41,14 +41,20 @@ Start the pipeline by describing something you want to build:
 - **`/cbr-brainstorming`** — turn an idea into a validated, evidence-backed brainstorm artifact. (It also triggers automatically when you say things like "I have an idea…", "help me scope X", or "where do I start?")
 - **`/cbr-worktree`** — once a brainstorm is approved, move development into an isolated git worktree on a feature branch. The move is the skill's mandate; the deterministic `PreToolUse` gate that denies feature-code edits on `main`/`master` is **opt-in** — enable it with `claudebrew install --gate`.
 
+Then the three merged SDLC stage skills carry it to done:
+
+- **`/cbr-plan`** — requirements → screen design → technical design → an actionable implementation plan, as one skill with mode flags (`--fast`/`--hard`/`--deep`) that scale rigor to risk. Also `cbr-plan red-team <slug>` / `validate <slug>` to adversarially review a plan before you build it.
+- **`/cbr-implement`** — implement from the approved tech spec, author unit/integration test cases alongside the code, and fix bugs. `--parallel` fans out to worker sub-agents; `--team N` runs a coordinated agent team.
+- **`/cbr-verify`** — fresh-eyes code review, OWASP security scan, and unit/integration test execution, producing the machine-validated verdicts. It holds **no** write access, so it can never grade code it wrote — every verdict comes from a freshly spawned reviewer/tester.
+
 Each stage writes its artifact into your repo under `docs/` (canonical paths live in `.claude/docs/references/sdlc-reference.md`), and a per-work-stream manifest at `docs/streams/<slug>-<date>/STREAM.md` links every artifact of one feature with a kanban-style task board — so a stream's brainstorm, spec, plan, reviews and tests read as one unit instead of scattering.
 
 ## What makes it different
 
 - **Never-guess** at the strictest setting — any ambiguity becomes a batched, pre-analyzed question, never a silent assumption.
 - **Deterministic isolation** — worktree discipline is enforced by a harness hook, not merely requested in prose.
-- **DAR** (Decision Analysis & Resolution) on hard-to-reverse trade-offs — weighted criteria, a scoring matrix, a recorded decision.
-- **Agent teams** — complex brainstorms can spin up a team of specialist sub-agents that challenge each other.
+- **Trade-off analysis** on hard-to-reverse decisions — compare the real alternatives on what matters, record the decision and why it won.
+- **Agent teams** — a complex brainstorm, or a multi-file implementation (`cbr-implement --team`), can spin up a team of sub-agents that coordinate on disjoint file ownership or challenge each other's positions.
 - **One work-stream, one tree** — every feature's artifacts are linked from a `STREAM.md` manifest with a task board and a derived gate-status snapshot; an **Artifact Lifecycle** table records who creates/updates/closes each artifact, so nothing is generated-and-forgotten.
 - **Agent-consumable templates** — the shipped `docs/_templates/` set is written to be *filled by an agent*, not read like a manual (one grep-able placeholder syntax; framework specifics come from your `PROJECT.md`).
 

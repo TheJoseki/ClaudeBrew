@@ -4,6 +4,32 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.14.0] — 2026-08-14
+
+**Retires the pre-0.11.0 verdict-filename read-compat shim** and refreshes the README for the R3
+3-skill SDLC.
+
+### Removed
+- **`LEGACY_GATE_NAME` shim** (`hooks/lib/sdlc_state.py`). Verdict lookup now keys strictly on the
+  current `VERDICT-<REVIEW|SECURITY|UNIT|INTEGRATION>.json` names; the one-release compatibility read
+  of old `VERDICT-G4/G5a/G6/G7.json` files (and the `(legacy)` progress-display marker) is gone. 0.11.0
+  promised this for 0.12.0; it was carried an extra release because 0.12.0/0.13.0 shipped to `main` but
+  not to npm, so users are only now upgrading past the rename. ⚠️ **Migration**: a stream still carrying
+  only old-G-named verdict files now reads `pending` at that checkpoint — re-run the checkpoint to write
+  a current-named verdict. Stream open/closed is unaffected (it keys on `STREAM.md` `status:`, never on
+  verdict files). The two docs that described the shim (`sdlc-reference.md`, `verdict-artifact.schema.json`)
+  are updated; the two shim unit tests are removed.
+
+### Fixed
+- **README refreshed.** The `## Use` section now lists the three merged SDLC stage skills
+  (`cbr-plan`/`cbr-implement`/`cbr-verify`) — previously only `brainstorming`/`worktree` appeared, so the
+  actual pipeline was invisible. Corrected a stale "DAR (Decision Analysis & Resolution) — weighted
+  criteria, a scoring matrix" bullet (that apparatus was retired for plain trade-off analysis back in
+  0.10.0's de-framework pass) and broadened the agent-teams note to include `cbr-implement --team`.
+- **`sdlc_state.py`'s `infer_gate_progress` docstring** no longer names the retired `fix-bug` /
+  `vulnerability-scanner` skills (the R3 blast-radius sweep scanned `.md`/`.json`, not `.py`) — its
+  `next_action` has emitted `cbr-implement --phase fix` / `cbr-verify --phase security` since 0.12.0.
+
 ## [0.13.0] — 2026-08-14
 
 **Wave 2 of the R3 plan — the EXPANSION-scope stretch items on top of the 0.12.0 skill merge.** Adds

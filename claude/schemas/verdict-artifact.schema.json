@@ -8,7 +8,7 @@
   "additionalProperties": true,
   "properties": {
     "gate": {
-      "description": "Which SDLC checkpoint this verdict is for. A pre-0.11.0 artifact may still carry G4/G5a/G6/G7 — verdict-gate.py's LEGACY_GATE_NAME shim (one release, see CHANGELOG) reads those by filename, not by this field.",
+      "description": "Which SDLC checkpoint this verdict is for. (Pre-0.11.0 G4/G5a/G6/G7 filenames are no longer read — the read-compat shim was removed in 0.14.0.)",
       "enum": ["REVIEW", "SECURITY", "UNIT", "INTEGRATION"]
     },
     "decision": {

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-<!-- release: 0.13.0 -->
+<!-- release: 0.14.0 -->
 
 > **Packaging (0.8.0 re-platform):** ClaudeBrew moved from a Claude Code **plugin/marketplace** to a
 > standalone **`npx claudebrew` npm installer** that provisions the payload into the user's `.claude/`.
