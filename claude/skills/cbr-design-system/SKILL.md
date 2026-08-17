@@ -1,44 +1,54 @@
 ---
 name: cbr-design-system
-description: "Design system authority for web and mobile — UX intelligence, design tokens, and shadcn/Tailwind implementation in one skill. Covers style, color-palette and font-pairing selection from a bundled searchable database (67+ styles, 161 palettes, 57 font pairings, 99 UX guidelines), three-layer token architecture (Primitive → Semantic → Component), CSS variables, Tailwind theme config, component state specs, dark mode, and shadcn/ui patterns. TRIGGER: user asks to design a UI, choose a style, color palette or font pairing, review UX or accessibility, plan interaction patterns, create design tokens, establish a design system, set up CSS variables, configure a Tailwind theme, define component variants, implement UI components, set up shadcn/ui, add dark mode, or build responsive layouts. NOT FOR: pure backend logic, API or database design, infra/DevOps. shadcn/Tailwind implementation is React-only (skip for Vue, React Native, Flutter)."
+description: "Design system authority for web and mobile — authors a portable DESIGN.md (Google's open Apache-2.0 format: YAML tokens + rationale) as the single source of truth, then implements it in shadcn/Tailwind, in one skill. Grounds style, color-palette and font-pairing choices in a bundled searchable database (67+ styles, 161 palettes, 57 font pairings, 99 UX guidelines), encodes them as a three-layer token architecture (Primitive → Semantic → Component), and enforces WCAG contrast with a linter. TRIGGER: user asks to design a UI, author or update a DESIGN.md, choose a style, color palette or font pairing, review UX or accessibility, plan interaction patterns, create design tokens, establish a design system, set up CSS variables, configure a Tailwind theme, define component variants, implement UI components, set up shadcn/ui, add dark mode, or build responsive layouts. NOT FOR: pure backend logic, API or database design, infra/DevOps. shadcn/Tailwind implementation is React-only (skip for Vue, React Native, Flutter)."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
-  version: "4.0"
+  version: "5.0"
   category: design
 ---
 
-# Design System — UX Intelligence, Tokens, Implementation
+# Design System — DESIGN.md authoring, UX intelligence, implementation
 
 The single authority for how a product **looks, feels, moves, and is interacted
-with**. Three tracks, one skill:
-
-1. **Decide** — what style, palette, and typography this product should have,
-   and which UX rules govern it.
-2. **Define** — encode those decisions as a layered token system so they are
-   reusable and themeable.
-3. **Build** — implement the tokens as accessible shadcn/ui + Tailwind components.
+with**. Its durable output is **`docs/DESIGN.md`** — a portable design system in
+Google's open [DESIGN.md format](references/designmd-spec.md): machine-readable
+YAML tokens (the *what*) + `##` rationale (the *why* each token exists). The
+bundled corpus is **grounding evidence**, not the authority — you reason from it,
+you never retrieve a frozen answer as final.
 
 **Decision criteria:** if the task changes how a feature looks, feels, moves, or
 is interacted with, this skill applies.
 
-**Skip for** pure backend logic, API/database design, infrastructure, and DevOps
-work. The *Build* track additionally assumes a React-based framework (Next.js,
-Vite, Remix, Astro) — for Vue, React Native, or Flutter, the *Decide* track still
-applies but the shadcn/Tailwind guidance does not.
+## Input-contract (open-or-join)
 
----
+Resolve the artifact first:
 
-## Pick your track
+- **`docs/DESIGN.md` exists** → **UPDATE** it in place. It is a living document;
+  extend/revise tokens and rationale, never fork a second copy.
+- **None** → **AUTHOR** one: scaffold it, fill the rationale, validate, write it
+  to `docs/DESIGN.md`.
 
-| You need to… | Go to | Contains |
-|---|---|---|
-| Choose a style, palette, or font pairing; review UX/accessibility; plan interactions, layout, navigation, charts | `references/ux-intelligence.md` | Full rule set per category, the searchable database + scripts, product-type style guide, AI anti-patterns, pre-delivery checklist |
-| Create design tokens, set up CSS variables, define component states, wire a Tailwind theme, add dark-mode theming | `references/tokens.md` | Three-layer architecture, spacing/typography scales, dark-mode pattern, state specs, token file formats, SCREEN-spec token section |
-| Install shadcn/ui, build components, forms, dialogs, tables; make layouts responsive; ship dark mode | `references/implementation.md` | Setup, component patterns, next-themes dark mode, breakpoints, theme customization, accessibility rules, component catalog |
+## The four moves
 
-**Normal order is Decide → Define → Build.** Style and palette choices feed the
-primitive/semantic token layers; those tokens feed the Tailwind theme. Jumping
-straight to Build with no tokens is how hardcoded hex values get shipped.
+1. **Decide** — reason about style, palette, typography, and UX rules for this
+   product, *grounded* by the corpus (`references/ux-intelligence.md`) + fresh
+   sources (Context7 for shadcn/Tailwind docs, WebSearch for current patterns —
+   cite URLs). Never ship a frozen catalog pick as the final answer.
+2. **Define** — encode the decisions as DESIGN.md YAML tokens + rationale
+   (`references/tokens.md` maps the three token layers onto the schema). Every
+   token states its intent; every surface color carries an `on-<X>`.
+3. **Validate** — the linter is the gate; DESIGN.md must pass before you stop:
+   ```bash
+   python {{CBR_ROOT}}/skills/cbr-design-system/scripts/designmd_lint.py docs/DESIGN.md
+   ```
+4. **Build** — implement the tokens as accessible shadcn/ui + Tailwind components
+   (`references/implementation.md`), reading them *from* `docs/DESIGN.md` — no
+   raw hex.
+
+**Skip for** pure backend logic, API/database design, infrastructure, DevOps. The
+*Build* move assumes React (Next.js, Vite, Remix, Astro); for Vue, React Native,
+or Flutter the Decide/Define/Validate moves still apply, the shadcn/Tailwind
+guidance does not.
 
 ---
 
@@ -61,29 +71,30 @@ The individual rules under each category are in `references/ux-intelligence.md`.
 
 ---
 
-## The design database
+## The corpus — grounding evidence, not the answer
 
-A BM25 search engine over the full corpus ships with this skill — no install
-step. Scripts resolve `data/` relative to themselves, so they run from any
-directory.
+A BM25 search engine over the bundled corpus ships with this skill (no install
+step; scripts resolve `data/` relative to themselves). It **grounds** your
+reasoning with real palettes/styles/fonts and their trade-offs — it is not the
+decision-maker, and its taste ages, so always cross-check fresh sources and the
+contrast linter.
 
 ```bash
-# Complete design-system recommendation (style + palette + fonts + effects)
+# Scaffold a spec-valid DESIGN.md (YAML tokens + rationale) for docs/DESIGN.md:
 python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py \
-  "healthcare patient dashboard" --design-system -p "Project Name"
+  "healthcare patient dashboard" --design-system --format designmd -p "Project Name"
 
-# Targeted lookup
+# Grounding lookups (candidates + trade-offs, never a final answer):
 python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "saas dashboard" --domain product
 ```
 
 Domains: `style` `color` `chart` `landing` `product` `ux` `typography` `icons`
 `react` `web` `google-fonts`. Add `--stack react-native` for stack-specific
-guidelines, `--persist` to write a MASTER.md design system, `--json` for
-machine-readable output.
+guidelines, `--json` for machine-readable output.
 
-**If Python is unavailable**, the references carry the guidance inline — the
-rule set, the product-type style guide, and the token patterns all work without
-scripts.
+**If Python is unavailable**, the references carry the guidance inline — the rule
+set, the product-type style guide, the token patterns, and the manual lint
+checklist (`references/designmd-spec.md` §6) all work without scripts.
 
 ---
 
@@ -91,8 +102,13 @@ scripts.
 
 These hold across all three tracks. Everything else is a recommendation.
 
+- **`docs/DESIGN.md` is the single source of truth** for tokens — author/update
+  it there, components read *from* it, and it **must pass `designmd_lint.py`**
+  before the stage stops.
+- **Every token states its intent**, and **every surface color has an `on-<X>`**
+  foreground — that pair is what makes contrast machine-checkable.
 - **Contrast ≥ 4.5:1** for body text, verified independently in light *and* dark
-  mode. Never convey meaning by color alone.
+  mode (author a `dark:` override map). Never convey meaning by color alone.
 - **Touch targets ≥ 44×44pt** (iOS) / 48×48dp (Android), with ≥ 8px spacing.
 - **Semantic tokens, never raw hex in components.** Primitive → Semantic →
   Component; never skip the semantic layer.
@@ -109,8 +125,9 @@ These hold across all three tracks. Everything else is a recommendation.
 
 | File | Content |
 |------|---------|
-| `references/ux-intelligence.md` | Design intelligence: full rule set, database usage, style selection, anti-patterns, checklist |
-| `references/tokens.md` | Token architecture: three layers, scales, dark mode, state specs, SCREEN-spec section |
+| `references/designmd-spec.md` | **The DESIGN.md format contract** (pinned): sections, YAML token subset, `{ref}`, the cbr strict-superset (`on-*`, `dark:`), lint rules, manual checklist |
+| `references/ux-intelligence.md` | Design intelligence: full rule set, corpus grounding usage, style selection, anti-patterns, checklist |
+| `references/tokens.md` | Token architecture: three layers mapped onto the DESIGN.md YAML schema, scales, dark mode, state specs, SCREEN-spec section |
 | `references/implementation.md` | shadcn/ui + Tailwind: setup, patterns, dark mode, responsive, accessibility |
 
 **Deep dives** (loaded on demand from the entry points):
@@ -131,11 +148,13 @@ These hold across all three tracks. Everything else is a recommendation.
 | `references/tailwind-responsive.md` | Mobile-first breakpoints, container queries, max-width queries |
 | `references/tailwind-customization.md` | @theme directive, custom utilities, @apply, plugins, full config example |
 | `references/canvas-design-system.md` | Canvas/poster visual design philosophy (uses bundled `canvas-fonts/`) |
+| `references/stitch-interop.md` | Optional, detect-if-available Stitch round-trip for `docs/DESIGN.md` (import-from-URL / upload) — never a dependency |
 
-**Bundled assets:** `scripts/` (search engine, design-system generator, shadcn
-installer, Tailwind config generator, token validators, slide tooling),
-`data/` (the CSV corpus), `templates/design-tokens-starter.json`,
-`canvas-fonts/` (open-licensed font files, see `LICENSE.txt`).
+**Bundled assets:** `scripts/` (search/grounding engine, DESIGN.md generator
+[`design_system.py` → `format_designmd`], the **DESIGN.md linter**
+[`designmd_lint.py` + `contrast.py`], shadcn installer, Tailwind config
+generator, slide tooling), `data/` (the CSV grounding corpus), `canvas-fonts/`
+(open-licensed font files, see `LICENSE.txt`).
 
 ---
 
@@ -143,6 +162,6 @@ installer, Tailwind config generator, token validators, slide tooling),
 
 | Direction | Skill | When |
 |-----------|-------|------|
-| Pairs with | `cbr-plan` (Step 2: Screen) | Run design intelligence before wireframing; include the token table in every SCREEN spec |
-| Input to | `cbr-implement` | Developer builds components against these tokens and patterns |
-| On accessibility findings | `cbr-verify` | Accessibility violations → flag in code review |
+| Pairs with | `cbr-plan` (Step 2: Screen) | Author/refresh `docs/DESIGN.md` before wireframing; SCREEN specs reference it (never re-derive tokens) |
+| Input to | `cbr-implement` | Developer builds components reading tokens from `docs/DESIGN.md` — no raw hex |
+| On accessibility findings | `cbr-verify` | Feed `designmd_lint.py` output as accessibility findings in code review |

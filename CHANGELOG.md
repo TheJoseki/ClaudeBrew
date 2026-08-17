@@ -4,6 +4,38 @@ All notable changes to ClaudeBrew (installed by the `claudebrew` CLI) are docume
 
 ## [Unreleased]
 
+## [0.15.0] — 2026-08-17
+
+**`cbr-design-system` becomes a DESIGN.md authoring engine.** The skill's durable output is now a portable
+`docs/DESIGN.md` (Google's open, Apache-2.0 format: YAML tokens + `##` rationale) instead of an ad-hoc,
+proprietary `MASTER.md`. The bundled CSV corpus is demoted from *authority* to *grounding evidence*, and a
+new linter makes WCAG contrast + token integrity a hard, deterministic gate.
+
+### Added
+- **Vendored DESIGN.md spec digest** (`skills/cbr-design-system/references/designmd-spec.md`), pinned to
+  upstream `google-labs-code/design.md@9bf8eae`. Documents the format plus a cbr *strict superset*: a
+  stdlib-parseable YAML token subset, a required `on-<X>` foreground for every surface, and a `dark:`
+  override map (the open spec defines no light/dark).
+- **DESIGN.md linter** (`scripts/designmd_lint.py` + `scripts/contrast.py`): structural correctness,
+  `{ref}` integrity, and WCAG contrast in light **and** dark — the anti-slop / accessibility gate. Unit
+  tests in `evals/test_designmd_lint.py`.
+- **`format_designmd()`** in `design_system.py` + `search.py --design-system --format designmd`: emit a
+  spec-valid, lint-passing DESIGN.md scaffold with contrast-derived `on-*` tokens.
+- **Optional Stitch interop** (detect-if-available; never a dependency) for import-from-URL and round-trip.
+- `docs/DESIGN.md` registered as a project-level, living artifact in `sdlc-reference.md`.
+
+### Removed
+- **Proprietary `MASTER.md` persistence** — `--persist`, `--page`, `--output-dir`, `persist_design_system`,
+  `format_master_md`, `format_page_override_md`, and the `design-system/<slug>/` output tree. ⚠️ **Breaking,
+  no migrator** (pre-1.0, no external consumers): re-author as `docs/DESIGN.md` via
+  `--design-system --format designmd`.
+- **`templates/design-tokens-starter.json`** — retired; `docs/DESIGN.md` YAML is the single source of truth.
+
+### Changed
+- **`cbr-design-system/SKILL.md` rewritten** to the house invariants + moves + input-contract pattern
+  (open-or-join on `docs/DESIGN.md`; Decide → Define → Validate → Build). `tokens.md` now maps the three
+  token layers onto the DESIGN.md YAML schema and `implementation.md` derives its theme from `docs/DESIGN.md`.
+
 ## [0.14.0] — 2026-08-14
 
 **Retires the pre-0.11.0 verdict-filename read-compat shim** and refreshes the README for the R3

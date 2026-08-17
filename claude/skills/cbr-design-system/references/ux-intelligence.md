@@ -209,14 +209,16 @@ python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "<keyword>" --dom
 python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "<keyword>" --stack react-native
 ```
 
-**Persisting a design system** (Master + Overrides pattern):
+**Authoring `docs/DESIGN.md`** (the durable, portable design system — open-or-join,
+update in place if it exists):
 ```bash
 python {{CBR_ROOT}}/skills/cbr-design-system/scripts/search.py "<query>" \
-  --design-system --persist -p "Project Name" [--page "dashboard"]
+  --design-system --format designmd -p "Project Name" > docs/DESIGN.md
+python {{CBR_ROOT}}/skills/cbr-design-system/scripts/designmd_lint.py docs/DESIGN.md
 ```
-Writes `design-system/<project-slug>/MASTER.md` as the global source of truth,
-plus optional per-page override files under `pages/`. When building a page,
-check its override file first; it wins over MASTER.md.
+The scaffold is a starting point: fill the rationale (why each token), add a
+`dark:` override map, and re-lint until clean. `docs/DESIGN.md` is the single
+source of truth. See `references/designmd-spec.md`.
 
 Add `--json` for machine-readable output, `-n` to change the result count
 (default 3).
