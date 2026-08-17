@@ -4,6 +4,10 @@ Turning tokens into shipped UI: shadcn/ui (Radix UI primitives) setup, component
 patterns, dark mode, responsive layout, theme customization, and accessibility
 rules.
 
+**Tokens come from `docs/DESIGN.md`.** Derive the CSS variables / Tailwind theme
+from its YAML token layer (`references/designmd-spec.md`); never hardcode hex in
+components. If `docs/DESIGN.md` is missing, author it first (Define → Validate).
+
 **Applies to** React-based frameworks (Next.js, Vite, Remix, Astro).
 
 **Skip when** the project uses Vue.js (use Vuetify/Nuxt UI patterns), a

@@ -8,6 +8,22 @@ Deeper per-topic detail lives in the sibling references listed at the end.
 
 ---
 
+## The source of truth is `docs/DESIGN.md`
+
+These three layers are the *mental model*; their **serialized home is the YAML
+front-matter of `docs/DESIGN.md`** (the open DESIGN.md format — see
+`references/designmd-spec.md`), which this skill authors and lints. The mapping:
+
+| Layer | DESIGN.md YAML |
+|-------|----------------|
+| Primitive (raw values) | literal values inside `colors:` / `rounded:` / `spacing:` |
+| Semantic (purpose aliases) | named `colors:` tokens with their `on-<X>` pairs (+ a `dark:` override map) |
+| Component (per-component) | `components.<name>` entries referencing tokens via `{colors.primary}` |
+
+Author tokens there, lint with `designmd_lint.py`, then derive the CSS variables /
+Tailwind theme from them. The former `design-tokens-starter.json` is **retired** —
+`docs/DESIGN.md` YAML is the single source of truth.
+
 ## Three-Layer Token Architecture
 
 ```
@@ -213,7 +229,9 @@ For the HSL-variable form that shadcn/ui expects, see
 }
 ```
 
-A starter file ships at `templates/design-tokens-starter.json`.
+This W3C DTCG JSON is one serialization; the **authored source of truth** is the
+YAML token layer of `docs/DESIGN.md` (see `references/designmd-spec.md`). Derive
+JSON/CSS from it if a DTCG consumer needs it.
 
 ### CSS Output
 

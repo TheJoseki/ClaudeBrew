@@ -92,6 +92,10 @@ Paths below are relative to the stream root unless they start with `docs/`.
 `docs/decisions/ADR-*.md`, `docs/risks/RISK-*.md`, and the seeded reference docs (`PROJECT.md`,
 `CODING_RULES.md`, `CODING_CONVENTION.md`, `ARCHITECTURE.md`, `API_DESIGN.md`, `TEST_VIEWPOINT.md`,
 `CODE-REVIEW-CHECKLIST.md`) — seeded from `{{CBR_ROOT}}/docs/_templates/`, never relocated into a stream.
+**`docs/DESIGN.md`** is also project-level but is **authored on demand by `cbr-design-system`** (the
+product's design system, in the open DESIGN.md format), **not** seeded from a template — it is a living
+document, updated in place and referenced by per-stream `requirements/SCREEN.md` specs rather than copied
+into any stream.
 
 **Auto-create rule:** never fail because a directory is missing — create it.
 
@@ -151,6 +155,7 @@ Work-Stream Grouping above) — no artifact's individual closure implies the str
 | RES | `explore` | `cbr-plan` | superseded by an SRS/PLAN citation, else stream close |
 | SRS | `cbr-plan` (Step 1) | design, tests | REQUIREMENT |
 | SCREEN | `cbr-plan` (Step 2) | `cbr-plan` (Step 4), `cbr-implement` | UI Design stop |
+| DESIGN.md (project-level) | `cbr-design-system` | `cbr-plan` (Step 2: Screen), `cbr-implement`, `cbr-verify` | living — updated in place, never stream-closed |
 | BASIC / TECH | `cbr-plan` (Step 3/4) | `cbr-implement`, `cbr-verify`, tests | DESIGN |
 | PLAN | `cbr-plan` (Step 5) | all stages | Delivery |
 | DEV log | `cbr-implement` | `cbr-verify` | REVIEW |
